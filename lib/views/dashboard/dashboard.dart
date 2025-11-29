@@ -226,7 +226,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   @override
   Widget build(BuildContext context) {
     final dashboardState = ref.watch(dashboardStateProvider);
-    final columns = max(4 * ((dashboardState.contentWidth / 300).ceil()), 8);
+    final columns = max(4 * ((dashboardState.contentWidth / 280).ceil()), 8);
     final spacing = 16.ap;
     final children = [
       ...dashboardState.dashboardWidgets

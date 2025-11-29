@@ -126,14 +126,20 @@ extension AccessControlExt on AccessControl {
 @freezed
 abstract class WindowProps with _$WindowProps {
   const factory WindowProps({
-    @Default(750) double width,
-    @Default(600) double height,
+    @Default(0) double width,
+    @Default(0) double height,
     double? top,
     double? left,
   }) = _WindowProps;
 
   factory WindowProps.fromJson(Map<String, Object?>? json) =>
       json == null ? const WindowProps() : _$WindowPropsFromJson(json);
+}
+
+extension WindowPropsExt on WindowProps {
+  Size get _size => Size(width, height);
+
+  Size get size => _size.isEmpty ? Size(680, 580) : _size;
 }
 
 @freezed
