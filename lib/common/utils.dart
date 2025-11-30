@@ -142,9 +142,9 @@ class Utils {
     }
   }
 
-  String getTrayIconPath({required Brightness brightness}) {
+  String get traySuffix {
     final suffix = system.isWindows ? 'ico' : 'png';
-    return 'assets/images/icon.$suffix';
+    return 'assets/images/icon/status_2.$suffix';
   }
 
   int compareVersions(String version1, String version2) {

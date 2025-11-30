@@ -74,12 +74,12 @@ class AboutView extends StatelessWidget {
   List<Widget> _buildContributorsSection() {
     const contributors = [
       Contributor(
-        avatar: 'assets/images/avatars/june2.jpg',
+        avatar: 'assets/images/avatar/june2.jpg',
         name: 'June2',
         link: 'https://t.me/Jibadong',
       ),
       Contributor(
-        avatar: 'assets/images/avatars/arue.jpg',
+        avatar: 'assets/images/avatar/arue.jpg',
         name: 'Arue',
         link: 'https://t.me/xrcm6868',
       ),

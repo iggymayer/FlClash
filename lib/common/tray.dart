@@ -1,10 +1,8 @@
 import 'dart:io';
 
-import 'package:fl_clash/common/utils.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -15,24 +13,34 @@ import 'system.dart';
 import 'window.dart';
 
 class Tray {
+  String get trayIconSuffix {
+    return system.isWindows ? 'ico' : 'png';
+  }
+
+  String getTryIcon({required bool isStart, required bool tunEnable}) {
+    if (system.isMacOS || !isStart) {
+      return 'assets/images/icon/status_1.$trayIconSuffix';
+    }
+    if (!tunEnable) {
+      return 'assets/images/icon/status_2.$trayIconSuffix';
+    }
+    return 'assets/images/icon/status_3.$trayIconSuffix';
+  }
+
   Future _updateSystemTray({
-    required Brightness? brightness,
     bool force = false,
+    required bool isStart,
+    required bool tunEnable,
   }) async {
     if (Platform.isLinux || force) {
       await trayManager.destroy();
     }
     await trayManager.setIcon(
-      utils.getTrayIconPath(
-        brightness: brightness ??
-            WidgetsBinding.instance.platformDispatcher.platformBrightness,
-      ),
+      getTryIcon(isStart: isStart, tunEnable: tunEnable),
       isTemplate: true,
     );
     if (!Platform.isLinux) {
-      await trayManager.setToolTip(
-        appName,
-      );
+      await trayManager.setToolTip(appName);
     }
   }
 
@@ -45,7 +53,8 @@ class Tray {
     }
     if (!Platform.isLinux) {
       await _updateSystemTray(
-        brightness: trayState.brightness,
+        isStart: trayState.isStart,
+        tunEnable: trayState.tunEnable,
         force: focus,
       );
     }
@@ -88,10 +97,7 @@ class Tray {
               checked: trayState.selectedMap[group.name] == proxy.name,
               onClick: (_) {
                 final appController = globalState.appController;
-                appController.updateCurrentSelectedMap(
-                  group.name,
-                  proxy.name,
-                );
+                appController.updateCurrentSelectedMap(group.name, proxy.name);
                 appController.changeProxy(
                   groupName: group.name,
                   proxyName: proxy.name,
@@ -103,9 +109,7 @@ class Tray {
         menuItems.add(
           MenuItem.submenu(
             label: group.name,
-            submenu: Menu(
-              items: subMenuItems,
-            ),
+            submenu: Menu(items: subMenuItems),
           ),
         );
       }
@@ -161,7 +165,8 @@ class Tray {
     await trayManager.setContextMenu(menu);
     if (Platform.isLinux) {
       await _updateSystemTray(
-        brightness: trayState.brightness,
+        isStart: trayState.isStart,
+        tunEnable: trayState.tunEnable,
         force: focus,
       );
     }
@@ -183,14 +188,11 @@ class Tray {
   Future<void> _copyEnv(int port) async {
     final url = 'http://127.0.0.1:$port';
 
-    final cmdline =
-        system.isWindows ? 'set \$env:all_proxy=$url' : 'export all_proxy=$url';
+    final cmdline = system.isWindows
+        ? 'set \$env:all_proxy=$url'
+        : 'export all_proxy=$url';
 
-    await Clipboard.setData(
-      ClipboardData(
-        text: cmdline,
-      ),
-    );
+    await Clipboard.setData(ClipboardData(text: cmdline));
   }
 }
 
