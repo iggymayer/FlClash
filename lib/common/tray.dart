@@ -35,6 +35,7 @@ class Tray {
     if (Platform.isLinux || force) {
       await trayManager.destroy();
     }
+    trayManager.setTitle('200 KB/s' + '\n' + '200 KB/s');
     await trayManager.setIcon(
       getTryIcon(isStart: isStart, tunEnable: tunEnable),
       isTemplate: true,
