@@ -504,7 +504,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
 
   Widget _builderItem(int index) {
     final girdItem = _childrenNotifier.value[index];
-    final child = girdItem.child;
+    final child = RepaintBoundary(child: girdItem.child);
     return GridItem(
       mainAxisCellCount: girdItem.mainAxisCellCount,
       crossAxisCellCount: girdItem.crossAxisCellCount,
