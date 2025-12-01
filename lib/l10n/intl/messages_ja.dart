@@ -558,6 +558,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "sourceIp": MessageLookupByLibrary.simpleMessage("送信元IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("特殊プロキシ"),
     "specialRules": MessageLookupByLibrary.simpleMessage("特殊ルール"),
+    "speedStatistics": MessageLookupByLibrary.simpleMessage("速度統計"),
     "stackMode": MessageLookupByLibrary.simpleMessage("スタックモード"),
     "standard": MessageLookupByLibrary.simpleMessage("標準"),
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(

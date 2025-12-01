@@ -464,5 +464,6 @@
   "coreConfigChangeDetected": "コア設定の変更が検出されました",
   "reload": "リロード",
   "vpnConfigChangeDetected": "VPN設定の変更が検出されました",
-  "restart": "再起動"
+  "restart": "再起動",
+  "speedStatistics": "速度統計"
 }

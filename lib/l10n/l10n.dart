@@ -3638,6 +3638,16 @@ class AppLocalizations {
   String get restart {
     return Intl.message('Restart', name: 'restart', desc: '', args: []);
   }
+
+  /// `Speed statistics`
+  String get speedStatistics {
+    return Intl.message(
+      'Speed statistics',
+      name: 'speedStatistics',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

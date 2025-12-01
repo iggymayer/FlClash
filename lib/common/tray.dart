@@ -75,14 +75,16 @@ class Tray {
       checked: false,
     );
     menuItems.add(startMenuItem);
-    final speedStatistics = MenuItem.checkbox(
-      label: '网速统计',
-      onClick: (_) async {
-        globalState.appController.updateSpeedStatistics();
-      },
-      checked: trayState.showTrayTitle,
-    );
-    menuItems.add(speedStatistics);
+    if (system.isMacOS) {
+      final speedStatistics = MenuItem.checkbox(
+        label: appLocalizations.speedStatistics,
+        onClick: (_) async {
+          globalState.appController.updateSpeedStatistics();
+        },
+        checked: trayState.showTrayTitle,
+      );
+      menuItems.add(speedStatistics);
+    }
     menuItems.add(MenuItem.separator());
     for (final mode in Mode.values) {
       menuItems.add(

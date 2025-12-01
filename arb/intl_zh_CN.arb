@@ -464,5 +464,6 @@
   "coreConfigChangeDetected": "检测到核心配置更改",
   "reload": "重载",
   "vpnConfigChangeDetected": "检测到VPN相关配置改动",
-  "restart": "重启"
+  "restart": "重启",
+  "speedStatistics": "网速统计"
 }

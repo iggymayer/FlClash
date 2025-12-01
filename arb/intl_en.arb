@@ -463,5 +463,6 @@
   "coreConfigChangeDetected": "Core configuration change detected",
   "reload": "Reload",
   "vpnConfigChangeDetected": "VPN configuration change detected",
-  "restart": "Restart"
+  "restart": "Restart",
+  "speedStatistics": "Speed statistics"
 }

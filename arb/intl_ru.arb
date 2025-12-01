@@ -464,5 +464,6 @@
   "coreConfigChangeDetected": "Обнаружено изменение конфигурации ядра",
   "reload": "Перезагрузить",
   "vpnConfigChangeDetected": "Обнаружено изменение конфигурации VPN",
-  "restart": "Перезапустить"
+  "restart": "Перезапустить",
+  "speedStatistics": "Статистика скорости"
 }

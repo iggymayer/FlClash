@@ -774,6 +774,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "sourceIp": MessageLookupByLibrary.simpleMessage("Исходный IP"),
     "specialProxy": MessageLookupByLibrary.simpleMessage("Специальный прокси"),
     "specialRules": MessageLookupByLibrary.simpleMessage("Специальные правила"),
+    "speedStatistics": MessageLookupByLibrary.simpleMessage(
+      "Статистика скорости",
+    ),
     "stackMode": MessageLookupByLibrary.simpleMessage("Режим стека"),
     "standard": MessageLookupByLibrary.simpleMessage("Стандартный"),
     "standardModeDesc": MessageLookupByLibrary.simpleMessage(
