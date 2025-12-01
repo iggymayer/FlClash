@@ -1,5 +1,4 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +27,10 @@ class _TrayContainerState extends ConsumerState<TrayManager> with TrayListener {
     if (system.isMacOS) {
       ref.listenManual(trayTitleStateProvider, (prev, next) {
         if (prev != next) {
-          if (!next.showTrayTitle) {
-            trayManager.setTitle('');
-          } else {
-            trayManager.setTitle(next.traffic.trayTitle);
-          }
+          tray?.updateTrayTitle(
+            showTrayTitle: next.showTrayTitle,
+            traffic: next.traffic,
+          );
         }
       });
     }

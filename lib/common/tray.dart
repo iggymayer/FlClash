@@ -179,26 +179,24 @@ class Tray {
         force: focus,
       );
     }
-    if (trayState.showTrayTitle && system.isMacOS) {
-      trayManager.setTitle(
-        globalState.appState.traffics.list.safeLast(Traffic()).trayTitle,
-      );
-    } else {
-      trayManager.setTitle('');
-    }
+    updateTrayTitle(
+      showTrayTitle: trayState.showTrayTitle,
+      traffic: globalState.appState.traffics.list.safeLast(Traffic()),
+    );
   }
 
-  Future<void> updateTrayTitle([Traffic? traffic]) async {
-    // if (!system.isMacOS) {
-    //   return;
-    // }
-    // if (traffic == null) {
-    //   await trayManager.setTitle("");
-    // } else {
-    //   await trayManager.setTitle(
-    //     "${traffic.up.shortShow} ↑ \n${traffic.down.shortShow} ↓",
-    //   );
-    // }
+  Future<void> updateTrayTitle({
+    required bool showTrayTitle,
+    required Traffic traffic,
+  }) async {
+    if (!system.isMacOS) {
+      return;
+    }
+    if (!showTrayTitle) {
+      await trayManager.setTitle('');
+    } else {
+      await trayManager.setTitle(traffic.trayTitle);
+    }
   }
 
   Future<void> _copyEnv(int port) async {
