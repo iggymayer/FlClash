@@ -83,6 +83,13 @@ extension ListExt<T> on List<T> {
     return last;
   }
 
+  T safeLast(T value) {
+    if (isNotEmpty) {
+      return last;
+    }
+    return value;
+  }
+
   void addOrRemove(T value) {
     if (contains(value)) {
       remove(value);

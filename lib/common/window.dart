@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/config.dart';
 import 'package:fl_clash/state.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
@@ -21,8 +20,9 @@ class Window {
       protocol.register('flclash');
     }
     await windowManager.ensureInitialized();
+    // kDebugMode ? Size(680, 580) :
     WindowOptions windowOptions = WindowOptions(
-      size: kDebugMode ? Size(680, 580) : props.size,
+      size: props.size,
       minimumSize: const Size(380, 400),
     );
     if (!system.isMacOS || version > 10) {

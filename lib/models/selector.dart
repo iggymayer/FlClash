@@ -71,7 +71,16 @@ abstract class TrayState with _$TrayState {
     required Brightness? brightness,
     required List<Group> groups,
     required SelectedMap selectedMap,
+    required bool showTrayTitle,
   }) = _TrayState;
+}
+
+@freezed
+abstract class TrayTitleState with _$TrayTitleState {
+  const factory TrayTitleState({
+    required Traffic traffic,
+    required bool showTrayTitle,
+  }) = _TrayTitleState;
 }
 
 @freezed

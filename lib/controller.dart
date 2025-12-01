@@ -796,6 +796,12 @@ class AppController {
     updateStatus(!_ref.read(isStartProvider));
   }
 
+  void updateSpeedStatistics() {
+    _ref
+        .read(appSettingProvider.notifier)
+        .update((state) => state.copyWith(showTrayTitle: !state.showTrayTitle));
+  }
+
   void updateCurrentSelectedMap(String groupName, String proxyName) {
     final currentProfile = _ref.read(currentProfileProvider);
     if (currentProfile != null &&

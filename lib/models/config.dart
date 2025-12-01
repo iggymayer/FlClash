@@ -83,6 +83,7 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(false) bool hidden,
     @Default(false) bool developerMode,
     @Default(RecoveryStrategy.compatible) RecoveryStrategy recoveryStrategy,
+    @Default(true) bool showTrayTitle,
   }) = _AppSettingProps;
 
   factory AppSettingProps.fromJson(Map<String, Object?> json) =>

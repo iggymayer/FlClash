@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:fl_clash/common/iterable.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
@@ -35,7 +36,6 @@ class Tray {
     if (Platform.isLinux || force) {
       await trayManager.destroy();
     }
-    trayManager.setTitle('200 KB/s' + '\n' + '200 KB/s');
     await trayManager.setIcon(
       getTryIcon(isStart: isStart, tunEnable: tunEnable),
       isTemplate: true,
@@ -52,7 +52,7 @@ class Tray {
     if (system.isAndroid) {
       return;
     }
-    if (!Platform.isLinux) {
+    if (!system.isLinux) {
       await _updateSystemTray(
         isStart: trayState.isStart,
         tunEnable: trayState.tunEnable,
@@ -75,6 +75,14 @@ class Tray {
       checked: false,
     );
     menuItems.add(startMenuItem);
+    final speedStatistics = MenuItem.checkbox(
+      label: '网速统计',
+      onClick: (_) async {
+        globalState.appController.updateSpeedStatistics();
+      },
+      checked: trayState.showTrayTitle,
+    );
+    menuItems.add(speedStatistics);
     menuItems.add(MenuItem.separator());
     for (final mode in Mode.values) {
       menuItems.add(
@@ -164,12 +172,19 @@ class Tray {
     menuItems.add(exitMenuItem);
     final menu = Menu(items: menuItems);
     await trayManager.setContextMenu(menu);
-    if (Platform.isLinux) {
+    if (system.isLinux) {
       await _updateSystemTray(
         isStart: trayState.isStart,
         tunEnable: trayState.tunEnable,
         force: focus,
       );
+    }
+    if (trayState.showTrayTitle && system.isMacOS) {
+      trayManager.setTitle(
+        globalState.appState.traffics.list.safeLast(Traffic()).trayTitle,
+      );
+    } else {
+      trayManager.setTitle('');
     }
   }
 

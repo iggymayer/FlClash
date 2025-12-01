@@ -34,6 +34,7 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
             json['recoveryStrategy'],
           ) ??
           RecoveryStrategy.compatible,
+      showTrayTitle: json['showTrayTitle'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
@@ -59,6 +60,7 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'hidden': instance.hidden,
       'developerMode': instance.developerMode,
       'recoveryStrategy': _$RecoveryStrategyEnumMap[instance.recoveryStrategy]!,
+      'showTrayTitle': instance.showTrayTitle,
     };
 
 const _$RecoveryStrategyEnumMap = {
@@ -125,8 +127,8 @@ const _$AccessSortTypeEnumMap = {
 };
 
 _WindowProps _$WindowPropsFromJson(Map<String, dynamic> json) => _WindowProps(
-  width: (json['width'] as num?)?.toDouble() ?? 750,
-  height: (json['height'] as num?)?.toDouble() ?? 600,
+  width: (json['width'] as num?)?.toDouble() ?? 0,
+  height: (json['height'] as num?)?.toDouble() ?? 0,
   top: (json['top'] as num?)?.toDouble(),
   left: (json['left'] as num?)?.toDouble(),
 );

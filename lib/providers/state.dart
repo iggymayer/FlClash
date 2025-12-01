@@ -143,26 +143,48 @@ ProxyState proxyState(Ref ref) {
 @riverpod
 TrayState trayState(Ref ref) {
   final isStart = ref.watch(runTimeProvider.select((state) => state != null));
-  final networkProps = ref.watch(networkSettingProvider);
-  final clashConfig = ref.watch(patchClashConfigProvider);
-  final appSetting = ref.watch(appSettingProvider);
+  final systemProxy = ref.watch(
+    networkSettingProvider.select((state) => state.systemProxy),
+  );
+  final clashConfigVm3 = ref.watch(
+    patchClashConfigProvider.select(
+      (state) => VM3(a: state.mode, b: state.mixedPort, c: state.tun.enable),
+    ),
+  );
+  final appSettingVm3 = ref.watch(
+    appSettingProvider.select(
+      (state) =>
+          VM3(a: state.autoLaunch, b: state.locale, c: state.showTrayTitle),
+    ),
+  );
   final groups = ref.watch(currentGroupsStateProvider).value;
   final brightness = ref.watch(systemBrightnessProvider);
-
   final selectedMap = ref.watch(selectedMapProvider);
 
   return TrayState(
-    mode: clashConfig.mode,
-    port: clashConfig.mixedPort,
-    autoLaunch: appSetting.autoLaunch,
-    systemProxy: networkProps.systemProxy,
-    tunEnable: clashConfig.tun.enable,
+    mode: clashConfigVm3.a,
+    port: clashConfigVm3.b,
+    autoLaunch: appSettingVm3.a,
+    systemProxy: systemProxy,
+    tunEnable: clashConfigVm3.c,
     isStart: isStart,
-    locale: appSetting.locale,
+    locale: appSettingVm3.b,
     brightness: brightness,
     groups: groups,
     selectedMap: selectedMap,
+    showTrayTitle: appSettingVm3.c,
   );
+}
+
+@riverpod
+TrayTitleState trayTitleState(Ref ref) {
+  final showTrayTitle = ref.watch(
+    appSettingProvider.select((state) => state.showTrayTitle),
+  );
+  final traffic = ref.watch(
+    trafficsProvider.select((state) => state.list.safeLast(Traffic())),
+  );
+  return TrayTitleState(showTrayTitle: showTrayTitle, traffic: traffic);
 }
 
 @riverpod
