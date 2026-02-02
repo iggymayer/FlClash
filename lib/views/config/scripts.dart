@@ -6,14 +6,8 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/pages/editor.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/database.dart';
-import 'package:fl_clash/providers/state.dart';
 import 'package:fl_clash/state.dart';
-import 'package:fl_clash/widgets/input.dart';
-import 'package:fl_clash/widgets/list.dart';
-import 'package:fl_clash/widgets/null_status.dart';
-import 'package:fl_clash/widgets/pop_scope.dart';
-import 'package:fl_clash/widgets/scaffold.dart';
-import 'package:fl_clash/widgets/theme.dart';
+import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,7 +31,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
       return;
     }
     ref.read(scriptsProvider.notifier).del(id);
-    ref.read(selectedItemProvider(_key).notifier).value = null;
+    ref.read(itemProvider(_key).notifier).value = null;
     _clearEffect(id);
   }
 
@@ -47,7 +41,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
   }
 
   void _handleSelected(int id) {
-    ref.read(selectedItemProvider(_key).notifier).update((value) {
+    ref.read(itemProvider(_key).notifier).update((value) {
       if (value == id) {
         return null;
       }
@@ -187,11 +181,11 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
   @override
   Widget build(BuildContext context) {
     final scripts = ref.watch(scriptsProvider).value ?? [];
-    final selectedScriptId = ref.watch(selectedItemProvider(_key));
+    final selectedScriptId = ref.watch(itemProvider(_key));
     return CommonPopScope(
       onPop: (_) {
         if (selectedScriptId != null) {
-          ref.read(selectedItemProvider(_key).notifier).value = null;
+          ref.read(itemProvider(_key).notifier).value = null;
           return false;
         }
         Navigator.of(context).pop();

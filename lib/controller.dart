@@ -14,7 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'common/common.dart';
 import 'database/database.dart';
 import 'models/models.dart';
-import 'providers/database.dart';
 
 class AppController {
   late final BuildContext _context;
@@ -210,6 +209,10 @@ extension StateControllerExt on AppController {
     return _ref.read(isMobileViewProvider);
   }
 
+  Size get viewSize {
+    return _ref.read(viewSizeProvider);
+  }
+
   bool get isStart {
     return _ref.read(isStartProvider);
   }
@@ -228,10 +231,6 @@ extension StateControllerExt on AppController {
 
   String? getSelectedProxyName(String groupName) {
     return _ref.read(getSelectedProxyNameProvider(groupName));
-  }
-
-  Future<SetupState> getSetupState(int profileId) async {
-    return await _ref.read(setupStateProvider(profileId).future);
   }
 
   String getRealTestUrl(String? url) {
@@ -584,15 +583,6 @@ extension SetupControllerExt on AppController {
     }
   }
 
-  Future<bool> needSetup() async {
-    final profileId = _ref.read(currentProfileIdProvider);
-    if (profileId == null) {
-      return false;
-    }
-    final setupState = await _ref.read(setupStateProvider(profileId).future);
-    return setupState.needSetup(globalState.lastSetupState) == true;
-  }
-
   Future<void> updateConfigDebounce() async {
     debouncer.call(FunctionTag.updateConfig, () async {
       await safeRun(() async {
@@ -653,27 +643,24 @@ extension SetupControllerExt on AppController {
     bool force = false,
     VoidCallback? preloadInvoke,
   }) async {
-    if (!force && !await needSetup()) {
-      return;
-    }
-    await loadingRun(
-      () async {
-        await _setupConfig(preloadInvoke);
+    await _setupConfig(
+      force: force,
+      silence: silence,
+      preloadInvoke: preloadInvoke,
+      onUpdated: () async {
         await updateGroups();
         await updateProviders();
       },
-      silence: true,
-      tag: !silence ? LoadingTag.proxies : null,
     );
   }
 
-  Future<Map<String, dynamic>> getProfile({
+  Future<VM2<String, String>> getProfile({
     required SetupState setupState,
-    required ClashConfig patchConfig,
+    required PatchClashConfig patchConfig,
   }) async {
     final profileId = setupState.profileId;
     if (profileId == null) {
-      return {};
+      return VM2('', '');
     }
     final defaultUA = globalState.packageInfo.ua;
     final networkVM2 = _ref.read(
@@ -687,10 +674,15 @@ extension SetupControllerExt on AppController {
     final configMap = await coreController.getConfig(profileId);
     String? scriptContent;
     final List<Rule> addedRules = [];
+    final List<ProxyGroup> proxyGroups = [];
+    final List<Rule> rules = [];
     if (setupState.overwriteType == OverwriteType.script) {
       scriptContent = await setupState.script?.content;
-    } else {
+    } else if (setupState.overwriteType == OverwriteType.script) {
       addedRules.addAll(setupState.addedRules);
+    } else {
+      proxyGroups.addAll(setupState.proxyGroups);
+      rules.addAll(setupState.rules);
     }
     final realPatchConfig = patchConfig.copyWith(
       tun: patchConfig.tun.getRealTun(routeMode),
@@ -702,6 +694,8 @@ extension SetupControllerExt on AppController {
     final directory = await appPath.profilesPath;
     final res = makeRealProfileTask(
       MakeRealProfileState(
+        rules: rules,
+        proxyGroups: proxyGroups,
         profilesPath: directory,
         profileId: profileId,
         rawConfig: rawConfig,
@@ -715,22 +709,27 @@ extension SetupControllerExt on AppController {
     return res;
   }
 
-  Future<Map> getProfileWithId(int profileId) async {
-    var res = {};
+  Future<String> getProfileWithId(int profileId) async {
     try {
       final setupState = await _ref.read(setupStateProvider(profileId).future);
       final patchClashConfig = _ref.read(patchClashConfigProvider);
-      res = await getProfile(
+      final res = await getProfile(
         setupState: setupState,
         patchConfig: patchClashConfig,
       );
+      return res.a;
     } catch (e) {
       globalState.showNotifier(e.toString());
     }
-    return res;
+    return '';
   }
 
-  Future<void> _setupConfig([VoidCallback? preloadInvoke]) async {
+  Future<void> _setupConfig({
+    bool force = false,
+    bool silence = false,
+    VoidCallback? preloadInvoke,
+    FutureOr Function()? onUpdated,
+  }) async {
     commonPrint.log('setup ===>');
     var profile = _ref.read(currentProfileProvider);
     final nextProfile = await profile?.checkAndUpdateAndCopy();
@@ -746,27 +745,41 @@ extension SetupControllerExt on AppController {
     final realTunEnable = _ref.read(realTunEnableProvider);
     final realPatchConfig = patchConfig.copyWith.tun(enable: realTunEnable);
     final setupState = await _ref.read(setupStateProvider(profile?.id).future);
-    globalState.lastSetupState = setupState;
     if (system.isAndroid) {
       globalState.lastVpnState = _ref.read(vpnStateProvider);
       preferences.saveShareState(this.sharedState);
     }
-    final config = await getProfile(
+    final vm2 = await getProfile(
       setupState: setupState,
       patchConfig: realPatchConfig,
     );
-    final configFilePath = await appPath.configFilePath;
-    final yamlString = await encodeYamlTask(config);
-    await File(configFilePath).safeWriteAsString(yamlString);
-    final message = await coreController.setupConfig(
-      setupState: setupState,
-      params: setupParams,
-      preloadInvoke: preloadInvoke,
-    );
-    if (message.isNotEmpty) {
-      throw message;
+    final yamlString = vm2.a;
+    if (yamlString.isEmpty) {
+      return;
     }
-    addCheckIp();
+    final yamlMd5 = vm2.b;
+    if (yamlMd5 == globalState.lastConfigMd5 && force == false) {
+      return;
+    }
+    await loadingRun(
+      () async {
+        final configFilePath = await appPath.configFilePath;
+        await File(configFilePath).safeWriteAsString(yamlString);
+        globalState.lastConfigMd5 = yamlMd5;
+        final message = await coreController.setupConfig(
+          setupState: setupState,
+          params: setupParams,
+          preloadInvoke: preloadInvoke,
+        );
+        if (message.isNotEmpty) {
+          throw message;
+        }
+        addCheckIp();
+        await onUpdated?.call();
+      },
+      silence: true,
+      tag: !silence ? LoadingTag.proxies : null,
+    );
   }
 }
 
@@ -999,14 +1012,12 @@ extension BackupControllerExt on AppController {
   }
 
   Future<String> backup() async {
-    final profileFileNames = _ref.read(
-      profilesProvider.select((state) => state.map((item) => item.fileName)),
-    );
-    final scriptFileNames = await _ref.read(
-      scriptsProvider.future.select(
-        (state) async => (await state).map((item) => item.fileName),
-      ),
-    );
+    final res = await Future.wait([
+      database.profilesDao.fileNames().get(),
+      database.scriptsDao.fileNames().get(),
+    ]);
+    final profileFileNames = res[0];
+    final scriptFileNames = res[1];
     final configMap = _ref.read(configProvider).toJson();
     configMap['version'] = await preferences.getVersion();
     return await backupTask(configMap, [
@@ -1032,6 +1043,7 @@ extension BackupControllerExt on AppController {
         migrationData.scripts,
         migrationData.rules,
         migrationData.links,
+        migrationData.proxyGroups,
         isOverride: isOverride,
       );
       final configMap = migrationData.configMap;

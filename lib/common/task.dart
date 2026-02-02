@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -34,6 +35,14 @@ Future<String> encodeYamlTask<T>(T data) async {
 
 Future<String> _encodeYaml<T>(T content) async {
   return yaml.encode(content);
+}
+
+Future<String> encodeMD5Task(String data) async {
+  return await compute<String, String>(_encodeMD5, data);
+}
+
+Future<String> _encodeMD5<T>(String content) async {
+  return content.toMd5();
 }
 
 Future<List<Group>> toGroupsTask(ComputeGroupsState data) async {
@@ -73,16 +82,16 @@ Future<List<Group>> _toGroupsTask(ComputeGroupsState state) async {
   );
 }
 
-Future<Map<String, dynamic>> makeRealProfileTask(
+Future<VM2<String, String>> makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
-  return await compute<MakeRealProfileState, Map<String, dynamic>>(
+  return await compute<MakeRealProfileState, VM2<String, String>>(
     _makeRealProfileTask,
     data,
   );
 }
 
-Future<Map<String, dynamic>> _makeRealProfileTask(
+Future<VM2<String, String>> _makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
   final rawConfig = Map.from(data.rawConfig);
@@ -210,52 +219,56 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     }
   }
   List<String> rules = [];
-  if (rawConfig['rules'] != null) {
-    rules = List<String>.from(rawConfig['rules']);
-  }
-  rawConfig.remove('rules');
-  if (addedRules.isNotEmpty) {
-    final parsedNewRules = addedRules
-        .map((item) => ParsedRule.parseString(item.value))
-        .toList();
-    final hasMatchPlaceholder = parsedNewRules.any(
-      (item) => item.ruleTarget?.toUpperCase() == 'MATCH',
-    );
-    String? replacementTarget;
+  if (data.rules.isEmpty) {
+    if (rawConfig['rules'] != null) {
+      rules = List<String>.from(rawConfig['rules']);
+    }
+    if (addedRules.isNotEmpty) {
+      final hasMatchPlaceholder = addedRules.any(
+        (item) => item.ruleTarget?.toUpperCase() == 'MATCH',
+      );
+      String? replacementTarget;
 
-    if (hasMatchPlaceholder) {
-      for (int i = rules.length - 1; i >= 0; i--) {
-        final parsed = ParsedRule.parseString(rules[i]);
-        if (parsed.ruleAction == RuleAction.MATCH) {
-          final target = parsed.ruleTarget;
-          if (target != null && target.isNotEmpty) {
-            replacementTarget = target;
-            break;
+      if (hasMatchPlaceholder) {
+        for (int i = rules.length - 1; i >= 0; i--) {
+          final parsed = Rule.parse(rules[i]);
+          if (parsed.ruleAction == RuleAction.MATCH) {
+            final target = parsed.ruleTarget;
+            if (target != null && target.isNotEmpty) {
+              replacementTarget = target;
+              break;
+            }
           }
         }
       }
-    }
-    final List<String> finalAddedRules;
+      final List<String> finalAddedRules;
 
-    if (replacementTarget?.isNotEmpty == true) {
-      finalAddedRules = [];
-      for (int i = 0; i < parsedNewRules.length; i++) {
-        final parsed = parsedNewRules[i];
-        if (parsed.ruleTarget?.toUpperCase() == 'MATCH') {
-          finalAddedRules.add(
-            parsed.copyWith(ruleTarget: replacementTarget).value,
-          );
-        } else {
-          finalAddedRules.add(addedRules[i].value);
+      if (replacementTarget?.isNotEmpty == true) {
+        finalAddedRules = [];
+        for (int i = 0; i < addedRules.length; i++) {
+          final parsed = addedRules[i];
+          if (parsed.ruleTarget?.toUpperCase() == 'MATCH') {
+            finalAddedRules.add(
+              parsed.copyWith(ruleTarget: replacementTarget).rawValue,
+            );
+          } else {
+            finalAddedRules.add(addedRules[i].rawValue);
+          }
         }
+      } else {
+        finalAddedRules = addedRules.map((e) => e.rawValue).toList();
       }
-    } else {
-      finalAddedRules = addedRules.map((e) => e.value).toList();
+      rules = [...finalAddedRules, ...rules];
     }
-    rules = [...finalAddedRules, ...rules];
+  } else {
+    rules = data.rules.map((item) => item.rawValue).toList();
+  }
+  if (data.proxyGroups.isNotEmpty) {
+    rawConfig['proxy-groups'] = data.proxyGroups;
   }
   rawConfig['rules'] = rules;
-  return Map<String, dynamic>.from(rawConfig);
+  final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
+  return VM2(yaml, yaml.toMd5());
 }
 
 Future<List<String>> shakingProfileTask(
@@ -345,7 +358,8 @@ Future<MigrationData> _oldToNowTask(
     vpnPropsRaw['accessControlProps'] = vpnPropsRaw['accessControl'];
   }
   configMap['davProps'] = configMap['dav'];
-  final appSettingProps = configMap['appSetting'] as Map? ?? {};
+  final appSettingProps =
+      configMap['appSetting'] as Map<String, dynamic>? ?? {};
   appSettingProps['restoreStrategy'] = appSettingProps['recoveryStrategy'];
   configMap['appSettingProps'] = appSettingProps;
   configMap['proxiesStyleProps'] = configMap['proxiesStyle'];
@@ -383,7 +397,8 @@ Future<MigrationData> _oldToNowTask(
   for (final rawRule in rawRules) {
     final id = idMap.updateCacheValue(rawRule['id'], () => snowflake.id);
     rawRule['id'] = id;
-    rules.add(Rule.fromJson(rawRule));
+    final value = rawRule['value'] ?? '';
+    rules.add(Rule.parse(value, id: id));
     links.add(ProfileRuleLink(ruleId: id));
   }
   List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
@@ -402,8 +417,8 @@ Future<MigrationData> _oldToNowTask(
         final addedRules = standardOverwrite['addedRules'] as List? ?? [];
         for (final addRule in addedRules) {
           final id = idMap.updateCacheValue(addRule['id'], () => snowflake.id);
-          addRule['id'] = id;
-          rules.add(Rule.fromJson(addRule));
+          final value = addRule['value'] ?? '';
+          rules.add(Rule.parse(value, id: id));
           links.add(
             ProfileRuleLink(
               profileId: profileId,
@@ -567,10 +582,11 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
     ),
   );
   final results = await Future.wait([
-    database.profilesDao.all().get(),
-    database.scriptsDao.all().get(),
+    database.profilesDao.query().get(),
+    database.scriptsDao.query().get(),
     database.rules.all().map((item) => item.toRule()).get(),
     database.profileRuleLinks.all().map((item) => item.toLink()).get(),
+    database.proxyGroups.all().map((item) => item.toProxyGroup()).get(),
   ]);
   final profiles = results[0].cast<Profile>();
   final scripts = results[1].cast<Script>();
@@ -592,6 +608,7 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
     scripts: scripts,
     rules: results[2].cast<Rule>(),
     links: results[3].cast<ProfileRuleLink>(),
+    proxyGroups: results[4].cast<ProxyGroup>(),
   );
   await database.close();
   return migrationData;
@@ -609,4 +626,17 @@ String _getScriptPath(String root, String fileName) {
 
 String _getProfilePath(String root, String fileName) {
   return join(root, 'profiles', '$fileName.yaml');
+}
+
+Future<List<T>> mapListTask<T, S>(List<S> results, T Function(S) mapper) async {
+  return await compute<VM2<List<S>, T Function(S)>, List<T>>(
+    _mapListTask,
+    VM2(results, mapper),
+  );
+}
+
+Future<List<T>> _mapListTask<T, S>(VM2<List<S>, T Function(S)> vm2) async {
+  final results = vm2.a;
+  final mapper = vm2.b;
+  return results.map((item) => mapper(item)).toList();
 }

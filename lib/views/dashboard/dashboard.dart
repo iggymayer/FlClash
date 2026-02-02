@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:defer_pointer/defer_pointer.dart';
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -73,7 +74,9 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                         iconSize: 20,
                         padding: EdgeInsets.zero,
                         style: IconButton.styleFrom(
-                          backgroundColor: Colors.greenAccent,
+                          backgroundColor: Colors.green.harmonizeWith(
+                            context.colorScheme.primary,
+                          ),
                           foregroundColor: switch (Theme.brightnessOf(
                             context,
                           )) {
@@ -178,12 +181,11 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
 
   void _showAddWidgetsModal() {
     showSheet(
-      builder: (_, type) {
+      builder: (_) {
         return ValueListenableBuilder(
           valueListenable: _addedWidgetsNotifier,
           builder: (_, value, _) {
             return AdaptiveSheetScaffold(
-              type: type,
               body: _AddDashboardWidgetModal(
                 items: value,
                 onAdd: (gridItem) {
@@ -211,7 +213,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     if (currentState == null) {
       return;
     }
-    if (mounted) {
+    if (mounted && currentState.children.isNotEmpty) {
       await currentState.isTransformCompleter;
       final dashboardWidgets = currentState.children
           .map((item) => DashboardWidget.getDashboardWidget(item))
@@ -263,15 +265,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                         crossAxisCount: columns,
                         crossAxisSpacing: spacing,
                         mainAxisSpacing: spacing,
-                        children: [
-                          ...dashboardState.dashboardWidgets
-                              .where(
-                                (item) => item.platforms.contains(
-                                  SupportPlatform.currentPlatform,
-                                ),
-                              )
-                              .map((item) => item.widget),
-                        ],
+                        children: children,
                         onUpdate: () {
                           _handleSave();
                         },

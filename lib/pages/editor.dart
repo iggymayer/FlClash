@@ -20,7 +20,7 @@ typedef TextEditingValueChangeBuilder = Widget Function(TextEditingValue value);
 
 class EditorPage extends ConsumerStatefulWidget {
   final String title;
-  final String content;
+  final String? content;
   final List<Language> languages;
   final bool supportRemoteDownload;
   final bool titleEditable;
@@ -60,7 +60,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
     super.initState();
     readOnly = widget.onSave == null;
     _toolbarController = ContextMenuControllerImpl(readOnly);
-    _focusNode = FocusNode(canRequestFocus: !readOnly);
+    _focusNode = FocusNode();
     _controller = CodeLineEditingController.fromText(widget.content);
     _findController = CodeFindController(_controller);
     _titleController = TextEditingController(text: widget.title);
@@ -88,6 +88,18 @@ class _EditorPageState extends ConsumerState<EditorPage> {
         return KeyEventResult.handled;
       }
       return KeyEventResult.ignored;
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final content = widget.content;
+      if (content != null && oldWidget.content != content) {
+        _controller.text = content;
+        _controller.clearHistory();
+      }
     });
   }
 
@@ -180,7 +192,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
             enabled: widget.titleEditable,
             controller: _titleController,
             decoration: InputDecoration(
-              border: _NoInputBorder(),
+              border: NoInputBorder(),
               counter: SizedBox(),
               hintText: appLocalizations.unnamed,
             ),
@@ -256,58 +268,78 @@ class _EditorPageState extends ConsumerState<EditorPage> {
             ),
           ]),
         ),
-        body: CodeEditor(
-          readOnly: readOnly,
-          autofocus: false,
-          findController: _findController,
-          findBuilder: (context, controller, readOnly) => FindPanel(
-            controller: controller,
-            readOnly: readOnly,
-            isMobileView: isMobileView,
-          ),
-          padding: EdgeInsets.only(right: 16),
-          autocompleteSymbols: true,
-          focusNode: _focusNode,
-          scrollbarBuilder: (context, child, details) {
-            return CommonScrollBar(
-              controller: details.controller,
-              child: child,
-            );
-          },
-          toolbarController: _toolbarController,
-          indicatorBuilder:
-              (context, editingController, chunkController, notifier) {
-                return Row(
-                  children: [
-                    DefaultCodeLineNumber(
-                      controller: editingController,
-                      notifier: notifier,
-                    ),
-                    DefaultCodeChunkIndicator(
-                      width: 20,
-                      controller: chunkController,
-                      notifier: notifier,
-                    ),
-                  ],
+        body: Stack(
+          children: [
+            CodeEditor(
+              readOnly: readOnly,
+              autofocus: false,
+              showCursorWhenReadOnly: false,
+              findController: _findController,
+              findBuilder: (context, controller, readOnly) => FindPanel(
+                controller: controller,
+                readOnly: readOnly,
+                isMobileView: isMobileView,
+              ),
+              padding: EdgeInsets.only(right: 16),
+              autocompleteSymbols: true,
+              focusNode: _focusNode,
+              scrollbarBuilder: (context, child, details) {
+                return CommonScrollBar(
+                  controller: details.controller,
+                  child: child,
                 );
               },
-          shortcutsActivatorsBuilder: DefaultCodeShortcutsActivatorsBuilder(),
-          controller: _controller,
-          style: CodeEditorStyle(
-            fontSize: context.textTheme.bodyLarge?.fontSize?.ap,
-            fontFamily: FontFamily.jetBrainsMono.value,
-            codeTheme: CodeHighlightTheme(
-              languages: {
-                if (widget.languages.contains(Language.yaml))
-                  'yaml': CodeHighlightThemeMode(mode: langYaml),
-                if (widget.languages.contains(Language.javaScript))
-                  'javascript': CodeHighlightThemeMode(mode: langJavascript),
-                if (widget.languages.contains(Language.json))
-                  'json': CodeHighlightThemeMode(mode: langJson),
-              },
-              theme: atomOneLightTheme,
+              toolbarController: _toolbarController,
+              indicatorBuilder:
+                  (context, editingController, chunkController, notifier) {
+                    return Row(
+                      children: [
+                        DefaultCodeLineNumber(
+                          controller: editingController,
+                          notifier: notifier,
+                        ),
+                        DefaultCodeChunkIndicator(
+                          width: 20,
+                          controller: chunkController,
+                          notifier: notifier,
+                        ),
+                      ],
+                    );
+                  },
+              shortcutsActivatorsBuilder:
+                  DefaultCodeShortcutsActivatorsBuilder(),
+              controller: _controller,
+              style: CodeEditorStyle(
+                fontSize: context.textTheme.bodyLarge?.fontSize?.ap,
+                fontFamily: FontFamily.jetBrainsMono.value,
+                codeTheme: CodeHighlightTheme(
+                  languages: {
+                    if (widget.languages.contains(Language.yaml))
+                      'yaml': CodeHighlightThemeMode(mode: langYaml),
+                    if (widget.languages.contains(Language.javaScript))
+                      'javascript': CodeHighlightThemeMode(
+                        mode: langJavascript,
+                      ),
+                    if (widget.languages.contains(Language.json))
+                      'json': CodeHighlightThemeMode(mode: langJson),
+                  },
+                  theme: atomOneLightTheme,
+                ),
+              ),
             ),
-          ),
+            FadeBox(
+              child: widget.content == null
+                  ? Container(
+                      color: context.colorScheme.surface,
+                      alignment: Alignment.center,
+                      child: SizedBox.square(
+                        dimension: 200,
+                        child: CommonCircleLoading(),
+                      ),
+                    )
+                  : SizedBox.shrink(),
+            ),
+          ],
         ),
       ),
     );
@@ -408,7 +440,7 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [bar, SizedBox(height: 4), _buildFindInput(context, value)],
+        children: [bar, SizedBox(height: 12), _buildFindInput(context, value)],
       );
     }
     return bar;
@@ -605,55 +637,6 @@ class ContextMenuControllerImpl implements SelectionToolbarController {
     );
     Overlay.of(context).insert(_overlayEntry!);
   }
-}
-
-class _NoInputBorder extends InputBorder {
-  const _NoInputBorder() : super(borderSide: BorderSide.none);
-
-  @override
-  _NoInputBorder copyWith({BorderSide? borderSide}) => const _NoInputBorder();
-
-  @override
-  bool get isOutline => false;
-
-  @override
-  EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
-
-  @override
-  _NoInputBorder scale(double t) => const _NoInputBorder();
-
-  @override
-  Path getInnerPath(Rect rect, {TextDirection? textDirection}) {
-    return Path()..addRect(rect);
-  }
-
-  @override
-  Path getOuterPath(Rect rect, {TextDirection? textDirection}) {
-    return Path()..addRect(rect);
-  }
-
-  @override
-  void paintInterior(
-    Canvas canvas,
-    Rect rect,
-    Paint paint, {
-    TextDirection? textDirection,
-  }) {
-    canvas.drawRect(rect, paint);
-  }
-
-  @override
-  bool get preferPaintInterior => true;
-
-  @override
-  void paint(
-    Canvas canvas,
-    Rect rect, {
-    double? gapStart,
-    double gapExtent = 0.0,
-    double gapPercentage = 0.0,
-    TextDirection? textDirection,
-  }) {}
 }
 
 class _ImportOptionsDialog extends StatefulWidget {

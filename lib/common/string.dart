@@ -6,7 +6,12 @@ import 'package:fl_clash/common/common.dart';
 
 extension StringExtension on String {
   bool get isUrl {
-    return RegExp(r'^(http|https|ftp)://').hasMatch(this);
+    final uri = Uri.tryParse(this);
+    return uri != null &&
+        (uri.scheme == 'http' ||
+            uri.scheme == 'https' ||
+            uri.scheme == 'ftp') &&
+        uri.host.isNotEmpty;
   }
 
   dynamic get splitByMultipleSeparators {
@@ -85,6 +90,13 @@ extension StringExtension on String {
     } else {
       return await decodeJSONTask<T>(this);
     }
+  }
+
+  String? get value {
+    if (isEmpty) {
+      return null;
+    }
+    return this;
   }
 }
 

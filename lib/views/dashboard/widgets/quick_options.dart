@@ -16,19 +16,22 @@ class TUNButton extends StatelessWidget {
         onPressed: () {
           showSheet(
             context: context,
-            builder: (_, type) {
-              return AdaptiveSheetScaffold(
-                type: type,
-                body: generateListView(
-                  generateSection(
-                    items: [
-                      if (system.isDesktop) const TUNItem(),
-                      if (system.isMacOS) const AutoSetSystemDnsItem(),
-                      const TunStackItem(),
-                    ],
-                  ),
-                ),
-                title: appLocalizations.tun,
+            builder: (_) {
+              return Builder(
+                builder: (context) {
+                  return AdaptiveSheetScaffold(
+                    body: generateListView(
+                      generateSection(
+                        items: [
+                          if (system.isDesktop) const TUNItem(),
+                          if (system.isMacOS) const AutoSetSystemDnsItem(),
+                          const TunStackItem(),
+                        ],
+                      ),
+                    ),
+                    title: appLocalizations.tun,
+                  );
+                },
               );
             },
           );
@@ -92,9 +95,8 @@ class SystemProxyButton extends StatelessWidget {
         onPressed: () {
           showSheet(
             context: context,
-            builder: (_, type) {
+            builder: (_) {
               return AdaptiveSheetScaffold(
-                type: type,
                 body: generateListView(
                   generateSection(
                     items: [SystemProxyItem(), BypassDomainItem()],
@@ -165,9 +167,8 @@ class VpnButton extends StatelessWidget {
         onPressed: () {
           showSheet(
             context: context,
-            builder: (_, type) {
+            builder: (_) {
               return AdaptiveSheetScaffold(
-                type: type,
                 body: generateListView(
                   generateSection(
                     items: [

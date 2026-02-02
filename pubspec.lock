@@ -918,6 +918,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.5.0"
+  navigator_resizable:
+    dependency: transitive
+    description:
+      name: navigator_resizable
+      sha256: "6df8fcf5ef4267dd8b1cda35b220427a4f4864c659519125a40365c8d3027697"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   nm:
     dependency: transitive
     description:
@@ -1109,6 +1117,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  reorderable_grid:
+    dependency: "direct main"
+    description:
+      name: reorderable_grid
+      sha256: "15873d8afa6c0a106f0e165f4fbb2bb92dbfe18837e0c9f5d62ac4e26448863d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.13"
   riverpod:
     dependency: "direct main"
     description:
@@ -1298,6 +1314,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  smooth_sheets:
+    dependency: "direct main"
+    description:
+      name: smooth_sheets
+      sha256: fe1c9e4f1cd20c841cc2155cb125da74c004baf7bcfdf0bef4f87a7183d0907b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.17.0"
   source_gen:
     dependency: transitive
     description:
@@ -1737,7 +1761,7 @@ packages:
     source: hosted
     version: "6.6.1"
   yaml:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: yaml
       sha256: b9da305ac7c39faa3f030eccd175340f968459dae4af175130b3fc47e40d76ce
@@ -1749,10 +1773,10 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: "2a38859d8b9707f99a55433974a799c413477a5b"
+      resolved-ref: "79c78a44ec9c2f5f5f97da1a65610c6fb2ead8b3"
       url: "https://github.com/chen08209/yaml_writer"
     source: git
     version: "2.1.0"
 sdks:
   dart: ">=3.9.0 <4.0.0"
-  flutter: ">=3.35.0"
+  flutter: ">=3.35.1"

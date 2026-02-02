@@ -113,6 +113,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    children = widget.children;
     _childrenNotifier.addListener(() {
       children = _childrenNotifier.value;
       if (widget.onUpdate != null) {
@@ -230,7 +231,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
             Tween<double>(
               begin: 0.0,
               end: 1,
-            ).chain(CurveTween(curve: Easing.emphasizedAccelerate)),
+            ).chain(CurveTween(curve: Curves.fastOutSlowIn)),
           ),
         ),
       );
@@ -504,7 +505,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
 
   Widget _builderItem(int index) {
     final girdItem = _childrenNotifier.value[index];
-    final child = RepaintBoundary(child: girdItem.child);
+    final child = girdItem.child;
     return GridItem(
       mainAxisCellCount: girdItem.mainAxisCellCount,
       crossAxisCellCount: girdItem.crossAxisCellCount,

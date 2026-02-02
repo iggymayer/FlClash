@@ -255,6 +255,10 @@ class Indexing {
         .followedBy(generateNKeysBetween(c, b, n - mid - 1))
         .toList();
   }
+
+  List<String?> generateNKeys(int n) {
+    return generateNKeysBetween(null, null, n);
+  }
 }
 
 final indexing = Indexing();

@@ -1,7 +1,7 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/features.dart';
 import 'package:fl_clash/models/clash_config.dart';
-import 'package:fl_clash/providers/database.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -29,7 +29,7 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
   }
 
   void _handleSelected(int ruleId) {
-    ref.read(selectedItemsProvider(_key).notifier).update((selectedRules) {
+    ref.read(itemsProvider(_key).notifier).update((selectedRules) {
       final newSelectedRules = Set<int>.from(selectedRules)
         ..addOrRemove(ruleId);
       return newSelectedRules;
@@ -40,7 +40,7 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
     final ids =
         ref.read(globalRulesProvider).value?.map((item) => item.id).toSet() ??
         {};
-    ref.read(selectedItemsProvider(_key).notifier).update((selected) {
+    ref.read(itemsProvider(_key).notifier).update((selected) {
       return selected.containsAll(ids) ? {} : ids;
     });
   }
@@ -55,24 +55,25 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
     if (res != true) {
       return;
     }
-    final selectedRules = ref.read(selectedItemsProvider(_key));
+    final selectedRules = ref.read(itemsProvider(_key));
     ref.read(globalRulesProvider.notifier).delAll(selectedRules.cast<int>());
-    ref.read(selectedItemsProvider(_key).notifier).value = {};
+    ref.read(itemsProvider(_key).notifier).value = {};
   }
 
   @override
   Widget build(BuildContext context) {
     final rules = ref.watch(globalRulesProvider).value ?? [];
-    final selectedRules = ref.watch(selectedItemsProvider(_key));
+    final selectedRules = ref.watch(itemsProvider(_key));
     return CommonPopScope(
       onPop: (_) {
         if (selectedRules.isNotEmpty) {
-          ref.read(selectedItemsProvider(_key).notifier).value = {};
+          ref.read(itemsProvider(_key).notifier).value = {};
           return false;
         }
         Navigator.of(context).pop();
         return false;
       },
+
       child: BaseScaffold(
         title: appLocalizations.addedRules,
         actions: [
@@ -106,25 +107,31 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
                 illustration: RuleEmptyIllustration(),
               )
             : ReorderableList(
-                padding: EdgeInsets.symmetric(vertical: 16),
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 itemBuilder: (context, index) {
                   final rule = rules[index];
+                  final position = ItemPosition.get(index, rules.length);
                   return ReorderableDelayedDragStartListener(
                     key: ObjectKey(rule),
                     index: index,
-                    child: RuleItem(
-                      isEditing: selectedRules.isNotEmpty,
-                      rule: rule,
-                      isSelected: selectedRules.contains(rule.id),
-                      onSelected: () {
-                        _handleSelected(rule.id);
-                      },
-                      onEdit: (Rule rule) {
-                        _handleAddOrUpdate(rule);
-                      },
+                    child: ItemPositionProvider(
+                      position: position,
+                      child: RuleItem(
+                        hasMatch: true,
+                        isEditing: selectedRules.isNotEmpty,
+                        rule: rule,
+                        isSelected: selectedRules.contains(rule.id),
+                        onSelected: () {
+                          _handleSelected(rule.id);
+                        },
+                        onEdit: (Rule rule) {
+                          _handleAddOrUpdate(rule);
+                        },
+                      ),
                     ),
                   );
                 },
+                itemExtent: ruleItemHeight,
                 itemCount: rules.length,
                 onReorder: ref.read(globalRulesProvider.notifier).order,
               ),

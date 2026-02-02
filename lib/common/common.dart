@@ -1,5 +1,4 @@
 export 'app_localizations.dart';
-export 'cache.dart';
 export 'color.dart';
 export 'compute.dart';
 export 'constant.dart';
@@ -10,7 +9,6 @@ export 'file.dart';
 export 'fixed.dart';
 export 'function.dart';
 export 'future.dart';
-export 'hive.dart';
 export 'http.dart';
 export 'icons.dart';
 export 'indexing.dart';

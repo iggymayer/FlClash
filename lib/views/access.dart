@@ -114,9 +114,8 @@ class _AccessViewState extends ConsumerState<AccessView> {
     await showSheet<int>(
       context: context,
       props: SheetProps(isScrollControlled: true),
-      builder: (_, type) {
+      builder: (_) {
         return AdaptiveSheetScaffold(
-          type: type,
           body: AccessControlPanel(),
           title: appLocalizations.accessControlSettings,
         );
@@ -170,10 +169,12 @@ class _AccessViewState extends ConsumerState<AccessView> {
           isFilterNonInternetApp: accessControl.isFilterNonInternetApp,
         )
         .map((item) => item.packageName)
-        .toSet()
-        .toList();
+        .toSet();
     return accessControl.copyWithNewList(
-      accessControl.currentList.intersection(viewPackageNames),
+      accessControl.currentList
+          .where((item) => viewPackageNames.contains(item))
+          .toList()
+        ..sort(),
     );
   }
 
@@ -193,11 +194,13 @@ class _AccessViewState extends ConsumerState<AccessView> {
       builder: (_, ref, child) {
         final accessControl = ref.watch(accessControlStateProvider);
         final noSave = ref.watch(
-          vpnSettingProvider.select(
-            (state) =>
-                state.accessControlProps ==
-                _getRealAccessControlProps(accessControl),
-          ),
+          vpnSettingProvider.select((state) {
+            final current = _getRealAccessControlProps(
+              state.accessControlProps,
+            );
+            final origin = _getRealAccessControlProps(accessControl);
+            return current == origin;
+          }),
         );
         if (noSave) {
           return SizedBox();

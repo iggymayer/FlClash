@@ -42,7 +42,7 @@ class GlobalState {
   CorePalette? corePalette;
   DateTime? startTime;
   UpdateTasks tasks = [];
-  SetupState? lastSetupState;
+  String? lastConfigMd5;
   VpnState? lastVpnState;
 
   bool get isStart => startTime != null && startTime!.isBeforeNow;
@@ -90,7 +90,13 @@ class GlobalState {
         final newConfigMap = data.configMap;
         final config = Config.realFromJson(newConfigMap);
         await Future.wait([
-          database.restore(data.profiles, data.scripts, data.rules, data.links),
+          database.restore(
+            data.profiles,
+            data.scripts,
+            data.rules,
+            data.links,
+            data.proxyGroups,
+          ),
           preferences.saveConfig(config),
         ]);
         return config;
@@ -100,7 +106,7 @@ class GlobalState {
     final container = ProviderContainer(
       overrides: [...appStateOverrides, ...configOverrides],
     );
-    final profiles = await database.profilesDao.all().get();
+    final profiles = await database.profilesDao.query().get();
     container.read(profilesProvider.notifier).setAndReorder(profiles);
     await AppLocalizations.load(
       utils.getLocaleForString(config.appSettingProps.locale) ??

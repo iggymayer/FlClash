@@ -29,6 +29,7 @@ final listHeaderPadding = EdgeInsets.only(
   top: 24.mAp,
   bottom: 8.mAp,
 );
+const sheetAppBarHeight = 68.0;
 
 const watchExecution = true;
 
@@ -62,7 +63,7 @@ const defaultTestUrl = 'https://www.gstatic.com/generate_204';
 final commonFilter = ImageFilter.blur(
   sigmaX: 5,
   sigmaY: 5,
-  tileMode: TileMode.mirror,
+  tileMode: TileMode.clamp,
 );
 
 const listEquality = ListEquality();
@@ -77,6 +78,7 @@ const scriptListEquality = ListEquality<Script>();
 const externalProviderListEquality = ListEquality<ExternalProvider>();
 const packageListEquality = ListEquality<Package>();
 const profileListEquality = ListEquality<Profile>();
+const proxyGroupsEquality = ListEquality<ProxyGroup>();
 const hotKeyActionListEquality = ListEquality<HotKeyAction>();
 const stringAndStringMapEquality = MapEquality<String, String>();
 const stringAndStringMapEntryListEquality =
