@@ -77,6 +77,7 @@ const scriptListEquality = ListEquality<Script>();
 const externalProviderListEquality = ListEquality<ExternalProvider>();
 const packageListEquality = ListEquality<Package>();
 const profileListEquality = ListEquality<Profile>();
+const proxyGroupsEquality = ListEquality<ProxyGroup>();
 const hotKeyActionListEquality = ListEquality<HotKeyAction>();
 const stringAndStringMapEquality = MapEquality<String, String>();
 const stringAndStringMapEntryListEquality =

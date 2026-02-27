@@ -3243,42 +3243,42 @@ as String,
 
 
 /// @nodoc
-mixin _$CustomClashConfig {
+mixin _$ClashConfig {
 
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> get proxyGroups;@JsonKey(fromJson: _genRule, name: 'rules') List<Rule> get rule;
-/// Create a copy of CustomClashConfig
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> get proxyGroups;@JsonKey(fromJson: _genRule) List<Rule> get rules;
+/// Create a copy of ClashConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$CustomClashConfigCopyWith<CustomClashConfig> get copyWith => _$CustomClashConfigCopyWithImpl<CustomClashConfig>(this as CustomClashConfig, _$identity);
+$ClashConfigCopyWith<ClashConfig> get copyWith => _$ClashConfigCopyWithImpl<ClashConfig>(this as ClashConfig, _$identity);
 
-  /// Serializes this CustomClashConfig to a JSON map.
+  /// Serializes this ClashConfig to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CustomClashConfig&&const DeepCollectionEquality().equals(other.proxyGroups, proxyGroups)&&const DeepCollectionEquality().equals(other.rule, rule));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClashConfig&&const DeepCollectionEquality().equals(other.proxyGroups, proxyGroups)&&const DeepCollectionEquality().equals(other.rules, rules));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(proxyGroups),const DeepCollectionEquality().hash(rule));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(proxyGroups),const DeepCollectionEquality().hash(rules));
 
 @override
 String toString() {
-  return 'CustomClashConfig(proxyGroups: $proxyGroups, rule: $rule)';
+  return 'ClashConfig(proxyGroups: $proxyGroups, rules: $rules)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $CustomClashConfigCopyWith<$Res>  {
-  factory $CustomClashConfigCopyWith(CustomClashConfig value, $Res Function(CustomClashConfig) _then) = _$CustomClashConfigCopyWithImpl;
+abstract mixin class $ClashConfigCopyWith<$Res>  {
+  factory $ClashConfigCopyWith(ClashConfig value, $Res Function(ClashConfig) _then) = _$ClashConfigCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule, name: 'rules') List<Rule> rule
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules
 });
 
 
@@ -3286,19 +3286,19 @@ $Res call({
 
 }
 /// @nodoc
-class _$CustomClashConfigCopyWithImpl<$Res>
-    implements $CustomClashConfigCopyWith<$Res> {
-  _$CustomClashConfigCopyWithImpl(this._self, this._then);
+class _$ClashConfigCopyWithImpl<$Res>
+    implements $ClashConfigCopyWith<$Res> {
+  _$ClashConfigCopyWithImpl(this._self, this._then);
 
-  final CustomClashConfig _self;
-  final $Res Function(CustomClashConfig) _then;
+  final ClashConfig _self;
+  final $Res Function(ClashConfig) _then;
 
-/// Create a copy of CustomClashConfig
+/// Create a copy of ClashConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? proxyGroups = null,Object? rule = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? proxyGroups = null,Object? rules = null,}) {
   return _then(_self.copyWith(
 proxyGroups: null == proxyGroups ? _self.proxyGroups : proxyGroups // ignore: cast_nullable_to_non_nullable
-as List<ProxyGroup>,rule: null == rule ? _self.rule : rule // ignore: cast_nullable_to_non_nullable
+as List<ProxyGroup>,rules: null == rules ? _self.rules : rules // ignore: cast_nullable_to_non_nullable
 as List<Rule>,
   ));
 }
@@ -3306,8 +3306,8 @@ as List<Rule>,
 }
 
 
-/// Adds pattern-matching-related methods to [CustomClashConfig].
-extension CustomClashConfigPatterns on CustomClashConfig {
+/// Adds pattern-matching-related methods to [ClashConfig].
+extension ClashConfigPatterns on ClashConfig {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -3320,10 +3320,10 @@ extension CustomClashConfigPatterns on CustomClashConfig {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CustomClashConfig value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ClashConfig value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _CustomClashConfig() when $default != null:
+case _ClashConfig() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -3342,10 +3342,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CustomClashConfig value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ClashConfig value)  $default,){
 final _that = this;
 switch (_that) {
-case _CustomClashConfig():
+case _ClashConfig():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -3363,10 +3363,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CustomClashConfig value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ClashConfig value)?  $default,){
 final _that = this;
 switch (_that) {
-case _CustomClashConfig() when $default != null:
+case _ClashConfig() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -3384,10 +3384,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule, name: 'rules')  List<Rule> rule)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _CustomClashConfig() when $default != null:
-return $default(_that.proxyGroups,_that.rule);case _:
+case _ClashConfig() when $default != null:
+return $default(_that.proxyGroups,_that.rules);case _:
   return orElse();
 
 }
@@ -3405,10 +3405,10 @@ return $default(_that.proxyGroups,_that.rule);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule, name: 'rules')  List<Rule> rule)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules)  $default,) {final _that = this;
 switch (_that) {
-case _CustomClashConfig():
-return $default(_that.proxyGroups,_that.rule);case _:
+case _ClashConfig():
+return $default(_that.proxyGroups,_that.rules);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -3425,10 +3425,10 @@ return $default(_that.proxyGroups,_that.rule);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule, name: 'rules')  List<Rule> rule)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules)?  $default,) {final _that = this;
 switch (_that) {
-case _CustomClashConfig() when $default != null:
-return $default(_that.proxyGroups,_that.rule);case _:
+case _ClashConfig() when $default != null:
+return $default(_that.proxyGroups,_that.rules);case _:
   return null;
 
 }
@@ -3439,9 +3439,9 @@ return $default(_that.proxyGroups,_that.rule);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _CustomClashConfig implements CustomClashConfig {
-  const _CustomClashConfig({@JsonKey(name: 'proxy-groups') final  List<ProxyGroup> proxyGroups = const [], @JsonKey(fromJson: _genRule, name: 'rules') final  List<Rule> rule = const []}): _proxyGroups = proxyGroups,_rule = rule;
-  factory _CustomClashConfig.fromJson(Map<String, dynamic> json) => _$CustomClashConfigFromJson(json);
+class _ClashConfig implements ClashConfig {
+  const _ClashConfig({@JsonKey(name: 'proxy-groups') final  List<ProxyGroup> proxyGroups = const [], @JsonKey(fromJson: _genRule) final  List<Rule> rules = const []}): _proxyGroups = proxyGroups,_rules = rules;
+  factory _ClashConfig.fromJson(Map<String, dynamic> json) => _$ClashConfigFromJson(json);
 
  final  List<ProxyGroup> _proxyGroups;
 @override@JsonKey(name: 'proxy-groups') List<ProxyGroup> get proxyGroups {
@@ -3450,48 +3450,48 @@ class _CustomClashConfig implements CustomClashConfig {
   return EqualUnmodifiableListView(_proxyGroups);
 }
 
- final  List<Rule> _rule;
-@override@JsonKey(fromJson: _genRule, name: 'rules') List<Rule> get rule {
-  if (_rule is EqualUnmodifiableListView) return _rule;
+ final  List<Rule> _rules;
+@override@JsonKey(fromJson: _genRule) List<Rule> get rules {
+  if (_rules is EqualUnmodifiableListView) return _rules;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_rule);
+  return EqualUnmodifiableListView(_rules);
 }
 
 
-/// Create a copy of CustomClashConfig
+/// Create a copy of ClashConfig
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$CustomClashConfigCopyWith<_CustomClashConfig> get copyWith => __$CustomClashConfigCopyWithImpl<_CustomClashConfig>(this, _$identity);
+_$ClashConfigCopyWith<_ClashConfig> get copyWith => __$ClashConfigCopyWithImpl<_ClashConfig>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$CustomClashConfigToJson(this, );
+  return _$ClashConfigToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CustomClashConfig&&const DeepCollectionEquality().equals(other._proxyGroups, _proxyGroups)&&const DeepCollectionEquality().equals(other._rule, _rule));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClashConfig&&const DeepCollectionEquality().equals(other._proxyGroups, _proxyGroups)&&const DeepCollectionEquality().equals(other._rules, _rules));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_proxyGroups),const DeepCollectionEquality().hash(_rule));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_proxyGroups),const DeepCollectionEquality().hash(_rules));
 
 @override
 String toString() {
-  return 'CustomClashConfig(proxyGroups: $proxyGroups, rule: $rule)';
+  return 'ClashConfig(proxyGroups: $proxyGroups, rules: $rules)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$CustomClashConfigCopyWith<$Res> implements $CustomClashConfigCopyWith<$Res> {
-  factory _$CustomClashConfigCopyWith(_CustomClashConfig value, $Res Function(_CustomClashConfig) _then) = __$CustomClashConfigCopyWithImpl;
+abstract mixin class _$ClashConfigCopyWith<$Res> implements $ClashConfigCopyWith<$Res> {
+  factory _$ClashConfigCopyWith(_ClashConfig value, $Res Function(_ClashConfig) _then) = __$ClashConfigCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule, name: 'rules') List<Rule> rule
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules
 });
 
 
@@ -3499,19 +3499,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$CustomClashConfigCopyWithImpl<$Res>
-    implements _$CustomClashConfigCopyWith<$Res> {
-  __$CustomClashConfigCopyWithImpl(this._self, this._then);
+class __$ClashConfigCopyWithImpl<$Res>
+    implements _$ClashConfigCopyWith<$Res> {
+  __$ClashConfigCopyWithImpl(this._self, this._then);
 
-  final _CustomClashConfig _self;
-  final $Res Function(_CustomClashConfig) _then;
+  final _ClashConfig _self;
+  final $Res Function(_ClashConfig) _then;
 
-/// Create a copy of CustomClashConfig
+/// Create a copy of ClashConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? proxyGroups = null,Object? rule = null,}) {
-  return _then(_CustomClashConfig(
+@override @pragma('vm:prefer-inline') $Res call({Object? proxyGroups = null,Object? rules = null,}) {
+  return _then(_ClashConfig(
 proxyGroups: null == proxyGroups ? _self._proxyGroups : proxyGroups // ignore: cast_nullable_to_non_nullable
-as List<ProxyGroup>,rule: null == rule ? _self._rule : rule // ignore: cast_nullable_to_non_nullable
+as List<ProxyGroup>,rules: null == rules ? _self._rules : rules // ignore: cast_nullable_to_non_nullable
 as List<Rule>,
   ));
 }

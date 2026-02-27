@@ -2,6 +2,8 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'state.dart';
+
 part 'generated/clash_config.freezed.dart';
 part 'generated/clash_config.g.dart';
 
@@ -391,15 +393,20 @@ abstract class Rule with _$Rule {
 }
 
 extension RulesExt on List<Rule> {
-  List<Rule> copyAndPut(Rule rule) {
+  VM2<List<Rule>, Rule> copyAndPut(Rule rule) {
     var newList = List<Rule>.from(this);
     final index = newList.indexWhere((item) => item.id == rule.id);
+    final Rule newRule;
     if (index != -1) {
-      newList[index] = rule;
+      newRule = rule;
+      rule = newList[index] = rule;
     } else {
-      newList.insert(0, rule);
+      newRule = rule.copyWith(
+        order: indexing.generateKeyBetween(null, newList.firstOrNull?.order),
+      );
+      newList.insert(0, newRule);
     }
-    return newList;
+    return VM2(newList, newRule);
   }
 }
 
@@ -427,20 +434,20 @@ List<Rule> _genRule(List<dynamic>? rules) {
 // }
 
 @freezed
-abstract class CustomClashConfig with _$CustomClashConfig {
-  const factory CustomClashConfig({
+abstract class ClashConfig with _$ClashConfig {
+  const factory ClashConfig({
     @Default([]) @JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,
-    @JsonKey(fromJson: _genRule, name: 'rules') @Default([]) List<Rule> rule,
+    @JsonKey(fromJson: _genRule) @Default([]) List<Rule> rules,
     // @JsonKey(name: 'rule-providers', fromJson: _genRuleProviders)
     // @Default([])
     // List<RuleProvider> ruleProvider,
     // @JsonKey(name: 'sub-rules', fromJson: _genSubRules)
     // @Default([])
     // List<SubRule> subRules,
-  }) = _CustomClashConfig;
+  }) = _ClashConfig;
 
-  factory CustomClashConfig.fromJson(Map<String, Object?> json) =>
-      _$CustomClashConfigFromJson(json);
+  factory ClashConfig.fromJson(Map<String, Object?> json) =>
+      _$ClashConfigFromJson(json);
 }
 
 @freezed

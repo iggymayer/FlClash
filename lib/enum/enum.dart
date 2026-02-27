@@ -72,7 +72,13 @@ extension GroupTypeExtension on GroupType {
     return GroupType.values[index];
   }
 
-  // String get value => GroupTypeExtension.valueList[index];
+  String get value => switch (this) {
+    GroupType.URLTest => 'url-test',
+    GroupType.Selector => 'select',
+    GroupType.Fallback => 'fallback',
+    GroupType.LoadBalance => 'load-balance',
+    GroupType.Relay => 'relay',
+  };
 }
 
 enum UsedProxy { GLOBAL, DIRECT, REJECT }

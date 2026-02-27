@@ -24,13 +24,29 @@ class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   static LazyDatabase _openConnection() {
     return LazyDatabase(() async {
       final databaseFile = File(await appPath.databasePath);
       return NativeDatabase.createInBackground(databaseFile);
     });
+  }
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onUpgrade: (m, from, to) async {
+        if (from < 2) {
+          await m.createTable(proxyGroups);
+          await _resetOrders();
+        }
+      },
+    );
+  }
+
+  Future<void> _resetOrders() async {
+    await rulesDao.resetOrders();
   }
 
   Future<void> restore(
@@ -56,6 +72,17 @@ class Database extends _$Database {
       });
     }
   }
+
+  Future<void> setProfileCustomData(
+    int profileId,
+    List<ProxyGroup> groups,
+    List<Rule> rules,
+  ) async {
+    await batch((b) {
+      proxyGroupsDao.setAllWithBatch(profileId, b, groups);
+      rulesDao.setCustomRulesWithBatch(profileId, b, rules);
+    });
+  }
 }
 
 extension TableInfoExt<Tbl extends Table, Row> on TableInfo<Tbl, Row> {
@@ -63,9 +90,15 @@ extension TableInfoExt<Tbl extends Table, Row> on TableInfo<Tbl, Row> {
     Batch batch,
     Iterable<Insertable<Row>> items, {
     required Expression<bool> Function(Tbl tbl) deleteFilter,
+    bool preDelete = false,
   }) async {
+    if (preDelete) {
+      batch.deleteWhere(this, deleteFilter);
+    }
     batch.insertAllOnConflictUpdate(this, items);
-    batch.deleteWhere(this, deleteFilter);
+    if (!preDelete) {
+      batch.deleteWhere(this, deleteFilter);
+    }
   }
 
   Future<int> remove(Expression<bool> Function(Tbl tbl) filter) async {

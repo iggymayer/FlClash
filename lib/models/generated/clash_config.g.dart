@@ -314,20 +314,19 @@ Map<String, dynamic> _$SubRuleToJson(_SubRule instance) => <String, dynamic>{
   'name': instance.name,
 };
 
-_CustomClashConfig _$CustomClashConfigFromJson(Map<String, dynamic> json) =>
-    _CustomClashConfig(
-      proxyGroups:
-          (json['proxy-groups'] as List<dynamic>?)
-              ?.map((e) => ProxyGroup.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      rule: json['rules'] == null ? const [] : _genRule(json['rules'] as List?),
-    );
+_ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
+  proxyGroups:
+      (json['proxy-groups'] as List<dynamic>?)
+          ?.map((e) => ProxyGroup.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
+  rules: json['rules'] == null ? const [] : _genRule(json['rules'] as List?),
+);
 
-Map<String, dynamic> _$CustomClashConfigToJson(_CustomClashConfig instance) =>
+Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
     <String, dynamic>{
       'proxy-groups': instance.proxyGroups,
-      'rules': instance.rule,
+      'rules': instance.rules,
     };
 
 _PatchClashConfig _$PatchClashConfigFromJson(Map<String, dynamic> json) =>

@@ -65,12 +65,39 @@ class ProxyGroupsDao extends DatabaseAccessor<Database>
     with _$ProxyGroupsDaoMixin {
   ProxyGroupsDao(super.attachedDatabase);
 
-  Selectable<ProxyGroup> all() {
+  Selectable<ProxyGroup> all(int profileId) {
     final stmt = proxyGroups.select();
+    stmt.where((row) => row.profileId.equals(profileId));
     stmt.orderBy([
       (t) => OrderingTerm(expression: t.order, nulls: NullsOrder.last),
     ]);
     return stmt.map((item) => item.toProxyGroup());
+  }
+
+  Future<int> order(
+    int profileId, {
+    required ProxyGroup proxyGroup,
+    required String order,
+  }) async {
+    return await proxyGroups.insertOnConflictUpdate(
+      proxyGroup.toCompanion(profileId, order),
+    );
+  }
+
+  void setAllWithBatch(
+    int profileId,
+    Batch batch,
+    Iterable<ProxyGroup> proxyGroups,
+  ) async {
+    final keys = indexing.generateNKeys(proxyGroups.length);
+    this.proxyGroups.setAll(
+      batch,
+      proxyGroups.mapIndexed(
+        (index, item) => item.toCompanion(profileId, keys[index]),
+      ),
+      deleteFilter: (row) => row.profileId.equals(profileId),
+      preDelete: true,
+    );
   }
 }
 
@@ -101,11 +128,11 @@ extension RawProxyGroupExt on RawProxyGroup {
 }
 
 extension ProxyGroupsCompanionExt on ProxyGroup {
-  ProxyGroupsCompanion toCompanion(int profileId) {
+  ProxyGroupsCompanion toCompanion(int profileId, [String? order]) {
     return ProxyGroupsCompanion.insert(
       profileId: Value(profileId),
       name: name,
-      type: type.name,
+      type: type.value,
       proxies: Value(proxies),
       url: Value(url),
       interval: Value(interval),
@@ -122,7 +149,7 @@ extension ProxyGroupsCompanionExt on ProxyGroup {
       includeAllProviders: Value(includeAllProviders),
       hidden: Value(hidden),
       icon: Value(icon),
-      order: Value(order),
+      order: Value(order ?? this.order),
     );
   }
 }

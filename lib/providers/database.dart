@@ -14,7 +14,7 @@ Stream<List<Profile>> profilesStream(Ref ref) {
 }
 
 @riverpod
-Stream<List<Rule>> addedRuleStream(Ref ref, int profileId) {
+Stream<List<Rule>> addedRulesStream(Ref ref, int profileId) {
   return database.rulesDao.allAddedRules(profileId).watch();
 }
 
@@ -150,8 +150,9 @@ class GlobalRules extends _$GlobalRules with AsyncNotifierMixin {
   }
 
   void put(Rule rule) {
-    value = value.copyAndPut(rule);
-    database.rulesDao.putGlobalRule(rule);
+    final vm2 = value.copyAndPut(rule);
+    value = vm2.a;
+    database.rulesDao.putGlobalRule(vm2.b);
   }
 
   void order(int oldIndex, int newIndex) {
@@ -165,7 +166,7 @@ class GlobalRules extends _$GlobalRules with AsyncNotifierMixin {
     value = nextItems;
     final preOrder = nextItems.safeGet(insertIndex - 1)?.order;
     final nextOrder = nextItems.safeGet(insertIndex + 1)?.order;
-    final newOrder = indexing.generateKeyBetween(nextOrder, preOrder)!;
+    final newOrder = indexing.generateKeyBetween(preOrder, nextOrder)!;
     database.rulesDao.orderGlobalRule(ruleId: item.id, order: newOrder);
   }
 }
@@ -189,8 +190,9 @@ class ProfileAddedRules extends _$ProfileAddedRules with AsyncNotifierMixin {
   }
 
   void put(Rule rule) {
-    value = value.copyAndPut(rule);
-    database.rulesDao.putProfileAddedRule(profileId, rule);
+    final vm2 = value.copyAndPut(rule);
+    value = vm2.a;
+    database.rulesDao.putProfileAddedRule(profileId, vm2.b);
   }
 
   void delAll(Iterable<int> ruleIds) {
@@ -209,13 +211,92 @@ class ProfileAddedRules extends _$ProfileAddedRules with AsyncNotifierMixin {
     value = nextItems;
     final preOrder = nextItems.safeGet(insertIndex - 1)?.order;
     final nextOrder = nextItems.safeGet(insertIndex + 1)?.order;
-    final newOrder = indexing.generateKeyBetween(nextOrder, preOrder)!;
+    final newOrder = indexing.generateKeyBetween(preOrder, nextOrder)!;
     database.rulesDao.orderProfileAddedRule(
       profileId,
       ruleId: item.id,
       order: newOrder,
     );
   }
+}
+
+@riverpod
+class ProfileCustomRules extends _$ProfileCustomRules with AsyncNotifierMixin {
+  @override
+  Stream<List<Rule>> build(int profileId) {
+    return database.rulesDao.allProfileCustomRules(profileId).watch();
+  }
+
+  @override
+  List<Rule> get value => state.value ?? [];
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<List<Rule>> previous,
+    AsyncValue<List<Rule>> next,
+  ) {
+    return !ruleListEquality.equals(previous.value, next.value);
+  }
+
+  void put(Rule rule) {
+    final vm2 = value.copyAndPut(rule);
+    value = vm2.a;
+    database.rulesDao.putProfileCustomRule(profileId, vm2.b);
+  }
+
+  void delAll(Iterable<int> ruleIds) {
+    value = List<Rule>.from(value.where((item) => !ruleIds.contains(item.id)));
+    database.rulesDao.delRules(ruleIds);
+  }
+
+  void order(int oldIndex, int newIndex) {
+    int insertIndex = newIndex;
+    if (oldIndex < newIndex) {
+      insertIndex -= 1;
+    }
+    final nextItems = List<Rule>.from(value);
+    final item = nextItems.removeAt(oldIndex);
+    nextItems.insert(insertIndex, item);
+    value = nextItems;
+    final preOrder = nextItems.safeGet(insertIndex - 1)?.order;
+    final nextOrder = nextItems.safeGet(insertIndex + 1)?.order;
+    final newOrder = indexing.generateKeyBetween(preOrder, nextOrder)!;
+    database.rulesDao.orderProfileCustomRule(
+      profileId,
+      ruleId: item.id,
+      order: newOrder,
+    );
+  }
+}
+
+@riverpod
+class ProxyGroups extends _$ProxyGroups with AsyncNotifierMixin {
+  @override
+  Stream<List<ProxyGroup>> build(int profileId) {
+    return database.proxyGroupsDao.all(profileId).watch();
+  }
+
+  @override
+  bool updateShouldNotify(
+    AsyncValue<List<ProxyGroup>> previous,
+    AsyncValue<List<ProxyGroup>> next,
+  ) {
+    return !proxyGroupsEquality.equals(previous.value, next.value);
+  }
+
+  void order(int oldIndex, int newIndex) {
+    final nextItems = List<ProxyGroup>.from(value);
+    final item = nextItems.removeAt(oldIndex);
+    nextItems.insert(newIndex, item);
+    value = nextItems;
+    final preOrder = nextItems.safeGet(newIndex - 1)?.order;
+    final nextOrder = nextItems.safeGet(newIndex + 1)?.order;
+    final newOrder = indexing.generateKeyBetween(preOrder, nextOrder)!;
+    database.proxyGroupsDao.order(profileId, proxyGroup: item, order: newOrder);
+  }
+
+  @override
+  List<ProxyGroup> get value => state.value ?? [];
 }
 
 @riverpod

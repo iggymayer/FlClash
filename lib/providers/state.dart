@@ -690,7 +690,7 @@ Future<SetupState> setupState(Ref ref, int? profileId) async {
   if (profileId != null) {
     final currentProfileId = ref.read(currentProfileIdProvider);
     if (currentProfileId == profileId) {
-      addedRules = await ref.watch(addedRuleStreamProvider(profileId).future);
+      addedRules = await ref.watch(addedRulesStreamProvider(profileId).future);
     } else {
       addedRules = await ref.read(addedRulesProvider(profileId).future);
     }
