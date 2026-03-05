@@ -430,3 +430,5 @@ enum LoadingTag { profiles, backup_restore, access, proxies }
 enum CoreStatus { connecting, connected, disconnected }
 
 enum RuleScene { added, disabled, custom }
+
+enum ItemPosition { start, middle, end, startAndEnd }

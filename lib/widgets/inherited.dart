@@ -1,3 +1,4 @@
+import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/material.dart';
 
 class CommonScaffoldBackActionProvider extends InheritedWidget {
@@ -38,4 +39,22 @@ class CommonScaffoldFabExtendedProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(CommonScaffoldFabExtendedProvider oldWidget) =>
       isExtended != oldWidget.isExtended;
+}
+
+class ItemPositionProvider extends InheritedWidget {
+  final ItemPosition position;
+
+  const ItemPositionProvider({
+    super.key,
+    required this.position,
+    required super.child,
+  });
+
+  static ItemPositionProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ItemPositionProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(ItemPositionProvider oldWidget) =>
+      position != oldWidget.position;
 }

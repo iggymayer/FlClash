@@ -347,6 +347,14 @@ class ProfileDisabledRuleIds extends _$ProfileDisabledRuleIds
         .watch();
   }
 
+  @override
+  bool updateShouldNotify(
+    AsyncValue<List<int>> previous,
+    AsyncValue<List<int>> next,
+  ) {
+    return !intListEquality.equals(previous.value, next.value);
+  }
+
   void _put(int ruleId) {
     var newList = List<int>.from(value);
     final index = newList.indexWhere((item) => item == ruleId);

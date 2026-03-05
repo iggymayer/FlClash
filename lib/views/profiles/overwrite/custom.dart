@@ -215,54 +215,148 @@ class _EditCustomProxyGroupView extends ConsumerStatefulWidget {
 
 class _EditCustomProxyGroupViewState
     extends ConsumerState<_EditCustomProxyGroupView> {
+  Widget _buildItem({required Widget title, Widget? trailing}) {
+    return CommonInputListItem(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 16,
+        children: [
+          title,
+          if (trailing != null)
+            Flexible(
+              child: Container(
+                alignment: Alignment.centerRight,
+                height: globalState.measure.bodyLargeHeight + 6,
+                child: trailing,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: appController.viewSize.height * 0.65,
       child: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 24),
         children: [
           generateSectionV3(
             title: '通用',
             items: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                spacing: 16,
-                children: [
-                  Text('名称'),
-                  Flexible(
-                    child: TextFormField(
-                      textAlign: TextAlign.end,
-                      decoration: InputDecoration.collapsed(
-                        border: NoInputBorder(),
-                        hintText: '输入代理组名称',
-                      ),
-                    ),
+              _buildItem(
+                title: Text('名称'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '输入代理组名称',
                   ),
-                ],
+                ),
               ),
-              Text('类型'),
-              Text('图标'),
-              Text('从列表中隐藏'),
-              Text('禁用udp'),
+              _buildItem(title: Text('类型')),
+              _buildItem(title: Text('图标')),
+              _buildItem(
+                title: Text('从列表中隐藏'),
+                trailing: Switch(value: false, onChanged: (_) {}),
+              ),
+              _buildItem(
+                title: Text('禁用UDP'),
+                trailing: Switch(value: false, onChanged: (_) {}),
+              ),
             ],
           ),
           generateSectionV3(
             title: '节点',
             items: [
-              Text('手动选择代理'),
-              Text('包括所有代理'),
-              Text('包括所有远程代理集'),
-              Text('正则表达式过滤器'),
-              Text('排除类型'),
-              Text('预期状态'),
+              _buildItem(title: Text('选择代理')),
+              _buildItem(title: Text('选择代理集')),
+              _buildItem(
+                title: Text('节点过滤器'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '可选',
+                  ),
+                ),
+              ),
+              _buildItem(
+                title: Text('排除过滤器'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '可选',
+                  ),
+                ),
+              ),
+              _buildItem(
+                title: Text('排除类型'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '可选',
+                  ),
+                ),
+              ),
+              _buildItem(
+                title: Text('预期状态'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '可选',
+                  ),
+                ),
+              ),
             ],
           ),
           generateSectionV3(
             title: '其他',
-            items: [Text('测试链接'), Text('最大失败时间'), Text('懒加载'), Text('测试间隔')],
+            items: [
+              _buildItem(
+                title: Text('测速链接'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '可选',
+                  ),
+                ),
+              ),
+              _buildItem(
+                title: Text('最大失败次数'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '可选',
+                  ),
+                ),
+              ),
+              _buildItem(
+                title: Text('使用时测速'),
+                trailing: Switch(value: false, onChanged: (_) {}),
+              ),
+              _buildItem(
+                title: Text('测速间隔'),
+                trailing: TextFormField(
+                  textAlign: TextAlign.end,
+                  decoration: InputDecoration.collapsed(
+                    border: NoInputBorder(),
+                    hintText: '可选',
+                  ),
+                ),
+              ),
+            ],
           ),
-          generateSectionV3(title: '操作', items: [Text('删除')]),
+          generateSectionV3(
+            title: '操作',
+            items: [_buildItem(title: Text('删除'))],
+          ),
         ],
       ),
     );

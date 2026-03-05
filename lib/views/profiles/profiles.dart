@@ -449,19 +449,26 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
   }
 
   Widget _buildItem(int index, [bool isDecorator = false]) {
-    final isLast = index == profiles.length - 1;
-    final isFirst = index == 0;
+    ItemPosition position = ItemPosition.middle;
+    if (profiles.length == 1) {
+      position = ItemPosition.startAndEnd;
+    } else if (index == profiles.length - 1) {
+      position = ItemPosition.end;
+    } else if (index == 0) {
+      position = ItemPosition.start;
+    }
     final profile = profiles[index];
-    return CommonInputListItem(
+    return ItemPositionProvider(
       key: Key(profile.id.toString()),
-      trailing: ReorderableDelayedDragStartListener(
-        index: index,
-        child: const Icon(Icons.drag_handle),
+      position: position,
+      child: CommonInputListItem(
+        trailing: ReorderableDelayedDragStartListener(
+          index: index,
+          child: const Icon(Icons.drag_handle),
+        ),
+        title: Text(profile.realLabel),
+        isDecorator: isDecorator,
       ),
-      title: Text(profile.realLabel),
-      isFirst: isFirst,
-      isLast: isLast,
-      isDecorator: isDecorator,
     );
   }
 

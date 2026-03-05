@@ -3,6 +3,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -545,12 +546,19 @@ Widget generateSectionV3({
   String? title,
   required Iterable<Widget> items,
   List<Widget>? actions,
-  bool separated = true,
 }) {
   final genItems = items.mapIndexed<Widget>((index, item) {
-    final isFirst = index == 0;
-    final isLast = index == items.length - 1;
-    return CommonInputListItem(title: item, isFirst: isFirst, isLast: isLast);
+    if (items.length == 1) {
+      return ItemPositionProvider(
+        position: ItemPosition.startAndEnd,
+        child: item,
+      );
+    } else if (index == 0) {
+      return ItemPositionProvider(position: ItemPosition.start, child: item);
+    } else if (index == items.length - 1) {
+      return ItemPositionProvider(position: ItemPosition.end, child: item);
+    }
+    return item;
   });
   return Column(
     children: [
@@ -643,8 +651,6 @@ class CommonSelectedListItem extends StatelessWidget {
 
 class CommonInputListItem extends StatelessWidget {
   final bool isDecorator;
-  final bool isFirst;
-  final bool isLast;
   final Widget? title;
   final Widget? subtitle;
   final Widget? leading;
@@ -655,8 +661,6 @@ class CommonInputListItem extends StatelessWidget {
   const CommonInputListItem({
     super.key,
     this.isDecorator = false,
-    this.isFirst = false,
-    this.isLast = false,
     this.title,
     this.leading,
     this.trailing,
@@ -667,6 +671,15 @@ class CommonInputListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final position = ItemPositionProvider.of(context)?.position;
+    final isStart = [
+      ItemPosition.start,
+      ItemPosition.startAndEnd,
+    ].contains(position);
+    final isEnd = [
+      ItemPosition.end,
+      ItemPosition.startAndEnd,
+    ].contains(position);
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: ShapeDecoration(
@@ -674,8 +687,8 @@ class CommonInputListItem extends StatelessWidget {
             ? LinearBorder.none
             : RoundedSuperellipseBorder(
                 borderRadius: BorderRadius.vertical(
-                  top: isFirst ? Radius.circular(24) : Radius.zero,
-                  bottom: isLast ? Radius.circular(24) : Radius.zero,
+                  top: isStart ? Radius.circular(24) : Radius.zero,
+                  bottom: isEnd ? Radius.circular(24) : Radius.zero,
                 ),
               ),
       ),
@@ -697,7 +710,7 @@ class CommonInputListItem extends StatelessWidget {
                 trailing: trailing,
               ),
             ),
-            if (isDecorator != true && !isLast)
+            if (isDecorator != true && !isEnd)
               Divider(height: 0, indent: 14, endIndent: 14),
           ],
         ),
@@ -713,8 +726,6 @@ class CommonSelectedInputListItem extends StatelessWidget {
   final Widget? subtitle;
   final VoidCallback onSelected;
   final VoidCallback onPressed;
-  final bool isFirst;
-  final bool isLast;
   final bool isDecorator;
   final Widget? leading;
 
@@ -725,8 +736,6 @@ class CommonSelectedInputListItem extends StatelessWidget {
     this.isEditing = false,
     required this.title,
     required this.onPressed,
-    this.isFirst = false,
-    this.isLast = false,
     this.isDecorator = false,
     this.subtitle,
     this.leading,
@@ -738,8 +747,6 @@ class CommonSelectedInputListItem extends StatelessWidget {
       title: title,
       isDecorator: isDecorator,
       isSelected: isSelected,
-      isFirst: isFirst,
-      isLast: isLast,
       leading: leading,
       onPressed: isDecorator
           ? null
