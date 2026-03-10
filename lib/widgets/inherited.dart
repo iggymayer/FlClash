@@ -60,20 +60,36 @@ class ItemPositionProvider extends InheritedWidget {
       position != oldWidget.position;
 }
 
-class SheetTypeProvider extends InheritedWidget {
+class SheetProvider extends InheritedWidget {
   final SheetType type;
+  final VoidCallback? nestedNavigatorPopCallback;
 
-  const SheetTypeProvider({
+  const SheetProvider({
     super.key,
     required super.child,
     required this.type,
+    this.nestedNavigatorPopCallback,
   });
 
-  static SheetTypeProvider? of(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<SheetTypeProvider>();
+  SheetProvider copyWith({
+    SheetType? type,
+    VoidCallback? nestedNavigatorPopCallback,
+    required Widget child,
+  }) {
+    return SheetProvider(
+      type: type ?? this.type,
+      nestedNavigatorPopCallback:
+          nestedNavigatorPopCallback ?? this.nestedNavigatorPopCallback,
+      child: child,
+    );
+  }
+
+  static SheetProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<SheetProvider>();
   }
 
   @override
-  bool updateShouldNotify(SheetTypeProvider oldWidget) =>
-      type != oldWidget.type;
+  bool updateShouldNotify(SheetProvider oldWidget) =>
+      type != oldWidget.type &&
+      nestedNavigatorPopCallback != oldWidget.nestedNavigatorPopCallback;
 }

@@ -469,27 +469,8 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomSheet =
-        SheetTypeProvider.of(context)?.type == SheetType.bottomSheet;
     return AdaptiveSheetScaffold(
-      actions: [
-        if (bottomSheet)
-          IconButton.filledTonal(
-            onPressed: _handleSave,
-            style: IconButton.styleFrom(
-              visualDensity: VisualDensity.comfortable,
-              tapTargetSize: MaterialTapTargetSize.padded,
-              padding: EdgeInsets.all(8),
-              iconSize: 20,
-            ),
-            icon: Icon(Icons.check),
-          )
-        else
-          IconButton.filledTonal(
-            icon: Icon(Icons.check),
-            onPressed: _handleSave,
-          ),
-      ],
+      actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],
       body: Padding(
         padding: EdgeInsets.only(bottom: 32, top: 12),
         child: ReorderableListView.builder(

@@ -1,6 +1,8 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/widgets/inherited.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'scaffold.dart';
@@ -53,7 +55,7 @@ Future<T?> showSheet<T>({
       context: context,
       isScrollControlled: props.isScrollControlled,
       builder: (_) {
-        return SheetTypeProvider(
+        return SheetProvider(
           type: SheetType.bottomSheet,
           child: builder(context),
         );
@@ -70,7 +72,7 @@ Future<T?> showSheet<T>({
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
       builder: (_) {
-        return SheetTypeProvider(
+        return SheetProvider(
           type: SheetType.sideSheet,
           child: builder(context),
         );
@@ -88,7 +90,7 @@ Future<T?> showExtend<T>(
   return switch (isMobile || props.forceFull) {
     true => BaseNavigator.push(
       context,
-      SheetTypeProvider(type: SheetType.page, child: builder(context)),
+      SheetProvider(type: SheetType.page, child: builder(context)),
     ),
     false => showModalSideSheet<T>(
       useSafeArea: props.useSafeArea,
@@ -96,7 +98,7 @@ Future<T?> showExtend<T>(
       constraints: BoxConstraints(maxWidth: props.maxWidth ?? 360),
       filter: props.blur ? commonFilter : null,
       builder: (context) {
-        return SheetTypeProvider(
+        return SheetProvider(
           type: SheetType.sideSheet,
           child: builder(context),
         );
@@ -108,7 +110,7 @@ Future<T?> showExtend<T>(
 class AdaptiveSheetScaffold extends StatefulWidget {
   final Widget body;
   final String title;
-  final List<Widget> actions;
+  final List<IconButtonData> actions;
 
   const AdaptiveSheetScaffold({
     super.key,
@@ -125,34 +127,100 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
   @override
   Widget build(BuildContext context) {
     final backgroundColor = context.colorScheme.surface;
-    final type = SheetTypeProvider.of(context)?.type ?? SheetType.bottomSheet;
-    final bottomSheet = type == SheetType.bottomSheet;
-    final sideSheet = type == SheetType.sideSheet;
+    final sheetProvider = SheetProvider.of(context);
+    final nestedNavigatorPopCallback =
+        sheetProvider?.nestedNavigatorPopCallback;
+    final ModalRoute<dynamic>? route = ModalRoute.of(context);
+    final type = sheetProvider?.type ?? SheetType.page;
+    final useCloseIcon =
+        type != SheetType.page &&
+        (nestedNavigatorPopCallback != null &&
+                route?.impliesAppBarDismissal == false ||
+            nestedNavigatorPopCallback == null);
+    Widget buildIconButton(IconButtonData data) {
+      if (type == SheetType.bottomSheet) {
+        return IconButton.filledTonal(
+          onPressed: data.onPressed,
+          style: IconButton.styleFrom(
+            visualDensity: VisualDensity.standard,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          icon: Icon(data.icon),
+        );
+      }
+      return IconButton(
+        onPressed: data.onPressed,
+        style: IconButton.styleFrom(
+          visualDensity: VisualDensity.standard,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+        icon: Icon(data.icon),
+      );
+    }
+
+    final actions = widget.actions.map(buildIconButton).toList();
+
+    IconData getBackIconData() {
+      if (kIsWeb) {
+        return Icons.arrow_back;
+      }
+      switch (Theme.of(context).platform) {
+        case TargetPlatform.android:
+        case TargetPlatform.fuchsia:
+        case TargetPlatform.linux:
+        case TargetPlatform.windows:
+          return Icons.arrow_back;
+        case TargetPlatform.iOS:
+        case TargetPlatform.macOS:
+          return Icons.arrow_back_ios_new_rounded;
+      }
+    }
+
+    final popButton = type != SheetType.page
+        ? (useCloseIcon
+              ? buildIconButton(
+                  IconButtonData(
+                    icon: Icons.close,
+                    onPressed: () {
+                      if (nestedNavigatorPopCallback != null) {
+                        nestedNavigatorPopCallback();
+                      } else {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
+                )
+              : buildIconButton(
+                  IconButtonData(
+                    icon: getBackIconData(),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ))
+        : null;
+
+    final suffixPop = type != SheetType.page && actions.isEmpty && useCloseIcon;
     final appBar = AppBar(
-      forceMaterialTransparency: bottomSheet ? true : false,
-      automaticallyImplyLeading: bottomSheet
-          ? false
-          : widget.actions.isEmpty && sideSheet
-          ? false
-          : true,
+      forceMaterialTransparency: type == SheetType.bottomSheet ? true : false,
+      leading: suffixPop ? null : popButton,
+      automaticallyImplyLeading: type == SheetType.page ? true : false,
       centerTitle: true,
       backgroundColor: backgroundColor,
+      toolbarHeight: type == SheetType.bottomSheet ? 48 : null,
       title: Text(widget.title),
-      titleTextStyle: bottomSheet
+      titleTextStyle: type == SheetType.bottomSheet
           ? context.textTheme.titleLarge?.adjustSize(-4)
           : null,
-      actions: genActions([
-        if (widget.actions.isEmpty && sideSheet) CloseButton(),
-        ...widget.actions,
-      ]),
+      actions: !suffixPop ? genActions(actions) : genActions([?popButton]),
     );
-    if (bottomSheet) {
-      final handleSize = Size(32, 4);
+    if (type == SheetType.bottomSheet) {
+      final handleSize = Size(28, 4);
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 16),
+            padding: EdgeInsets.only(top: 4),
             child: Container(
               alignment: Alignment.center,
               height: handleSize.height,
@@ -165,7 +233,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
               ),
             ),
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: appBar),
+          Padding(padding: EdgeInsets.symmetric(horizontal: 4), child: appBar),
           Flexible(flex: 1, child: widget.body),
           SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
         ],

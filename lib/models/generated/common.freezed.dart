@@ -6021,4 +6021,264 @@ as String,
 
 }
 
+/// @nodoc
+mixin _$IconButtonData {
+
+ IconData get icon; VoidCallback get onPressed;
+/// Create a copy of IconButtonData
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$IconButtonDataCopyWith<IconButtonData> get copyWith => _$IconButtonDataCopyWithImpl<IconButtonData>(this as IconButtonData, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is IconButtonData&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.onPressed, onPressed) || other.onPressed == onPressed));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,icon,onPressed);
+
+@override
+String toString() {
+  return 'IconButtonData(icon: $icon, onPressed: $onPressed)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $IconButtonDataCopyWith<$Res>  {
+  factory $IconButtonDataCopyWith(IconButtonData value, $Res Function(IconButtonData) _then) = _$IconButtonDataCopyWithImpl;
+@useResult
+$Res call({
+ IconData icon, VoidCallback onPressed
+});
+
+
+
+
+}
+/// @nodoc
+class _$IconButtonDataCopyWithImpl<$Res>
+    implements $IconButtonDataCopyWith<$Res> {
+  _$IconButtonDataCopyWithImpl(this._self, this._then);
+
+  final IconButtonData _self;
+  final $Res Function(IconButtonData) _then;
+
+/// Create a copy of IconButtonData
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? icon = null,Object? onPressed = null,}) {
+  return _then(_self.copyWith(
+icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as IconData,onPressed: null == onPressed ? _self.onPressed : onPressed // ignore: cast_nullable_to_non_nullable
+as VoidCallback,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [IconButtonData].
+extension IconButtonDataPatterns on IconButtonData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _IconButtonData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _IconButtonData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _IconButtonData value)  $default,){
+final _that = this;
+switch (_that) {
+case _IconButtonData():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _IconButtonData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _IconButtonData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( IconData icon,  VoidCallback onPressed)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _IconButtonData() when $default != null:
+return $default(_that.icon,_that.onPressed);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( IconData icon,  VoidCallback onPressed)  $default,) {final _that = this;
+switch (_that) {
+case _IconButtonData():
+return $default(_that.icon,_that.onPressed);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( IconData icon,  VoidCallback onPressed)?  $default,) {final _that = this;
+switch (_that) {
+case _IconButtonData() when $default != null:
+return $default(_that.icon,_that.onPressed);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _IconButtonData implements IconButtonData {
+  const _IconButtonData({required this.icon, required this.onPressed});
+  
+
+@override final  IconData icon;
+@override final  VoidCallback onPressed;
+
+/// Create a copy of IconButtonData
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$IconButtonDataCopyWith<_IconButtonData> get copyWith => __$IconButtonDataCopyWithImpl<_IconButtonData>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _IconButtonData&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.onPressed, onPressed) || other.onPressed == onPressed));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,icon,onPressed);
+
+@override
+String toString() {
+  return 'IconButtonData(icon: $icon, onPressed: $onPressed)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$IconButtonDataCopyWith<$Res> implements $IconButtonDataCopyWith<$Res> {
+  factory _$IconButtonDataCopyWith(_IconButtonData value, $Res Function(_IconButtonData) _then) = __$IconButtonDataCopyWithImpl;
+@override @useResult
+$Res call({
+ IconData icon, VoidCallback onPressed
+});
+
+
+
+
+}
+/// @nodoc
+class __$IconButtonDataCopyWithImpl<$Res>
+    implements _$IconButtonDataCopyWith<$Res> {
+  __$IconButtonDataCopyWithImpl(this._self, this._then);
+
+  final _IconButtonData _self;
+  final $Res Function(_IconButtonData) _then;
+
+/// Create a copy of IconButtonData
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? icon = null,Object? onPressed = null,}) {
+  return _then(_IconButtonData(
+icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as IconData,onPressed: null == onPressed ? _self.onPressed : onPressed // ignore: cast_nullable_to_non_nullable
+as VoidCallback,
+  ));
+}
+
+
+}
+
 // dart format on

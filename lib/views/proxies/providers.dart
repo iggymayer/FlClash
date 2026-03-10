@@ -56,14 +56,7 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
       items: ruleProviders,
     );
     return AdaptiveSheetScaffold(
-      actions: [
-        IconButton(
-          onPressed: () {
-            _updateProviders();
-          },
-          icon: const Icon(Icons.sync),
-        ),
-      ],
+      actions: [IconButtonData(icon: Icons.sync, onPressed: _updateProviders)],
       body: generateListView([...proxySection, ...ruleSection]),
       title: appLocalizations.providers,
     );

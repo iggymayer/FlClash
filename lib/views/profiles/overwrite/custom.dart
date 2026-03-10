@@ -156,7 +156,7 @@ class _CustomProxyGroupsView extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         maxWidth: 400,
       ),
-      builder: (_) {
+      builder: (context) {
         return _EditCustomProxyGroupNestedSheet(proxyGroup);
       },
     );
@@ -169,6 +169,7 @@ class _CustomProxyGroupsView extends ConsumerWidget {
       title: '代理组',
       body: ReorderableListView.builder(
         buildDefaultDragHandles: false,
+        padding: EdgeInsets.only(bottom: 16),
         itemBuilder: (_, index) {
           final proxyGroup = proxyGroups[index];
           return ReorderableDelayedDragStartListener(
@@ -211,9 +212,28 @@ class _EditCustomProxyGroupNestedSheet extends StatelessWidget {
 
   const _EditCustomProxyGroupNestedSheet(this.proxyGroup);
 
+  Future<void> _handlePop(
+    BuildContext context,
+    NavigatorState? navigatorState,
+  ) async {
+    if (navigatorState != null && navigatorState.canPop()) {
+      final res = await globalState.showMessage(
+        message: TextSpan(text: '确定要退出当前窗口吗?'),
+      );
+      if (res != true) {
+        return;
+      }
+    }
+    if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<NavigatorState> nestedNavigatorKey = GlobalKey();
     final nestedNavigator = Navigator(
+      key: nestedNavigatorKey,
       onGenerateInitialRoutes: (navigator, initialRoute) {
         return [
           PagedSheetRoute(
@@ -224,30 +244,40 @@ class _EditCustomProxyGroupNestedSheet extends StatelessWidget {
         ];
       },
     );
-    final isBottomSheet =
-        SheetTypeProvider.of(context)?.type == SheetType.bottomSheet;
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        SheetViewport(
-          child: PagedSheet(
-            decoration: MaterialSheetDecoration(
-              size: SheetSize.stretch,
-              borderRadius: isBottomSheet
-                  ? BorderRadius.vertical(top: Radius.circular(28))
-                  : BorderRadius.zero,
-              clipBehavior: Clip.antiAlias,
+    final sheetProvider = SheetProvider.of(context);
+    return CommonPopScope(
+      onPop: (_) async {
+        _handlePop(context, nestedNavigatorKey.currentState);
+        return false;
+      },
+      child: sheetProvider!.copyWith(
+        nestedNavigatorPopCallback: () {
+          Navigator.of(context).pop();
+        },
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: () async {
+                  _handlePop(context, nestedNavigatorKey.currentState);
+                },
+              ),
             ),
-            navigator: nestedNavigator,
-          ),
+            SheetViewport(
+              child: PagedSheet(
+                decoration: MaterialSheetDecoration(
+                  size: SheetSize.stretch,
+                  borderRadius: sheetProvider.type == SheetType.bottomSheet
+                      ? BorderRadius.vertical(top: Radius.circular(28))
+                      : BorderRadius.zero,
+                  clipBehavior: Clip.antiAlias,
+                ),
+                navigator: nestedNavigator,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -266,14 +296,29 @@ class _EditCustomProxyGroupViewState
   final _nameController = TextEditingController();
   final _hideController = ValueNotifier<bool>(false);
   final _disableUDPController = ValueNotifier<bool>(false);
-  final _typeUDPController = ValueNotifier<GroupType>(GroupType.Selector);
+  final _proxiesController = ValueNotifier<List<String>>([]);
+  final _useController = ValueNotifier<List<String>>([]);
+  final _typeController = ValueNotifier<GroupType>(GroupType.Selector);
+  final _allProxiesController = ValueNotifier<bool>(false);
+  final _allProviderController = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
-    _nameController.text = widget.proxyGroup.name;
-    _hideController.value = widget.proxyGroup.hidden ?? false;
-    _disableUDPController.value = widget.proxyGroup.disableUDP ?? false;
+    final proxyGroup = widget.proxyGroup;
+    _nameController.text = proxyGroup.name;
+    _hideController.value = proxyGroup.hidden ?? false;
+    _disableUDPController.value = proxyGroup.disableUDP ?? false;
+    _typeController.value = proxyGroup.type;
+    _proxiesController.value = proxyGroup.proxies ?? [];
+    _useController.value = proxyGroup.use ?? [];
+    if (proxyGroup.includeAll == true) {
+      _allProxiesController.value = true;
+      _allProviderController.value = true;
+    } else {
+      _allProxiesController.value = proxyGroup.includeAllProxies ?? false;
+      _allProviderController.value = proxyGroup.includeAllProviders ?? false;
+    }
   }
 
   @override
@@ -281,7 +326,11 @@ class _EditCustomProxyGroupViewState
     _nameController.dispose();
     _hideController.dispose();
     _disableUDPController.dispose();
-    _typeUDPController.dispose();
+    _typeController.dispose();
+    _proxiesController.dispose();
+    _useController.dispose();
+    _allProxiesController.dispose();
+    _allProviderController.dispose();
     super.dispose();
   }
 
@@ -291,13 +340,13 @@ class _EditCustomProxyGroupViewState
         title: '类型',
         options: GroupType.values,
         textBuilder: (item) => item.name,
-        value: _typeUDPController.value,
+        value: _typeController.value,
       ),
     );
     if (value == null) {
       return;
     }
-    _typeUDPController.value = value;
+    _typeController.value = value;
   }
 
   Widget _buildItem({
@@ -314,10 +363,16 @@ class _EditCustomProxyGroupViewState
           title,
           if (trailing != null)
             Flexible(
-              child: Container(
-                alignment: Alignment.centerRight,
-                height: globalState.measure.bodyLargeHeight + 6,
-                child: trailing,
+              child: IconTheme(
+                data: IconThemeData(
+                  size: 16,
+                  color: context.colorScheme.onSurface.opacity60,
+                ),
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  height: globalState.measure.bodyLargeHeight + 24,
+                  child: trailing,
+                ),
               ),
             ),
         ],
@@ -327,7 +382,7 @@ class _EditCustomProxyGroupViewState
 
   void _handleToProxies() {
     final isBottomSheet =
-        SheetTypeProvider.of(context)?.type == SheetType.bottomSheet;
+        SheetProvider.of(context)?.type == SheetType.bottomSheet;
     Navigator.of(context).push(
       PagedSheetRoute(
         builder: (context) => SizedBox(
@@ -346,14 +401,15 @@ class _EditCustomProxyGroupViewState
   @override
   Widget build(BuildContext context) {
     final isBottomSheet =
-        SheetTypeProvider.of(context)?.type == SheetType.bottomSheet;
+        SheetProvider.of(context)?.type == SheetType.bottomSheet;
     return AdaptiveSheetScaffold(
+      actions: [IconButtonData(icon: Icons.check, onPressed: () {})],
       body: SizedBox(
         height: isBottomSheet
             ? appController.viewSize.height * 0.65
             : double.maxFinite,
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 24),
+          padding: EdgeInsets.symmetric(horizontal: 16).copyWith(bottom: 20),
           children: [
             generateSectionV3(
               title: '通用',
@@ -375,7 +431,7 @@ class _EditCustomProxyGroupViewState
                     _showTypeOptions();
                   },
                   trailing: ValueListenableBuilder(
-                    valueListenable: _typeUDPController,
+                    valueListenable: _typeController,
                     builder: (_, type, _) {
                       return Text(type.name);
                     },
@@ -421,8 +477,45 @@ class _EditCustomProxyGroupViewState
             generateSectionV3(
               title: '节点',
               items: [
-                _buildItem(title: Text('选择代理'), onPressed: _handleToProxies),
-                _buildItem(title: Text('选择代理集')),
+                _buildItem(
+                  title: Text('选择代理'),
+                  trailing: ValueListenableBuilder(
+                    valueListenable: _proxiesController,
+                    builder: (_, proxies, _) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Card(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Container(
+                              constraints: BoxConstraints(minWidth: 32),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 3,
+                                ),
+                                child: Text(
+                                  textAlign: TextAlign.center,
+                                  '${proxies.length}',
+                                  style: context.textTheme.bodySmall,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward_ios),
+                        ],
+                      );
+                    },
+                  ),
+                  onPressed: _handleToProxies,
+                ),
+                _buildItem(
+                  title: Text('选择代理集'),
+                  trailing: Icon(Icons.arrow_forward_ios),
+                ),
                 _buildItem(
                   title: Text('节点过滤器'),
                   trailing: TextFormField(
@@ -518,7 +611,7 @@ class _EditCustomProxyGroupViewState
           ],
         ),
       ),
-      title: '编辑',
+      title: '编辑代理组',
     );
   }
 }

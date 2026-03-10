@@ -596,3 +596,11 @@ abstract class UpdatingMessage with _$UpdatingMessage {
     required String message,
   }) = _UpdatingMessage;
 }
+
+@freezed
+abstract class IconButtonData with _$IconButtonData {
+  const factory IconButtonData({
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) = _IconButtonData;
+}
