@@ -64,9 +64,9 @@ Support the following actions
 ## Build
 
 1. Update submodules
-   ```bash
-   git submodule update --init --recursive
-   ```
+    ```bash
+    git submodule update --init --recursive
+    ```
 
 2. Install `Flutter` and `Golang` environment
 
@@ -80,9 +80,9 @@ Support the following actions
 
         3. Run Build script
 
-           ```bash
-           dart .\setup.dart android
-           ```
+            ```bash
+            dart .\setup.dart android
+            ```
 
     - windows
 
@@ -104,9 +104,19 @@ Support the following actions
 
         3. Run build script
 
-           ```bash
-           dart .\setup.dart windows --arch <arm64 | amd64>  --env <pre | stable>
-           ```
+            ```bash
+            dart .\setup.dart windows --arch <arm64 | amd64>  --env <pre | stable>
+            ```
+
+        4. Build core
+            ```bash
+            dart .\setup.dart windows --out core --env stable
+            ```
+
+        5. Packaged
+            ```bash
+            flutter_distributor package --platform windows --targets exe,zip --flutter-build-args=verbose,dart-define-from-file=env.json --description amd64
+            ```
 
     - linux
 
@@ -114,9 +124,19 @@ Support the following actions
 
         2. Run build script
 
-           ```bash
-           dart .\setup.dart linux --arch <arm64 | amd64>
-           ```
+            ```bash
+            dart .\setup.dart linux --arch <arm64 | amd64>  --env <pre | stable>
+            ```
+
+        3. Build core
+            ```bash
+            dart .\setup.dart linux --out core --env stable
+            ```
+
+        4. Packaged
+            ```bash
+            flutter_distributor package --platform linux --targets deb --flutter-build-args=verbose,dart-define-from-file=env.json --description <arm64 | amd64> --build-target-platform <linux-arm64 | linux-x64>
+            ```
 
     - macOS
 
@@ -124,9 +144,9 @@ Support the following actions
 
         2. Run build script
 
-           ```bash
-           dart .\setup.dart macos --arch <arm64 | amd64>
-           ```
+            ```bash
+            dart .\setup.dart macos --arch <arm64 | amd64>
+            ```
 
 ## Star
 
