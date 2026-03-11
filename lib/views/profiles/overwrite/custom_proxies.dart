@@ -70,6 +70,10 @@ class _CustomProxyGroupsView extends ConsumerWidget {
             ),
           );
         },
+        itemExtent:
+            28 +
+            globalState.measure.bodyMediumHeight +
+            globalState.measure.bodyLargeHeight,
         itemCount: proxyGroups.length,
         onReorder: (oldIndex, newIndex) {
           _handleReorder(ref, profileId, oldIndex, newIndex);
@@ -82,7 +86,7 @@ class _CustomProxyGroupsView extends ConsumerWidget {
 class _EditProxyGroupNestedSheet extends StatelessWidget {
   const _EditProxyGroupNestedSheet();
 
-  Future<void> _handlePop(
+  Future<void> _handleClose(
     BuildContext context,
     NavigatorState? navigatorState,
   ) async {
@@ -95,6 +99,17 @@ class _EditProxyGroupNestedSheet extends StatelessWidget {
       }
     }
     if (context.mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _handlePop(
+    BuildContext context,
+    NavigatorState? navigatorState,
+  ) async {
+    if (navigatorState != null && navigatorState.canPop()) {
+      navigatorState.pop();
+    } else {
       Navigator.of(context).pop();
     }
   }
@@ -115,39 +130,45 @@ class _EditProxyGroupNestedSheet extends StatelessWidget {
       },
     );
     final sheetProvider = SheetProvider.of(context);
-    return CommonPopScope(
-      onPop: (_) async {
-        _handlePop(context, nestedNavigatorKey.currentState);
-        return false;
-      },
-      child: sheetProvider!.copyWith(
-        nestedNavigatorPopCallback: () {
-          Navigator.of(context).pop();
+    return BackButtonListener(
+      child: CommonPopScope(
+        onPop: (_) async {
+          _handleClose(context, nestedNavigatorKey.currentState);
+          return false;
         },
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: () async {
-                  _handlePop(context, nestedNavigatorKey.currentState);
-                },
-              ),
-            ),
-            SheetViewport(
-              child: PagedSheet(
-                decoration: MaterialSheetDecoration(
-                  size: SheetSize.stretch,
-                  borderRadius: sheetProvider.type == SheetType.bottomSheet
-                      ? BorderRadius.vertical(top: Radius.circular(28))
-                      : BorderRadius.zero,
-                  clipBehavior: Clip.antiAlias,
+        child: sheetProvider!.copyWith(
+          nestedNavigatorPopCallback: () {
+            Navigator.of(context).pop();
+          },
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () async {
+                    _handlePop(context, nestedNavigatorKey.currentState);
+                  },
                 ),
-                navigator: nestedNavigator,
               ),
-            ),
-          ],
+              SheetViewport(
+                child: PagedSheet(
+                  decoration: MaterialSheetDecoration(
+                    size: SheetSize.stretch,
+                    borderRadius: sheetProvider.type == SheetType.bottomSheet
+                        ? BorderRadius.vertical(top: Radius.circular(28))
+                        : BorderRadius.zero,
+                    clipBehavior: Clip.antiAlias,
+                  ),
+                  navigator: nestedNavigator,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+      onBackButtonPressed: () async {
+        _handlePop(context, nestedNavigatorKey.currentState);
+        return true;
+      },
     );
   }
 }

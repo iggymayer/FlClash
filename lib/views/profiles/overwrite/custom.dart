@@ -45,7 +45,7 @@ class _CustomContent extends ConsumerWidget {
         SliverToBoxAdapter(child: SizedBox(height: 8)),
         SliverToBoxAdapter(
           child: _MoreActionButton(
-            label: '代理组',
+            label: '策略组',
             onPressed: () {
               _handleToProxyGroupsView(context, profileId);
             },
