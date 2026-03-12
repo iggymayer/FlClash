@@ -109,13 +109,20 @@ Support the following actions
             ```
 
         4. Build core
+
             ```bash
-            dart .\setup.dart windows --out core --env stable
+            dart .\setup.dart windows --arch <arm64 | amd64> --out core --env stable
             ```
 
         5. Packaged
+
+            Activate flutter_distributor
             ```bash
-            flutter_distributor package --platform windows --targets exe,zip --flutter-build-args=verbose,dart-define-from-file=env.json --description amd64
+            dart pub global activate -s path .\plugins\flutter_distributor\packages\flutter_distributor
+            ```
+
+            ```bash
+            flutter_distributor package --platform windows --description amd64 --targets exe,zip --flutter-build-args=verbose,dart-define-from-file=env.json
             ```
 
     - linux
@@ -126,16 +133,6 @@ Support the following actions
 
             ```bash
             dart .\setup.dart linux --arch <arm64 | amd64>  --env <pre | stable>
-            ```
-
-        3. Build core
-            ```bash
-            dart .\setup.dart linux --out core --env stable
-            ```
-
-        4. Packaged
-            ```bash
-            flutter_distributor package --platform linux --targets deb --flutter-build-args=verbose,dart-define-from-file=env.json --description <arm64 | amd64> --build-target-platform <linux-arm64 | linux-x64>
             ```
 
     - macOS
