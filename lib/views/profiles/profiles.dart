@@ -439,19 +439,12 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
   }
 
   Widget _buildItem(int index, [bool isDecorator = false]) {
-    ItemPosition position = ItemPosition.middle;
-    if (profiles.length == 1) {
-      position = ItemPosition.startAndEnd;
-    } else if (index == profiles.length - 1) {
-      position = ItemPosition.end;
-    } else if (index == 0) {
-      position = ItemPosition.start;
-    }
+    final position = ItemPosition.get(index, profiles.length);
     final profile = profiles[index];
     return ItemPositionProvider(
       key: Key(profile.id.toString()),
       position: position,
-      child: CommonInputListItem(
+      child: DecorationListItem(
         trailing: ReorderableDelayedDragStartListener(
           index: index,
           child: const Icon(Icons.drag_handle),
@@ -470,12 +463,15 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
   @override
   Widget build(BuildContext context) {
     return AdaptiveSheetScaffold(
+      bottomSheetBackdrop: true,
       actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],
       body: Padding(
-        padding: EdgeInsets.only(bottom: 32, top: 12),
+        padding: EdgeInsets.only(bottom: 32),
         child: ReorderableListView.builder(
           buildDefaultDragHandles: false,
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ).copyWith(top: context.sheetTopPadding),
           proxyDecorator: (child, index, animation) {
             return commonProxyDecorator(
               _buildItem(index, true),
