@@ -729,7 +729,8 @@ class AccessControlState extends _$AccessControlState
 }
 
 @Riverpod(name: 'proxyGroupProvider')
-class ProxyGroupProvider extends _$ProxyGroupProvider {
+class ProxyGroupProvider extends _$ProxyGroupProvider
+    with AutoDisposeNotifierMixin {
   @override
   ProxyGroup build() {
     return throw 'Initialization proxyGroupProvider error';

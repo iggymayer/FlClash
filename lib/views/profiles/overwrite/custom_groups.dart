@@ -657,6 +657,14 @@ class _AddProxiesView extends ConsumerWidget {
     );
   }
 
+  void _handleAdd(WidgetRef ref, String name) {
+    ref
+        .read(proxyGroupProvider.notifier)
+        .update(
+          (state) => state.copyWith(proxies: [...state.proxies ?? [], name]),
+        );
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     final isBottomSheet =
@@ -670,18 +678,16 @@ class _AddProxiesView extends ConsumerWidget {
     );
     final allProxies = allProxiesAndProxyGroups.a;
     final allProxyGroups = allProxiesAndProxyGroups.b;
-    final proxyNamesAndName = ref.watch(
-      proxyGroupProvider.select(
-        (state) => VM2(state.name, state.proxies ?? []),
-      ),
+    final proxyNames = ref.watch(
+      proxyGroupProvider.select((state) {
+        return [...?state.proxies, state.name];
+      }),
     );
-    final groupName = proxyNamesAndName.a;
-    final proxyNames = proxyNamesAndName.b;
     final proxies = allProxies
         .where((item) => !proxyNames.contains(item.name))
         .toList();
     final proxyGroups = allProxyGroups
-        .where((item) => groupName != item.name)
+        .where((item) => !proxyNames.contains(item.name))
         .toList();
     return SizedBox(
       height: isBottomSheet
@@ -712,7 +718,9 @@ class _AddProxiesView extends ConsumerWidget {
                     position: position,
                     trailing: CommonMinIconButtonTheme(
                       child: IconButton.filledTonal(
-                        onPressed: () {},
+                        onPressed: () {
+                          _handleAdd(ref, proxyGroup.name);
+                        },
                         icon: Icon(Icons.add, size: 18),
                         padding: EdgeInsets.zero,
                       ),
@@ -739,7 +747,9 @@ class _AddProxiesView extends ConsumerWidget {
                     position: position,
                     trailing: CommonMinIconButtonTheme(
                       child: IconButton.filledTonal(
-                        onPressed: () {},
+                        onPressed: () {
+                          _handleAdd(ref, proxy.name);
+                        },
                         icon: Icon(Icons.add, size: 18),
                         padding: EdgeInsets.zero,
                       ),
