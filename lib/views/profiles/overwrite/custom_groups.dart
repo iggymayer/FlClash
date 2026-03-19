@@ -330,12 +330,20 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     );
   }
 
+  void _handleChangeName(String value) {
+    ref
+        .read(proxyGroupProvider.notifier)
+        .update((state) => state.copyWith(name: value));
+  }
+
   Widget _buildNameItem(String name) {
     return _buildItem(
       title: Text('名称'),
       trailing: TextFormField(
         initialValue: name,
-        onChanged: (value) {},
+        onChanged: (value) {
+          _handleChangeName(value);
+        },
         textAlign: TextAlign.end,
         decoration: InputDecoration.collapsed(
           border: NoInputBorder(),
@@ -384,6 +392,8 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
       ),
     );
   }
+
+  void _handleDelete() {}
 
   @override
   Widget build(BuildContext context) {
@@ -506,7 +516,17 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
             ),
             generateSectionV3(
               title: '操作',
-              items: [_buildItem(title: Text('删除'), onPressed: () {})],
+              items: [
+                _buildItem(
+                  title: Text(
+                    '删除',
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colorScheme.error,
+                    ),
+                  ),
+                  onPressed: _handleDelete,
+                ),
+              ],
             ),
           ],
         ),
@@ -523,9 +543,8 @@ class _EditProxiesView extends ConsumerStatefulWidget {
   ConsumerState<_EditProxiesView> createState() => _EditProxiesViewState();
 }
 
-class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
-  final _dismissItemController = ValueNotifier<String?>(null);
-
+class _EditProxiesViewState extends ConsumerState<_EditProxiesView>
+    with UniqueKeyStateMixin {
   void _handleToAddProxiesView() {
     Navigator.of(
       context,
@@ -538,10 +557,11 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
   }
 
   void _handleRemove(String proxyName) {
-    if (_dismissItemController.value != null) {
+    final dismissItem = ref.read(itemProvider(key));
+    if (dismissItem != null) {
       return;
     }
-    _dismissItemController.value = proxyName;
+    ref.read(itemProvider(key).notifier).value = proxyName;
   }
 
   void _handleRealRemove(String proxyName) {
@@ -551,7 +571,7 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
       return state.copyWith(proxies: newProxies);
     });
     if (mounted) {
-      _dismissItemController.value = null;
+      ref.read(itemProvider(key).notifier).value = null;
     }
   }
 
@@ -633,6 +653,7 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
         (state) => VM2(state.includeAllProxies ?? false, state.proxies ?? []),
       ),
     );
+    final dismissItem = ref.watch(itemProvider(key));
     final includeAllProxies = vm2.a;
     final proxyNames = vm2.b;
     final proxyTypeMap =
@@ -692,32 +713,30 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
                 ),
               ),
             ),
-            ValueListenableBuilder(
-              valueListenable: _dismissItemController,
-              builder: (_, dismissItem, _) {
-                return SliverReorderableList(
-                  findChildIndexCallback: (Key key) {
-                    final String keyValue = (key as dynamic).subKey?.value;
-                    final index = proxyNames.indexOf(keyValue);
-                    return index;
-                  },
-                  itemBuilder: (_, index) {
-                    final proxyName = proxyNames[index];
-                    return _buildItem(
-                      dismiss: dismissItem == proxyName,
-                      proxyName: proxyName,
-                      proxyType: proxyTypeMap[proxyName],
-                      index: index,
-                      length: proxyNames.length,
-                    );
-                  },
-                  itemCount: proxyNames.length,
-                  onReorder: (int oldIndex, int newIndex) {
-                    _handleReorder(oldIndex, newIndex);
-                  },
-                );
-              },
-            ),
+            if (proxyNames.isNotEmpty)
+              SliverReorderableList(
+                findChildIndexCallback: (Key key) {
+                  final String keyValue = (key as dynamic).subKey?.value;
+                  final index = proxyNames.indexOf(keyValue);
+                  return index;
+                },
+                itemBuilder: (_, index) {
+                  final proxyName = proxyNames[index];
+                  return _buildItem(
+                    dismiss: dismissItem == proxyName,
+                    proxyName: proxyName,
+                    proxyType: proxyTypeMap[proxyName],
+                    index: index,
+                    length: proxyNames.length,
+                  );
+                },
+                itemCount: proxyNames.length,
+                onReorder: (int oldIndex, int newIndex) {
+                  _handleReorder(oldIndex, newIndex);
+                },
+              )
+            else
+              SliverFillRemaining(child: NullStatus(label: '代理为空')),
             SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
@@ -817,66 +836,74 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
       child: AdaptiveSheetScaffold(
         sheetTransparentToolBar: true,
         title: '添加代理',
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(height: context.sheetTopPadding),
-            ),
-            if (proxyGroups.isNotEmpty) ...[
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: InfoHeader(info: Info(label: '策略组')),
-                ),
+        body: proxies.isEmpty && proxyGroups.isEmpty
+            ? NullStatus(label: appLocalizations.noData)
+            : CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: context.sheetTopPadding),
+                  ),
+                  if (proxyGroups.isNotEmpty) ...[
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      sliver: SliverToBoxAdapter(
+                        child: InfoHeader(info: Info(label: '策略组')),
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((_, index) {
+                        final proxyGroup = proxyGroups[index];
+                        final position = ItemPosition.get(
+                          index,
+                          proxyGroups.length,
+                        );
+                        return _buildItem(
+                          title: proxyGroup.name,
+                          subtitle: proxyGroup.type.value,
+                          position: position,
+                          dismiss: dismissItem == proxyGroup.name,
+                          onAdd: () {
+                            _handleAdd(proxyGroup.name);
+                          },
+                          onDismissed: () {
+                            _handleRealAdd(proxyGroup.name);
+                          },
+                        );
+                      }, childCount: proxyGroups.length),
+                    ),
+                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                  ],
+                  if (proxies.isNotEmpty) ...[
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      sliver: SliverToBoxAdapter(
+                        child: InfoHeader(info: Info(label: '代理')),
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((_, index) {
+                        final proxy = proxies[index];
+                        final position = ItemPosition.get(
+                          index,
+                          proxies.length,
+                        );
+                        return _buildItem(
+                          title: proxy.name,
+                          subtitle: proxy.type,
+                          position: position,
+                          dismiss: dismissItem == proxy.name,
+                          onAdd: () {
+                            _handleAdd(proxy.name);
+                          },
+                          onDismissed: () {
+                            _handleRealAdd(proxy.name);
+                          },
+                        );
+                      }, childCount: proxies.length),
+                    ),
+                  ],
+                ],
               ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate((_, index) {
-                  final proxyGroup = proxyGroups[index];
-                  final position = ItemPosition.get(index, proxyGroups.length);
-                  return _buildItem(
-                    title: proxyGroup.name,
-                    subtitle: proxyGroup.type.value,
-                    position: position,
-                    dismiss: dismissItem == proxyGroup.name,
-                    onAdd: () {
-                      _handleAdd(proxyGroup.name);
-                    },
-                    onDismissed: () {
-                      _handleRealAdd(proxyGroup.name);
-                    },
-                  );
-                }, childCount: proxyGroups.length),
-              ),
-              SliverToBoxAdapter(child: SizedBox(height: 8)),
-            ],
-            if (proxies.isNotEmpty) ...[
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: InfoHeader(info: Info(label: '代理')),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate((_, index) {
-                  final proxy = proxies[index];
-                  final position = ItemPosition.get(index, proxies.length);
-                  return _buildItem(
-                    title: proxy.name,
-                    subtitle: proxy.type,
-                    position: position,
-                    dismiss: dismissItem == proxy.name,
-                    onAdd: () {
-                      _handleAdd(proxy.name);
-                    },
-                    onDismissed: () {
-                      _handleRealAdd(proxy.name);
-                    },
-                  );
-                }, childCount: proxies.length),
-              ),
-            ],
-          ],
-        ),
       ),
     );
   }

@@ -18,6 +18,7 @@ import 'package:smooth_sheets/smooth_sheets.dart';
 
 part 'custom.dart';
 part 'custom_groups.dart';
+part 'custom_rules.dart';
 part 'script.dart';
 part 'standard.dart';
 part 'widgets.dart';

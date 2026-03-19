@@ -28,7 +28,7 @@ class RuleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonSelectedListItem(
+    return SelectedDecorationListItem(
       isSelected: isSelected,
       onSelected: () {
         onSelected();
