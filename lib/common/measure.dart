@@ -11,13 +11,17 @@ class Measure {
     : _measureMap = {},
       _textScaler = TextScaler.linear(textScaleFactor);
 
-  Size computeTextSize(Text text, {double maxWidth = double.infinity}) {
-    final textPainter = TextPainter(
+  TextPainter computeText(Text text, {double? maxWidth}) {
+    return TextPainter(
       text: TextSpan(text: text.data, style: text.style),
       maxLines: text.maxLines,
       textScaler: _textScaler,
       textDirection: text.textDirection ?? TextDirection.ltr,
-    )..layout(maxWidth: maxWidth);
+    )..layout(maxWidth: maxWidth ?? double.infinity);
+  }
+
+  Size computeTextSize(Text text, {double? maxWidth}) {
+    final textPainter = computeText(text, maxWidth: maxWidth);
     return textPainter.size;
   }
 

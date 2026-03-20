@@ -8,6 +8,7 @@ import 'package:fl_clash/widgets/card.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/input.dart';
 import 'package:fl_clash/widgets/list.dart';
+import 'package:fl_clash/widgets/text.dart';
 import 'package:flutter/material.dart';
 
 class RuleItem extends StatelessWidget {
@@ -33,9 +34,13 @@ class RuleItem extends StatelessWidget {
       onSelected: () {
         onSelected();
       },
-      title: Text(
-        rule.value,
-        style: context.textTheme.bodyMedium?.toJetBrainsMono,
+      title: TooltipText(
+        text: Text(
+          rule.value,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: context.textTheme.bodyMedium?.toJetBrainsMono,
+        ),
       ),
       onPressed: () {
         onEdit(rule);
