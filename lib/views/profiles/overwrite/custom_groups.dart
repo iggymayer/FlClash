@@ -834,6 +834,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
     required VoidCallback onAdd,
   }) {
     return ExternalDismissible(
+      effect: ExternalDismissibleEffect.resize,
       key: ValueKey(title),
       dismiss: dismiss,
       child: Padding(

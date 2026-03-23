@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
+enum ExternalDismissibleEffect { normal, resize }
+
 class ExternalDismissible extends StatefulWidget {
   final Widget child;
   final VoidCallback? onDismissed;
   final bool dismiss;
+  final ExternalDismissibleEffect effect;
 
   const ExternalDismissible({
     super.key,
     required this.child,
     required this.dismiss,
     this.onDismissed,
+    this.effect = ExternalDismissibleEffect.normal,
   });
 
   @override
@@ -19,10 +23,13 @@ class ExternalDismissible extends StatefulWidget {
 class _ExternalDismissibleState extends State<ExternalDismissible>
     with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late final AnimationController _controller;
-  late Animation<Offset> _slideAnimation;
+  Animation<Offset>? _slideAnimation;
+  Animation<double>? _fadeAnimation;
   late Animation<double> _resizeAnimation;
 
   bool _isDismissing = false;
+
+  bool get _isNormal => widget.effect == ExternalDismissibleEffect.normal;
 
   @override
   void initState() {
@@ -38,19 +45,41 @@ class _ExternalDismissibleState extends State<ExternalDismissible>
   }
 
   void _initAnimations() {
-    _slideAnimation =
-        Tween<Offset>(begin: Offset.zero, end: const Offset(1.0, 0.0)).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
-          ),
-        );
-    _resizeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: const Interval(0.6, 1.0, curve: Curves.easeOut),
-      ),
-    );
+    const curve = Curves.fastOutSlowIn;
+
+    if (_isNormal) {
+      _slideAnimation =
+          Tween<Offset>(
+            begin: Offset.zero,
+            end: const Offset(1.0, 0.0),
+          ).animate(
+            CurvedAnimation(
+              parent: _controller,
+              curve: Interval(0.0, 1.0, curve: curve),
+            ),
+          );
+
+      _resizeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(0.3, 1.0, curve: curve),
+        ),
+      );
+    } else {
+      _fadeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(0.0, 0.6, curve: curve),
+        ),
+      );
+
+      _resizeAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+        CurvedAnimation(
+          parent: _controller,
+          curve: Interval(0.2, 1.0, curve: curve),
+        ),
+      );
+    }
   }
 
   @override
@@ -69,12 +98,12 @@ class _ExternalDismissibleState extends State<ExternalDismissible>
     if (!mounted) return;
     _isDismissing = true;
     updateKeepAlive();
-
     await _controller.forward();
-
     if (mounted && widget.onDismissed != null) {
       widget.onDismissed!();
     }
+    _isDismissing = false;
+    updateKeepAlive();
   }
 
   @override
@@ -89,7 +118,13 @@ class _ExternalDismissibleState extends State<ExternalDismissible>
 
     Widget content = widget.child;
 
-    content = SlideTransition(position: _slideAnimation, child: content);
+    if (_slideAnimation != null) {
+      content = SlideTransition(position: _slideAnimation!, child: content);
+    }
+
+    if (_fadeAnimation != null) {
+      content = FadeTransition(opacity: _fadeAnimation!, child: content);
+    }
 
     return SizeTransition(
       axisAlignment: 0.5,

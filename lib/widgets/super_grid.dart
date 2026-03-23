@@ -231,7 +231,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
             Tween<double>(
               begin: 0.0,
               end: 1,
-            ).chain(CurveTween(curve: Easing.emphasizedAccelerate)),
+            ).chain(CurveTween(curve: Curves.fastOutSlowIn)),
           ),
         ),
       );
