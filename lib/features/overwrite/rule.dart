@@ -8,7 +8,10 @@ import 'package:fl_clash/widgets/card.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/input.dart';
 import 'package:fl_clash/widgets/list.dart';
+import 'package:fl_clash/widgets/text.dart';
 import 'package:flutter/material.dart';
+
+final ruleItemHeight = globalState.measure.bodyMediumHeight * 2 + 14;
 
 class RuleItem extends StatelessWidget {
   final bool isSelected;
@@ -28,14 +31,19 @@ class RuleItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CommonSelectedListItem(
+    return SelectedDecorationListItem(
       isSelected: isSelected,
+      isEditing: isEditing,
       onSelected: () {
         onSelected();
       },
-      title: Text(
-        rule.value,
-        style: context.textTheme.bodyMedium?.toJetBrainsMono,
+      title: TooltipText(
+        text: Text(
+          rule.value,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: context.textTheme.bodyMedium?.toJetBrainsMono,
+        ),
       ),
       onPressed: () {
         onEdit(rule);
@@ -58,29 +66,19 @@ class RuleStatusItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        child: CommonCard(
-          radius: 18,
-          type: CommonCardType.filled,
-          onPressed: () {
-            onChange(!status);
-          },
-          child: ListTile(
-            minTileHeight: 0,
-            minVerticalPadding: 0,
-            titleTextStyle: context.textTheme.bodyMedium?.toJetBrainsMono,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
-            trailing: Switch(value: status, onChanged: onChange),
-            title: Text(rule.value),
-          ),
+    return DecorationListItem(
+      title: TooltipText(
+        text: Text(
+          rule.value,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: context.textTheme.bodyMedium?.toJetBrainsMono,
         ),
       ),
+      trailing: Switch(value: status, onChanged: onChange),
+      onPressed: () {
+        onChange(!status);
+      },
     );
   }
 }

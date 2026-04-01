@@ -288,6 +288,7 @@ enum FunctionTag {
   autoScrollToEnd,
   loadedProvider,
   saveSharedFile,
+  removeProxy,
 }
 
 enum DashboardWidget {
@@ -447,5 +448,26 @@ enum ItemPosition {
       position = ItemPosition.start;
     }
     return position;
+  }
+
+  static ItemPosition calculateVisualPosition<T>(
+    int currentIndex,
+    List<T> items,
+    Set<T> deletedItems,
+  ) {
+    final currentItem = items[currentIndex];
+    if (deletedItems.contains(currentItem)) {
+      return ItemPosition.middle;
+    }
+    final int visualLength = items.length - deletedItems.length;
+    if (visualLength <= 0) return ItemPosition.middle;
+    int deletedCountBeforeMe = 0;
+    for (int i = 0; i < currentIndex; i++) {
+      if (deletedItems.contains(items[i])) {
+        deletedCountBeforeMe++;
+      }
+    }
+    final int visualIndex = currentIndex - deletedCountBeforeMe;
+    return ItemPosition.get(visualIndex, visualLength);
   }
 }

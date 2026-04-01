@@ -190,19 +190,21 @@ class _EditProxyGroupView extends ConsumerStatefulWidget {
 }
 
 class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
-  Future<void> _showTypeOptions() async {
-    // final value = await globalState.showCommonDialog<GroupType>(
-    //   child: OptionsDialog<GroupType>(
-    //     title: '类型',
-    //     options: GroupType.values,
-    //     textBuilder: (item) => item.name,
-    //     value: _typeController.value,
-    //   ),
-    // );
-    // if (value == null) {
-    //   return;
-    // }
-    // _typeController.value = value;
+  Future<void> _showTypeOptions(GroupType type) async {
+    final value = await globalState.showCommonDialog<GroupType>(
+      child: OptionsDialog<GroupType>(
+        title: '类型',
+        options: GroupType.values,
+        textBuilder: (item) => item.name,
+        value: type,
+      ),
+    );
+    if (value == null) {
+      return;
+    }
+    ref
+        .read(proxyGroupProvider.notifier)
+        .update((state) => state.copyWith(type: value));
   }
 
   Widget _buildItem({
@@ -281,6 +283,146 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     );
   }
 
+  Widget _buildFilterItem(String? filter) {
+    return _buildItem(
+      title: Text('节点过滤器'),
+      trailing: TextFormField(
+        textAlign: TextAlign.end,
+        initialValue: filter,
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update((state) => state.copyWith(filter: value));
+        },
+        decoration: InputDecoration.collapsed(
+          border: NoInputBorder(),
+          hintText: '可选',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMaxFailedTimesItem(int? maxFailedTimes) {
+    return _buildItem(
+      title: Text('最大失败次数'),
+      trailing: TextFormField(
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        textAlign: TextAlign.end,
+        initialValue: maxFailedTimes?.toString(),
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update(
+                (state) => state.copyWith(maxFailedTimes: int.tryParse(value)),
+              );
+        },
+        decoration: InputDecoration.collapsed(
+          border: NoInputBorder(),
+          hintText: '可选',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUrlItem(String? url) {
+    return _buildItem(
+      title: Text('测试链接'),
+      trailing: TextFormField(
+        keyboardType: TextInputType.url,
+        textAlign: TextAlign.end,
+        initialValue: url,
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update((state) => state.copyWith(url: value));
+        },
+        decoration: InputDecoration.collapsed(
+          border: NoInputBorder(),
+          hintText: '可选',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildIntervalItem(int? interval) {
+    return _buildItem(
+      title: Text('测试间隔'),
+      trailing: TextFormField(
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        textAlign: TextAlign.end,
+        initialValue: interval?.toString(),
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update((state) => state.copyWith(interval: int.tryParse(value)));
+        },
+        decoration: InputDecoration.collapsed(
+          border: NoInputBorder(),
+          hintText: '可选',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExcludeFilterItem(String? excludeFilter) {
+    return _buildItem(
+      title: Text('排除节点过滤器'),
+      trailing: TextFormField(
+        textAlign: TextAlign.end,
+        initialValue: excludeFilter,
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update((state) => state.copyWith(excludeFilter: value));
+        },
+        decoration: InputDecoration.collapsed(
+          border: NoInputBorder(),
+          hintText: '可选',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExcludeTypeItem(String? type) {
+    return _buildItem(
+      title: Text('排除类型'),
+      trailing: TextFormField(
+        textAlign: TextAlign.end,
+        initialValue: type,
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update((state) => state.copyWith(excludeType: value));
+        },
+        decoration: InputDecoration.collapsed(
+          border: NoInputBorder(),
+          hintText: '可选',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildExpectedStatusItem(String? expectedStatus) {
+    return _buildItem(
+      title: Text('预期状态'),
+      trailing: TextFormField(
+        textAlign: TextAlign.end,
+        initialValue: expectedStatus,
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update((state) => state.copyWith(expectedStatus: value));
+        },
+        decoration: InputDecoration.collapsed(
+          border: NoInputBorder(),
+          hintText: '可选',
+        ),
+      ),
+    );
+  }
+
   Widget _buildProxiesItem(bool includeAllProxies, List<String> proxies) {
     return _buildItem(
       title: Text('选择代理'),
@@ -322,9 +464,24 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     return _buildItem(
       title: Text('类型'),
       onPressed: () {
-        _showTypeOptions();
+        _showTypeOptions(type);
       },
       trailing: Text(type.name),
+    );
+  }
+
+  Widget _buildIconItem(String? icon) {
+    return _buildItem(
+      title: Text('图标'),
+      onPressed: () {
+        // _showTypeOptions(type);
+      },
+      trailing: Text(
+        icon ?? '可选',
+        style: context.textTheme.bodyLarge?.copyWith(
+          color: icon == null ? context.colorScheme.onSurfaceVariant : null,
+        ),
+      ),
     );
   }
 
@@ -333,7 +490,11 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
       title: Text('名称'),
       trailing: TextFormField(
         initialValue: name,
-        onChanged: (value) {},
+        onChanged: (value) {
+          ref
+              .read(proxyGroupProvider.notifier)
+              .update((state) => state.copyWith(name: value));
+        },
         textAlign: TextAlign.end,
         decoration: InputDecoration.collapsed(
           border: NoInputBorder(),
@@ -343,40 +504,78 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     );
   }
 
-  Widget _buildHiddenItem(bool hidden) {
+  Widget _buildHiddenItem(bool? hidden) {
+    void handleChangeHidden() {
+      ref
+          .read(proxyGroupProvider.notifier)
+          .update((state) => state.copyWith(hidden: !(hidden ?? false)));
+    }
+
     return _buildItem(
       title: Text('从列表中隐藏'),
-      onPressed: () {
-        // _hideController.value = !_hideController.value;
-      },
+      onPressed: handleChangeHidden,
       trailing: Switch(
-        value: hidden,
-        onChanged: (value) {
-          // _hideController.value = value;
+        value: hidden ?? false,
+        onChanged: (_) {
+          handleChangeHidden();
         },
       ),
     );
   }
 
-  Widget _buildDisableUDPItem(bool disableUDP) {
+  Widget _buildLazyItem(bool? lazy) {
+    void handleChangeLazy() {
+      ref
+          .read(proxyGroupProvider.notifier)
+          .update((state) => state.copyWith(lazy: !(lazy ?? false)));
+    }
+
     return _buildItem(
-      title: Text('禁用UDP'),
-      onPressed: () {
-        // _disableUDPController.value = !_disableUDPController.value;
-      },
+      title: Text('使用时测试'),
+      onPressed: handleChangeLazy,
       trailing: Switch(
-        value: disableUDP,
-        onChanged: (value) {
-          // _disableUDPController.value = value;
+        value: lazy ?? false,
+        onChanged: (_) {
+          handleChangeLazy();
         },
       ),
     );
+  }
+
+  Widget _buildDisableUDPItem(bool? disableUDP) {
+    void handleChangeDisableUDP() {
+      ref
+          .read(proxyGroupProvider.notifier)
+          .update(
+            (state) => state.copyWith(disableUDP: !(disableUDP ?? false)),
+          );
+    }
+
+    return _buildItem(
+      title: Text('禁用UDP'),
+      onPressed: handleChangeDisableUDP,
+      trailing: Switch(
+        value: disableUDP ?? false,
+        onChanged: (_) {
+          handleChangeDisableUDP();
+        },
+      ),
+    );
+  }
+
+  void _handleDelete(int profileId, String name) {
+    ref.read(proxyGroupsProvider(profileId).notifier).del(name);
+    final popCb = SheetProvider.of(context)?.nestedNavigatorPopCallback;
+    if (popCb != null) {
+      popCb();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
+    final profileId = ProfileIdProvider.of(context)!.profileId;
     final proxyGroup = ref.watch(proxyGroupProvider);
     return AdaptiveSheetScaffold(
       sheetTransparentToolBar: true,
@@ -395,9 +594,9 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               items: [
                 _buildNameItem(proxyGroup.name),
                 _buildTypeItem(proxyGroup.type),
-                _buildItem(title: Text('图标')),
-                _buildHiddenItem(proxyGroup.hidden ?? false),
-                _buildDisableUDPItem(proxyGroup.disableUDP ?? false),
+                _buildIconItem(proxyGroup.icon),
+                _buildHiddenItem(proxyGroup.hidden),
+                _buildDisableUDPItem(proxyGroup.disableUDP),
               ],
             ),
             generateSectionV3(
@@ -411,90 +610,36 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
                   proxyGroup.includeAllProviders ?? false,
                   proxyGroup.use ?? [],
                 ),
-                _buildItem(
-                  title: Text('节点过滤器'),
-                  trailing: TextFormField(
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration.collapsed(
-                      border: NoInputBorder(),
-                      hintText: '可选',
-                    ),
-                  ),
-                ),
-                _buildItem(
-                  title: Text('排除过滤器'),
-                  trailing: TextFormField(
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration.collapsed(
-                      border: NoInputBorder(),
-                      hintText: '可选',
-                    ),
-                  ),
-                ),
-                _buildItem(
-                  title: Text('排除类型'),
-                  trailing: TextFormField(
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration.collapsed(
-                      border: NoInputBorder(),
-                      hintText: '可选',
-                    ),
-                  ),
-                ),
-                _buildItem(
-                  title: Text('预期状态'),
-                  trailing: TextFormField(
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration.collapsed(
-                      border: NoInputBorder(),
-                      hintText: '可选',
-                    ),
-                  ),
-                ),
+                _buildFilterItem(proxyGroup.filter),
+                _buildExcludeFilterItem(proxyGroup.excludeFilter),
+                _buildExcludeTypeItem(proxyGroup.excludeType),
+                _buildExpectedStatusItem(proxyGroup.expectedStatus),
               ],
             ),
             generateSectionV3(
               title: '其他',
               items: [
-                _buildItem(
-                  title: Text('测速链接'),
-                  trailing: TextFormField(
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration.collapsed(
-                      border: NoInputBorder(),
-                      hintText: '可选',
-                    ),
-                  ),
-                ),
-                _buildItem(
-                  title: Text('最大失败次数'),
-                  trailing: TextFormField(
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration.collapsed(
-                      border: NoInputBorder(),
-                      hintText: '可选',
-                    ),
-                  ),
-                ),
-                _buildItem(
-                  title: Text('使用时测速'),
-                  trailing: Switch(value: false, onChanged: (_) {}),
-                ),
-                _buildItem(
-                  title: Text('测速间隔'),
-                  trailing: TextFormField(
-                    textAlign: TextAlign.end,
-                    decoration: InputDecoration.collapsed(
-                      border: NoInputBorder(),
-                      hintText: '可选',
-                    ),
-                  ),
-                ),
+                _buildUrlItem(proxyGroup.url),
+                _buildMaxFailedTimesItem(proxyGroup.maxFailedTimes),
+                _buildLazyItem(proxyGroup.lazy),
+                _buildIntervalItem(proxyGroup.interval),
               ],
             ),
             generateSectionV3(
               title: '操作',
-              items: [_buildItem(title: Text('删除'), onPressed: () {})],
+              items: [
+                _buildItem(
+                  title: Text(
+                    '删除',
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colorScheme.error,
+                    ),
+                  ),
+                  onPressed: () {
+                    _handleDelete(profileId, proxyGroup.name);
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -511,11 +656,49 @@ class _EditProxiesView extends ConsumerStatefulWidget {
   ConsumerState<_EditProxiesView> createState() => _EditProxiesViewState();
 }
 
-class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
+class _EditProxiesViewState extends ConsumerState<_EditProxiesView>
+    with UniqueKeyStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(itemsProvider(key), (prev, next) {
+      if (!SetEquality().equals(prev, next)) {
+        _handleRealRemove();
+      }
+    });
+  }
+
   void _handleToAddProxiesView() {
     Navigator.of(
       context,
     ).push(PagedSheetRoute(builder: (context) => _AddProxiesView()));
+  }
+
+  void _handleRemove(String proxyName) {
+    ref.read(itemsProvider(key).notifier).update((state) {
+      final newSet = Set.from(state);
+      newSet.add(proxyName);
+      return newSet;
+    });
+  }
+
+  void _handleRealRemove() {
+    debouncer.call(
+      'EditProxiesViewState_handleRealRemove',
+      () {
+        if (!ref.context.mounted) {
+          return;
+        }
+        final dismissItems = ref.read(itemsProvider(key));
+        ref.read(proxyGroupProvider.notifier).update((state) {
+          final newProxies = List<String>.from(state.proxies ?? []);
+          newProxies.removeWhere((state) => dismissItems.contains(state));
+          return state.copyWith(proxies: newProxies);
+        });
+        ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
+      },
+      duration: Duration(milliseconds: 450),
+    );
   }
 
   Widget _buildItem({
@@ -523,39 +706,79 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
     required String? proxyType,
     required int index,
     required int length,
+    required ItemPosition position,
+    required bool dismiss,
   }) {
-    final position = ItemPosition.get(index, length);
-    return Container(
-      key: Key(proxyName),
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: ItemPositionProvider(
-        position: position,
-        child: DecorationListItem(
-          minVerticalPadding: 8,
-          title: Text(proxyName),
-          subtitle: Text(proxyType ?? proxyName.toLowerCase()),
-          leading: CommonMinIconButtonTheme(
-            child: IconButton.filledTonal(
-              onPressed: () {},
-              icon: Icon(Icons.remove, size: 18),
-              padding: EdgeInsets.zero,
+    return ExternalDismissible(
+      dismiss: dismiss,
+      key: ValueKey(proxyName),
+      onDismissed: _handleRealRemove,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: ItemPositionProvider(
+          position: position,
+          child: DecorationListItem(
+            minVerticalPadding: 8,
+            title: Text(proxyName),
+            subtitle: Text(proxyType ?? proxyName.toLowerCase()),
+            leading: CommonMinIconButtonTheme(
+              child: IconButton.filledTonal(
+                onPressed: () {
+                  _handleRemove(proxyName);
+                },
+                icon: Icon(Icons.remove, size: 18),
+                padding: EdgeInsets.zero,
+              ),
             ),
-          ),
-          trailing: ReorderableDelayedDragStartListener(
-            index: index,
-            child: Icon(Icons.drag_handle),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ReorderableDelayedDragStartListener(
+                  index: index,
+                  child: Icon(Icons.drag_handle, size: 24),
+                ),
+                SizedBox(width: 12),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
+  void _handleReorder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    ref.read(proxyGroupProvider.notifier).update((state) {
+      final nextItems = List<String>.from(state.proxies ?? []);
+      final item = nextItems.removeAt(oldIndex);
+      nextItems.insert(newIndex, item);
+      return state.copyWith(proxies: nextItems);
+    });
+  }
+
+  void _handleChangeIncludeAllProxies() {
+    ref
+        .read(proxyGroupProvider.notifier)
+        .update(
+          (state) => state.copyWith(
+            includeAllProxies: !(state.includeAllProxies ?? false),
+          ),
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileId = ProfileIdProvider.of(context)!.profileId;
-    final proxyNames = ref.watch(
-      proxyGroupProvider.select((state) => state.proxies ?? []),
+    final vm2 = ref.watch(
+      proxyGroupProvider.select(
+        (state) => VM2(state.includeAllProxies ?? false, state.proxies ?? []),
+      ),
     );
+    final dismissItems = ref.watch(itemsProvider(key));
+    final includeAllProxies = vm2.a;
+    final proxyNames = vm2.b;
     final proxyTypeMap =
         ref.watch(
           clashConfigProvider(
@@ -586,7 +809,12 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
                   child: ListItem.switchItem(
                     minTileHeight: 54,
                     title: Text('包含所有代理'),
-                    delegate: SwitchDelegate(value: false, onChanged: (_) {}),
+                    delegate: SwitchDelegate(
+                      value: includeAllProxies,
+                      onChanged: (_) {
+                        _handleChangeIncludeAllProxies();
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -608,23 +836,31 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
                 ),
               ),
             ),
-            SliverReorderableList(
-              itemBuilder: (_, index) {
-                final proxyName = proxyNames[index];
-                return _buildItem(
-                  proxyName: proxyName,
-                  proxyType: proxyTypeMap[proxyName],
-                  index: index,
-                  length: proxyNames.length,
-                );
-              },
-              itemExtent:
-                  16 +
-                  globalState.measure.bodyMediumHeight +
-                  globalState.measure.bodyLargeHeight,
-              itemCount: proxyNames.length,
-              onReorder: (int oldIndex, int newIndex) {},
-            ),
+            if (proxyNames.isNotEmpty)
+              SliverReorderableList(
+                itemBuilder: (_, index) {
+                  final proxyName = proxyNames[index];
+                  final position = ItemPosition.calculateVisualPosition(
+                    index,
+                    proxyNames,
+                    dismissItems,
+                  );
+                  return _buildItem(
+                    position: position,
+                    dismiss: dismissItems.contains(proxyName),
+                    proxyName: proxyName,
+                    proxyType: proxyTypeMap[proxyName],
+                    index: index,
+                    length: proxyNames.length,
+                  );
+                },
+                itemCount: proxyNames.length,
+                onReorder: (int oldIndex, int newIndex) {
+                  _handleReorder(oldIndex, newIndex);
+                },
+              )
+            else
+              SliverFillRemaining(child: NullStatus(label: '代理为空')),
             SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
@@ -633,43 +869,100 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView> {
   }
 }
 
-class _AddProxiesView extends ConsumerWidget {
+class _AddProxiesView extends ConsumerStatefulWidget {
   const _AddProxiesView();
+
+  @override
+  ConsumerState<_AddProxiesView> createState() => _AddProxiesViewState();
+}
+
+class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
+    with UniqueKeyStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    ref.listenManual(itemsProvider('${key}_groups'), (prev, next) {
+      if (!SetEquality().equals(prev, next)) {
+        _handleRealAdd('groups');
+      }
+    });
+    ref.listenManual(itemsProvider('${key}_proxies'), (prev, next) {
+      if (!SetEquality().equals(prev, next)) {
+        _handleRealAdd('proxies');
+      }
+    });
+  }
+
+  void _handleAdd(String name, String scene) {
+    final realKey = '${key}_$scene';
+    ref.read(itemsProvider(realKey).notifier).update((state) {
+      final newSet = Set.from(state);
+      newSet.add(name);
+      return newSet;
+    });
+  }
+
+  void _handleRealAdd(String scene) {
+    debouncer.call(
+      'AddProxiesViewState_handleRealAdd_$scene',
+      () {
+        if (!ref.context.mounted) {
+          return;
+        }
+        final realKey = '${key}_$scene';
+        final dismissItems = ref.read(itemsProvider(realKey));
+        ref.read(proxyGroupProvider.notifier).update((state) {
+          return state.copyWith(
+            proxies: [...state.proxies ?? [], ...dismissItems],
+          );
+        });
+        ref
+            .read(itemsProvider(realKey).notifier)
+            .update((state) => <dynamic>{});
+      },
+      duration: Duration(milliseconds: 350),
+    );
+  }
 
   Widget _buildItem({
     required String title,
     required String subtitle,
     required ItemPosition position,
-    Widget? trailing,
+    required bool dismiss,
+    required VoidCallback onAdd,
   }) {
-    return Container(
-      key: Key(title),
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: ItemPositionProvider(
-        position: position,
-        child: DecorationListItem(
-          minVerticalPadding: 8,
-          title: Text(title),
-          subtitle: Text(subtitle),
-          trailing: trailing,
+    return ExternalDismissible(
+      effect: ExternalDismissibleEffect.resize,
+      key: ValueKey(title),
+      dismiss: dismiss,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: ItemPositionProvider(
+          position: position,
+          child: DecorationListItem(
+            minVerticalPadding: 8,
+            title: Text(title),
+            subtitle: Text(subtitle),
+            trailing: CommonMinIconButtonTheme(
+              child: IconButton.filledTonal(
+                onPressed: onAdd,
+                icon: Icon(Icons.add, size: 18),
+                padding: EdgeInsets.zero,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  void _handleAdd(WidgetRef ref, String name) {
-    ref
-        .read(proxyGroupProvider.notifier)
-        .update(
-          (state) => state.copyWith(proxies: [...state.proxies ?? [], name]),
-        );
-  }
-
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context) {
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final profileId = ProfileIdProvider.of(context)!.profileId;
+    final dismissGroups = ref.watch(itemsProvider('${key}_groups'));
+    final dismissProxies = ref.watch(itemsProvider('${key}_proxies'));
     final allProxiesAndProxyGroups = ref.watch(
       clashConfigProvider(profileId).select(
         (state) =>
@@ -678,17 +971,19 @@ class _AddProxiesView extends ConsumerWidget {
     );
     final allProxies = allProxiesAndProxyGroups.a;
     final allProxyGroups = allProxiesAndProxyGroups.b;
-    final proxyNames = ref.watch(
+    final excludeProxyNames = ref.watch(
       proxyGroupProvider.select((state) {
         return [...?state.proxies, state.name];
       }),
     );
-    final proxies = allProxies
-        .where((item) => !proxyNames.contains(item.name))
-        .toList();
     final proxyGroups = allProxyGroups
-        .where((item) => !proxyNames.contains(item.name))
+        .where((item) => !excludeProxyNames.contains(item.name))
         .toList();
+    final proxies = allProxies
+        .where((item) => !excludeProxyNames.contains(item.name))
+        .toList();
+    final groupNames = proxyGroups.map((item) => item.name).toList();
+    final proxyNames = proxies.map((item) => item.name).toList();
     return SizedBox(
       height: isBottomSheet
           ? appController.viewSize.height * 0.80
@@ -696,70 +991,70 @@ class _AddProxiesView extends ConsumerWidget {
       child: AdaptiveSheetScaffold(
         sheetTransparentToolBar: true,
         title: '添加代理',
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(height: context.sheetTopPadding),
-            ),
-            if (proxyGroups.isNotEmpty) ...[
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: InfoHeader(info: Info(label: '策略组')),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate((_, index) {
-                  final proxyGroup = proxyGroups[index];
-                  final position = ItemPosition.get(index, proxyGroups.length);
-                  return _buildItem(
-                    title: proxyGroup.name,
-                    subtitle: proxyGroup.type.value,
-                    position: position,
-                    trailing: CommonMinIconButtonTheme(
-                      child: IconButton.filledTonal(
-                        onPressed: () {
-                          _handleAdd(ref, proxyGroup.name);
-                        },
-                        icon: Icon(Icons.add, size: 18),
-                        padding: EdgeInsets.zero,
+        body: proxies.isEmpty && proxyGroups.isEmpty
+            ? NullStatus(label: appLocalizations.noData)
+            : CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SizedBox(height: context.sheetTopPadding),
+                  ),
+                  if (proxyGroups.isNotEmpty) ...[
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      sliver: SliverToBoxAdapter(
+                        child: InfoHeader(info: Info(label: '策略组')),
                       ),
                     ),
-                  );
-                }, childCount: proxyGroups.length),
-              ),
-              SliverToBoxAdapter(child: SizedBox(height: 8)),
-            ],
-            if (proxies.isNotEmpty) ...[
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: InfoHeader(info: Info(label: '代理')),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate((_, index) {
-                  final proxy = proxies[index];
-                  final position = ItemPosition.get(index, proxies.length);
-                  return _buildItem(
-                    title: proxy.name,
-                    subtitle: proxy.type,
-                    position: position,
-                    trailing: CommonMinIconButtonTheme(
-                      child: IconButton.filledTonal(
-                        onPressed: () {
-                          _handleAdd(ref, proxy.name);
-                        },
-                        icon: Icon(Icons.add, size: 18),
-                        padding: EdgeInsets.zero,
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((_, index) {
+                        final proxyGroup = proxyGroups[index];
+                        final position = ItemPosition.calculateVisualPosition(
+                          index,
+                          groupNames,
+                          dismissGroups,
+                        );
+                        return _buildItem(
+                          title: proxyGroup.name,
+                          subtitle: proxyGroup.type.value,
+                          position: position,
+                          dismiss: dismissGroups.contains(proxyGroup.name),
+                          onAdd: () {
+                            _handleAdd(proxyGroup.name, 'groups');
+                          },
+                        );
+                      }, childCount: proxyGroups.length),
+                    ),
+                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                  ],
+                  if (proxies.isNotEmpty) ...[
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      sliver: SliverToBoxAdapter(
+                        child: InfoHeader(info: Info(label: '代理')),
                       ),
                     ),
-                  );
-                }, childCount: proxies.length),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((_, index) {
+                        final proxy = proxies[index];
+                        final position = ItemPosition.calculateVisualPosition(
+                          index,
+                          proxyNames,
+                          dismissProxies,
+                        );
+                        return _buildItem(
+                          title: proxy.name,
+                          subtitle: proxy.type,
+                          position: position,
+                          dismiss: dismissProxies.contains(proxy.name),
+                          onAdd: () {
+                            _handleAdd(proxy.name, 'proxies');
+                          },
+                        );
+                      }, childCount: proxies.length),
+                    ),
+                  ],
+                ],
               ),
-            ],
-          ],
-        ),
       ),
     );
   }

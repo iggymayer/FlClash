@@ -694,24 +694,31 @@ class DecorationListItem extends StatelessWidget {
         padding: EdgeInsets.zero,
         type: CommonCardType.filled,
         onPressed: onPressed,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: ListTile(
-                leading: leading,
-                contentPadding: const EdgeInsets.only(right: 16, left: 16),
-                title: title,
-                subtitle: subtitle,
-                minVerticalPadding: minVerticalPadding,
-                minTileHeight: 54,
-                trailing: trailing,
-              ),
-            ),
-            if (isDecorator != true && !isEnd)
-              Divider(height: 0, indent: 14, endIndent: 14),
-          ],
+        child: LayoutBuilder(
+          builder: (_, constraints) {
+            final isInfinite = constraints.maxHeight >= double.infinity;
+            final tile = ListTile(
+              leading: leading,
+              contentPadding: const EdgeInsets.only(right: 16, left: 16),
+              title: title,
+              subtitle: subtitle,
+              minVerticalPadding: minVerticalPadding,
+              minTileHeight: 54,
+              trailing: trailing,
+            );
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  fit: isInfinite ? FlexFit.loose : FlexFit.tight,
+                  child: tile,
+                ),
+                if (isDecorator != true && !isEnd)
+                  Divider(height: 0, indent: 14, endIndent: 14),
+              ],
+            );
+          },
         ),
       ),
     );
