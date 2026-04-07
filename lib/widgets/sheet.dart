@@ -155,8 +155,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = SheetProvider.of(context);
-    final nestedNavigatorPopCallback =
-        sheetProvider?.nestedNavigatorPopCallback;
+    final nestedNavigatorPop = sheetProvider?.nestedNavigatorPop;
     final ModalRoute<dynamic>? route = ModalRoute.of(context);
     final type = sheetProvider?.type ?? SheetType.page;
     final backgroundColor = type == SheetType.bottomSheet
@@ -164,9 +163,8 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
         : context.colorScheme.surface;
     final useCloseIcon =
         type != SheetType.page &&
-        (nestedNavigatorPopCallback != null &&
-                route?.impliesAppBarDismissal == false ||
-            nestedNavigatorPopCallback == null);
+        (nestedNavigatorPop != null && route?.impliesAppBarDismissal == false ||
+            nestedNavigatorPop == null);
     Widget buildIconButton(IconButtonData data) {
       if (type == SheetType.bottomSheet) {
         return IconButton.filledTonal(
@@ -196,11 +194,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
                   IconButtonData(
                     icon: Icons.close,
                     onPressed: () {
-                      if (nestedNavigatorPopCallback != null) {
-                        nestedNavigatorPopCallback();
-                      } else {
-                        Navigator.of(context).pop();
-                      }
+                      context.safePop();
                     },
                   ),
                 )

@@ -145,8 +145,8 @@ class _EditProxyGroupNestedSheet extends StatelessWidget {
         return false;
       },
       child: sheetProvider!.copyWith(
-        nestedNavigatorPopCallback: () {
-          Navigator.of(context).pop();
+        nestedNavigatorPop: ([data]) {
+          Navigator.of(context).pop(data);
         },
         child: Stack(
           children: [
@@ -205,6 +205,15 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     ref
         .read(proxyGroupProvider.notifier)
         .update((state) => state.copyWith(type: value));
+  }
+
+  Future<void> _showIconEdit(String? icon) async {
+    final value = await globalState.showCommonDialog<GroupType>(
+      child: _IconEditDialog(),
+    );
+    if (value == null) {
+      return;
+    }
   }
 
   Widget _buildItem({
@@ -474,7 +483,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     return _buildItem(
       title: Text('图标'),
       onPressed: () {
-        // _showTypeOptions(type);
+        _showIconEdit(icon);
       },
       trailing: Text(
         icon ?? '可选',
@@ -565,10 +574,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
 
   void _handleDelete(int profileId, String name) {
     ref.read(proxyGroupsProvider(profileId).notifier).del(name);
-    final popCb = SheetProvider.of(context)?.nestedNavigatorPopCallback;
-    if (popCb != null) {
-      popCb();
-    }
+    context.safePop();
   }
 
   @override
@@ -1055,6 +1061,88 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
                   ],
                 ],
               ),
+      ),
+    );
+  }
+}
+
+class _IconEditDialog extends StatefulWidget {
+  final String? value;
+
+  const _IconEditDialog({this.value});
+
+  @override
+  State<_IconEditDialog> createState() => _IconEditDialogState();
+}
+
+class _IconEditDialogState extends State<_IconEditDialog> {
+  void _handleSearch(String value) {
+    print(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CommonDialog(
+      title: '图标',
+      actions: [
+        TextButton(
+          onPressed: context.safePop,
+          child: Text(appLocalizations.cancel),
+        ),
+        TextButton(onPressed: () {}, child: Text(appLocalizations.save)),
+      ],
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.value != null)
+                CommonTargetIcon(src: widget.value!, size: 50),
+              Flexible(
+                child: IntrinsicHeight(
+                  child: CommonCard(
+                    child: ListItem(
+                      minTileHeight: 54,
+                      title: TextField(
+                        keyboardType: TextInputType.url,
+                        onChanged: (value) {
+                          _handleSearch(value);
+                        },
+                        decoration: InputDecoration.collapsed(
+                          border: NoInputBorder(),
+                          hintText: '图标链接',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Expanded(
+          //   child: Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       CommonCard(
+          //         child: ListItem(
+          //           minTileHeight: 54,
+          //           title: TextField(
+          //             onChanged: (value) {
+          //               _handleSearch(value);
+          //             },
+          //             decoration: InputDecoration.collapsed(
+          //               border: NoInputBorder(),
+          //               hintText: '图标链接',
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
+        ],
       ),
     );
   }

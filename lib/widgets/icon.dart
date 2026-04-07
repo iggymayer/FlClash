@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
@@ -58,6 +59,7 @@ class ImageCacheWidget extends StatefulWidget {
 
 class _ImageCacheWidgetState extends State<ImageCacheWidget> {
   final ValueNotifier<File?> _imageNotifier = ValueNotifier(null);
+  StreamSubscription? _streamSubscription;
 
   @override
   void initState() {
@@ -65,26 +67,22 @@ class _ImageCacheWidgetState extends State<ImageCacheWidget> {
     _getImageFormCache();
   }
 
-  void _getImageFormCache() async {
+  void _getImageFormCache() {
     final src = widget.src;
-    final cacheFile = await _cacheMange.getFileFromCache(src);
-    if (!mounted) {
+    if (src.isEmpty) {
       return;
     }
-    if (cacheFile != null) {
-      _imageNotifier.value = cacheFile.file;
-      if (cacheFile.validTill.isAfter(DateTime.now())) {
-        return;
+    _streamSubscription?.cancel();
+    _streamSubscription = _cacheMange.getFileStream(src).listen((data) {
+      if (mounted && data is FileInfo) {
+        _imageNotifier.value = data.file;
       }
-    }
-    if (!mounted) {
-      return;
-    }
-    _imageNotifier.value = (await _cacheMange.downloadFile(src, key: src)).file;
+    });
   }
 
   @override
   void dispose() {
+    _streamSubscription?.cancel();
     _imageNotifier.dispose();
     super.dispose();
   }

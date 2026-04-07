@@ -12,6 +12,15 @@ extension BuildContextExtension on BuildContext {
     return findAncestorStateOfType<CommonScaffoldState>();
   }
 
+  void safePop<T extends Object?>([T? result]) {
+    final nestedPop = SheetProvider.of(this)?.nestedNavigatorPop;
+    if (nestedPop != null) {
+      return nestedPop();
+    } else {
+      return Navigator.of(this).pop(result);
+    }
+  }
+
   double get sheetTopPadding {
     final sheetType = SheetProvider.of(this)!.type;
     if (sheetType == SheetType.bottomSheet) {
