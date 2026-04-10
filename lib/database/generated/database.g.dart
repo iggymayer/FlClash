@@ -1602,6 +1602,15 @@ class $ProxyGroupsTable extends ProxyGroups
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $ProxyGroupsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _profileIdMeta = const VerificationMeta(
     'profileId',
   );
@@ -1835,6 +1844,7 @@ class $ProxyGroupsTable extends ProxyGroups
   );
   @override
   List<GeneratedColumn> get $columns => [
+    id,
     profileId,
     name,
     type,
@@ -1869,6 +1879,9 @@ class $ProxyGroupsTable extends ProxyGroups
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
     if (data.containsKey('profile_id')) {
       context.handle(
         _profileIdMeta,
@@ -2012,11 +2025,15 @@ class $ProxyGroupsTable extends ProxyGroups
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {profileId, name};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   RawProxyGroup map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return RawProxyGroup(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
       profileId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}profile_id'],
@@ -2124,6 +2141,7 @@ class $ProxyGroupsTable extends ProxyGroups
 }
 
 class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
+  final int id;
   final int? profileId;
   final String name;
   final String type;
@@ -2146,6 +2164,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   final String? icon;
   final String? order;
   const RawProxyGroup({
+    required this.id,
     this.profileId,
     required this.name,
     required this.type,
@@ -2171,6 +2190,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
     if (!nullToAbsent || profileId != null) {
       map['profile_id'] = Variable<int>(profileId);
     }
@@ -2239,6 +2259,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
 
   ProxyGroupsCompanion toCompanion(bool nullToAbsent) {
     return ProxyGroupsCompanion(
+      id: Value(id),
       profileId: profileId == null && nullToAbsent
           ? const Value.absent()
           : Value(profileId),
@@ -2299,6 +2320,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RawProxyGroup(
+      id: serializer.fromJson<int>(json['id']),
       profileId: serializer.fromJson<int?>(json['profileId']),
       name: serializer.fromJson<String>(json['name']),
       type: serializer.fromJson<String>(json['type']),
@@ -2328,6 +2350,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
       'profileId': serializer.toJson<int?>(profileId),
       'name': serializer.toJson<String>(name),
       'type': serializer.toJson<String>(type),
@@ -2353,6 +2376,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   }
 
   RawProxyGroup copyWith({
+    int? id,
     Value<int?> profileId = const Value.absent(),
     String? name,
     String? type,
@@ -2375,6 +2399,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
     Value<String?> icon = const Value.absent(),
     Value<String?> order = const Value.absent(),
   }) => RawProxyGroup(
+    id: id ?? this.id,
     profileId: profileId.present ? profileId.value : this.profileId,
     name: name ?? this.name,
     type: type ?? this.type,
@@ -2409,6 +2434,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   );
   RawProxyGroup copyWithCompanion(ProxyGroupsCompanion data) {
     return RawProxyGroup(
+      id: data.id.present ? data.id.value : this.id,
       profileId: data.profileId.present ? data.profileId.value : this.profileId,
       name: data.name.present ? data.name.value : this.name,
       type: data.type.present ? data.type.value : this.type,
@@ -2452,6 +2478,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   @override
   String toString() {
     return (StringBuffer('RawProxyGroup(')
+          ..write('id: $id, ')
           ..write('profileId: $profileId, ')
           ..write('name: $name, ')
           ..write('type: $type, ')
@@ -2479,6 +2506,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
 
   @override
   int get hashCode => Object.hashAll([
+    id,
     profileId,
     name,
     type,
@@ -2505,6 +2533,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RawProxyGroup &&
+          other.id == this.id &&
           other.profileId == this.profileId &&
           other.name == this.name &&
           other.type == this.type &&
@@ -2529,6 +2558,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
 }
 
 class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
+  final Value<int> id;
   final Value<int?> profileId;
   final Value<String> name;
   final Value<String> type;
@@ -2550,8 +2580,8 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
   final Value<bool?> hidden;
   final Value<String?> icon;
   final Value<String?> order;
-  final Value<int> rowid;
   const ProxyGroupsCompanion({
+    this.id = const Value.absent(),
     this.profileId = const Value.absent(),
     this.name = const Value.absent(),
     this.type = const Value.absent(),
@@ -2573,9 +2603,9 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     this.hidden = const Value.absent(),
     this.icon = const Value.absent(),
     this.order = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   ProxyGroupsCompanion.insert({
+    this.id = const Value.absent(),
     this.profileId = const Value.absent(),
     required String name,
     required String type,
@@ -2597,10 +2627,10 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     this.hidden = const Value.absent(),
     this.icon = const Value.absent(),
     this.order = const Value.absent(),
-    this.rowid = const Value.absent(),
   }) : name = Value(name),
        type = Value(type);
   static Insertable<RawProxyGroup> custom({
+    Expression<int>? id,
     Expression<int>? profileId,
     Expression<String>? name,
     Expression<String>? type,
@@ -2622,9 +2652,9 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     Expression<bool>? hidden,
     Expression<String>? icon,
     Expression<String>? order,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (id != null) 'id': id,
       if (profileId != null) 'profile_id': profileId,
       if (name != null) 'name': name,
       if (type != null) 'type': type,
@@ -2647,11 +2677,11 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
       if (hidden != null) 'hidden': hidden,
       if (icon != null) 'icon': icon,
       if (order != null) 'order': order,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
   ProxyGroupsCompanion copyWith({
+    Value<int>? id,
     Value<int?>? profileId,
     Value<String>? name,
     Value<String>? type,
@@ -2673,9 +2703,9 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     Value<bool?>? hidden,
     Value<String?>? icon,
     Value<String?>? order,
-    Value<int>? rowid,
   }) {
     return ProxyGroupsCompanion(
+      id: id ?? this.id,
       profileId: profileId ?? this.profileId,
       name: name ?? this.name,
       type: type ?? this.type,
@@ -2697,13 +2727,15 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
       hidden: hidden ?? this.hidden,
       icon: icon ?? this.icon,
       order: order ?? this.order,
-      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
     if (profileId.present) {
       map['profile_id'] = Variable<int>(profileId.value);
     }
@@ -2771,15 +2803,13 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     if (order.present) {
       map['order'] = Variable<String>(order.value);
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('ProxyGroupsCompanion(')
+          ..write('id: $id, ')
           ..write('profileId: $profileId, ')
           ..write('name: $name, ')
           ..write('type: $type, ')
@@ -2800,8 +2830,7 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
           ..write('includeAllProviders: $includeAllProviders, ')
           ..write('hidden: $hidden, ')
           ..write('icon: $icon, ')
-          ..write('order: $order, ')
-          ..write('rowid: $rowid')
+          ..write('order: $order')
           ..write(')'))
         .toString();
   }
@@ -4466,6 +4495,7 @@ typedef $$ProfileRuleLinksTableProcessedTableManager =
     >;
 typedef $$ProxyGroupsTableCreateCompanionBuilder =
     ProxyGroupsCompanion Function({
+      Value<int> id,
       Value<int?> profileId,
       required String name,
       required String type,
@@ -4487,10 +4517,10 @@ typedef $$ProxyGroupsTableCreateCompanionBuilder =
       Value<bool?> hidden,
       Value<String?> icon,
       Value<String?> order,
-      Value<int> rowid,
     });
 typedef $$ProxyGroupsTableUpdateCompanionBuilder =
     ProxyGroupsCompanion Function({
+      Value<int> id,
       Value<int?> profileId,
       Value<String> name,
       Value<String> type,
@@ -4512,7 +4542,6 @@ typedef $$ProxyGroupsTableUpdateCompanionBuilder =
       Value<bool?> hidden,
       Value<String?> icon,
       Value<String?> order,
-      Value<int> rowid,
     });
 
 final class $$ProxyGroupsTableReferences
@@ -4548,6 +4577,11 @@ class $$ProxyGroupsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnFilters(column),
@@ -4683,6 +4717,11 @@ class $$ProxyGroupsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -4816,6 +4855,9 @@ class $$ProxyGroupsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -4944,6 +4986,7 @@ class $$ProxyGroupsTableTableManager
               $$ProxyGroupsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
+                Value<int> id = const Value.absent(),
                 Value<int?> profileId = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> type = const Value.absent(),
@@ -4965,8 +5008,8 @@ class $$ProxyGroupsTableTableManager
                 Value<bool?> hidden = const Value.absent(),
                 Value<String?> icon = const Value.absent(),
                 Value<String?> order = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => ProxyGroupsCompanion(
+                id: id,
                 profileId: profileId,
                 name: name,
                 type: type,
@@ -4988,10 +5031,10 @@ class $$ProxyGroupsTableTableManager
                 hidden: hidden,
                 icon: icon,
                 order: order,
-                rowid: rowid,
               ),
           createCompanionCallback:
               ({
+                Value<int> id = const Value.absent(),
                 Value<int?> profileId = const Value.absent(),
                 required String name,
                 required String type,
@@ -5013,8 +5056,8 @@ class $$ProxyGroupsTableTableManager
                 Value<bool?> hidden = const Value.absent(),
                 Value<String?> icon = const Value.absent(),
                 Value<String?> order = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => ProxyGroupsCompanion.insert(
+                id: id,
                 profileId: profileId,
                 name: name,
                 type: type,
@@ -5036,7 +5079,6 @@ class $$ProxyGroupsTableTableManager
                 hidden: hidden,
                 icon: icon,
                 order: order,
-                rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
               .map(

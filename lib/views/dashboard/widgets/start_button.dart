@@ -74,13 +74,13 @@ class _StartButtonState extends ConsumerState<StartButton>
     if (!hasProfile) {
       return Container();
     }
+    final theme = Theme.of(context);
     return RepaintBoundary(
       child: Theme(
-        data: Theme.of(context).copyWith(
-          floatingActionButtonTheme: Theme.of(context).floatingActionButtonTheme
-              .copyWith(
-                sizeConstraints: BoxConstraints(minWidth: 56, maxWidth: 200),
-              ),
+        data: theme.copyWith(
+          floatingActionButtonTheme: theme.floatingActionButtonTheme.copyWith(
+            sizeConstraints: BoxConstraints(minWidth: 56, maxWidth: 200),
+          ),
         ),
         child: AnimatedBuilder(
           animation: _controller!.view,

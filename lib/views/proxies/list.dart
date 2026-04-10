@@ -442,9 +442,9 @@ class _ListHeaderState extends State<ListHeader> {
                       color: context.colorScheme.secondaryContainer,
                     ),
                     clipBehavior: Clip.antiAlias,
-                    child: CommonTargetIcon(
-                      src: icon,
-                      size: constraints.maxHeight - 12.ap,
+                    child: IconTheme.merge(
+                      data: IconThemeData(size: constraints.maxHeight - 12.ap),
+                      child: CommonTargetIcon(src: icon),
                     ),
                   ),
                 ),
@@ -455,9 +455,9 @@ class _ListHeaderState extends State<ListHeader> {
             margin: const EdgeInsets.only(right: 16),
             child: LayoutBuilder(
               builder: (_, constraints) {
-                return CommonTargetIcon(
-                  src: icon,
-                  size: constraints.maxHeight - 8,
+                return IconTheme.merge(
+                  data: IconThemeData(size: constraints.maxHeight - 8.ap),
+                  child: CommonTargetIcon(src: icon),
                 );
               },
             ),

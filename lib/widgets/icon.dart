@@ -8,12 +8,11 @@ import 'package:flutter_svg/svg.dart';
 
 class CommonTargetIcon extends StatelessWidget {
   final String src;
-  final double size;
 
-  const CommonTargetIcon({super.key, required this.src, required this.size});
+  const CommonTargetIcon({super.key, required this.src});
 
   Widget _defaultIcon() {
-    return Icon(IconsExt.target, size: size);
+    return Icon(IconsExt.target);
   }
 
   Widget _buildIcon() {
@@ -37,7 +36,7 @@ class CommonTargetIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(width: size, height: size, child: _buildIcon());
+    return _buildIcon();
   }
 }
 
@@ -67,7 +66,16 @@ class _ImageCacheWidgetState extends State<ImageCacheWidget> {
     _getImageFormCache();
   }
 
+  @override
+  void didUpdateWidget(covariant ImageCacheWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.src != widget.src) {
+      _getImageFormCache();
+    }
+  }
+
   void _getImageFormCache() {
+    _imageNotifier.value = null;
     final src = widget.src;
     if (src.isEmpty) {
       return;

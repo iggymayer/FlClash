@@ -14,7 +14,11 @@ class _CustomProxyGroupsView extends ConsumerWidget {
     ref.read(proxyGroupsProvider(profileId).notifier).order(oldIndex, newIndex);
   }
 
-  void _handleEditProxyGroup(BuildContext context, ProxyGroup proxyGroup) {
+  void _handleEditProxyGroup(
+    BuildContext context,
+    ProxyGroup proxyGroup,
+    int index,
+  ) {
     showSheet(
       context: context,
       props: SheetProps(
@@ -29,7 +33,7 @@ class _CustomProxyGroupsView extends ConsumerWidget {
             overrides: [
               proxyGroupProvider.overrideWithBuild((_, __) => proxyGroup),
             ],
-            child: _EditProxyGroupNestedSheet(),
+            child: _EditProxyGroupNestedSheet(index: index),
           ),
         );
       },
@@ -52,7 +56,20 @@ class _CustomProxyGroupsView extends ConsumerWidget {
         child: DecorationListItem(
           onPressed: onPressed,
           minVerticalPadding: 8,
-          title: Text(proxyGroup.name),
+          leading: SizedBox.square(
+            dimension: 32,
+            child: IconTheme.merge(
+              data: IconThemeData(size: 32),
+              child: CommonTargetIcon(src: proxyGroup.icon ?? ''),
+            ),
+          ),
+          title: TooltipText(
+            text: Text(
+              proxyGroup.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           subtitle: Text(proxyGroup.type.name),
           trailing: ReorderableDelayedDragStartListener(
             index: index,
@@ -63,11 +80,50 @@ class _CustomProxyGroupsView extends ConsumerWidget {
     );
   }
 
+  void _handleAdd(BuildContext context) {
+    showSheet(
+      context: context,
+      props: SheetProps(
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        maxWidth: double.maxFinite,
+      ),
+      builder: (context) {
+        return ProfileIdProvider(
+          profileId: profileId,
+          child: ProviderScope(
+            overrides: [
+              proxyGroupProvider.overrideWithBuild(
+                (_, __) => ProxyGroup(
+                  id: snowflake.id,
+                  name: '',
+                  type: GroupType.Selector,
+                ),
+              ),
+            ],
+            child: _EditProxyGroupNestedSheet(),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final proxyGroups = ref.watch(proxyGroupsProvider(profileId)).value ?? [];
     return CommonScaffold(
       title: '策略组',
+      actions: [
+        CommonMinFilledButtonTheme(
+          child: FilledButton(
+            onPressed: () {
+              _handleAdd(context);
+            },
+            child: Text(appLocalizations.add),
+          ),
+        ),
+        SizedBox(width: 8),
+      ],
       body: ReorderableListView.builder(
         buildDefaultDragHandles: false,
         padding: EdgeInsets.symmetric(vertical: 16),
@@ -79,7 +135,7 @@ class _CustomProxyGroupsView extends ConsumerWidget {
             total: proxyGroups.length,
             index: index,
             onPressed: () {
-              _handleEditProxyGroup(context, proxyGroup);
+              _handleEditProxyGroup(context, proxyGroup, index);
             },
           );
         },
@@ -93,7 +149,9 @@ class _CustomProxyGroupsView extends ConsumerWidget {
 }
 
 class _EditProxyGroupNestedSheet extends StatelessWidget {
-  const _EditProxyGroupNestedSheet();
+  final int index;
+
+  const _EditProxyGroupNestedSheet({this.index = -1});
 
   Future<void> _handleClose(
     BuildContext context,
@@ -488,12 +546,14 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
       onPressed: () {
         _showIconEdit(icon);
       },
-      trailing: Text(
-        icon ?? '可选',
-        maxLines: 1,
-        style: context.textTheme.bodyLarge?.copyWith(
-          color: icon == null ? context.colorScheme.onSurfaceVariant : null,
-          overflow: TextOverflow.ellipsis,
+      trailing: TooltipText(
+        text: Text(
+          icon ?? '可选',
+          maxLines: 1,
+          style: context.textTheme.bodyLarge?.copyWith(
+            color: icon == null ? context.colorScheme.onSurfaceVariant : null,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );
@@ -582,6 +642,11 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     context.safePop();
   }
 
+  void _handleSave(int profileId, ProxyGroup proxyGroup) {
+    ref.read(proxyGroupsProvider(profileId).notifier).put(proxyGroup);
+    context.safePop();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isBottomSheet =
@@ -590,7 +655,14 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     final proxyGroup = ref.watch(proxyGroupProvider);
     return AdaptiveSheetScaffold(
       sheetTransparentToolBar: true,
-      actions: [IconButtonData(icon: Icons.check, onPressed: () {})],
+      actions: [
+        IconButtonData(
+          icon: Icons.check,
+          onPressed: () {
+            _handleSave(profileId, proxyGroup);
+          },
+        ),
+      ],
       body: SizedBox(
         height: isBottomSheet
             ? appController.viewSize.height * 0.65
@@ -819,7 +891,31 @@ class _EditProxiesViewState extends ConsumerState<_EditProxiesView>
                   type: CommonCardType.filled,
                   child: ListItem.switchItem(
                     minTileHeight: 54,
-                    title: Text('包含所有代理'),
+                    title: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('包含所有代理'),
+                        CommonMinIconButtonTheme(
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              globalState.showMessage(
+                                title: appLocalizations.tip,
+                                message: TextSpan(
+                                  text: '引入不包含策略组的所有代理，可在下方额外添加策略组',
+                                ),
+                                cancelable: false,
+                              );
+                            },
+                            icon: Icon(
+                              size: 16.ap,
+                              Icons.info_outline,
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     delegate: SwitchDelegate(
                       value: includeAllProxies,
                       onChanged: (_) {

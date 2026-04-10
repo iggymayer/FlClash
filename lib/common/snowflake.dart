@@ -19,6 +19,13 @@ class Snowflake {
   static const int workerIdShift = sequenceBits;
   static const int timestampLeftShift = sequenceBits + workerIdBits;
 
+  static int buildId(int? id) {
+    if (id != null) {
+      return id;
+    }
+    return snowflake.id;
+  }
+
   final int workerId = 1;
   int _lastTimestamp = -1;
   int _sequence = 0;
