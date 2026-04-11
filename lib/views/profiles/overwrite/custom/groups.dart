@@ -48,7 +48,7 @@ class CustomProxyGroupsView extends ConsumerWidget {
             overrides: [
               proxyGroupProvider.overrideWithBuild((_, _) => proxyGroup),
             ],
-            child: EditProxyGroupNestedSheet(),
+            child: AddOrEditProxyGroupNestedSheet(),
           ),
         );
       },
@@ -109,14 +109,11 @@ class CustomProxyGroupsView extends ConsumerWidget {
           child: ProviderScope(
             overrides: [
               proxyGroupProvider.overrideWithBuild(
-                (_, _) => ProxyGroup(
-                  id: snowflake.id,
-                  name: '',
-                  type: GroupType.Selector,
-                ),
+                (_, _) =>
+                    ProxyGroup(id: -1, name: '', type: GroupType.Selector),
               ),
             ],
-            child: EditProxyGroupNestedSheet(),
+            child: AddOrEditProxyGroupNestedSheet(),
           ),
         );
       },
@@ -139,32 +136,34 @@ class CustomProxyGroupsView extends ConsumerWidget {
         ),
         SizedBox(width: 8),
       ],
-      body: ReorderableListView.builder(
-        buildDefaultDragHandles: false,
-        padding: EdgeInsets.symmetric(vertical: 16),
-        itemBuilder: (context, index) {
-          final proxyGroup = proxyGroups[index];
-          return _buildItem(
-            context: context,
-            proxyGroup: proxyGroup,
-            total: proxyGroups.length,
-            index: index,
-            onPressed: () {
-              _handleEditProxyGroup(context, proxyGroup, index);
-            },
-          );
-        },
-        itemCount: proxyGroups.length,
-        onReorder: (oldIndex, newIndex) {
-          _handleReorder(ref, profileId, oldIndex, newIndex);
-        },
-      ),
+      body: proxyGroups.isEmpty
+          ? NullStatus(label: '策略组为空')
+          : ReorderableListView.builder(
+              buildDefaultDragHandles: false,
+              padding: EdgeInsets.symmetric(vertical: 16),
+              itemBuilder: (context, index) {
+                final proxyGroup = proxyGroups[index];
+                return _buildItem(
+                  context: context,
+                  proxyGroup: proxyGroup,
+                  total: proxyGroups.length,
+                  index: index,
+                  onPressed: () {
+                    _handleEditProxyGroup(context, proxyGroup, index);
+                  },
+                );
+              },
+              itemCount: proxyGroups.length,
+              onReorder: (oldIndex, newIndex) {
+                _handleReorder(ref, profileId, oldIndex, newIndex);
+              },
+            ),
     );
   }
 }
 
-class EditProxyGroupNestedSheet extends StatelessWidget {
-  const EditProxyGroupNestedSheet({super.key});
+class AddOrEditProxyGroupNestedSheet extends StatelessWidget {
+  const AddOrEditProxyGroupNestedSheet({super.key});
 
   Future<void> _handleClose(
     BuildContext context,
@@ -577,10 +576,14 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
       title: Text('名称'),
       trailing: TextFormField(
         initialValue: name,
+        keyboardType: TextInputType.name,
         onChanged: (value) {
           ref
               .read(proxyGroupProvider.notifier)
               .update((state) => state.copyWith(name: value));
+        },
+        onFieldSubmitted: (_) {
+          _handleSave();
         },
         textAlign: TextAlign.end,
         decoration: InputDecoration.collapsed(
@@ -650,14 +653,36 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     );
   }
 
-  void _handleDelete(int profileId, String name) {
-    ref.read(proxyGroupsProvider(profileId).notifier).del(name);
-    context.safePop();
+  Future<void> _handleDelete(int profileId, String name) async {
+    final res = await globalState.showMessage(
+      message: TextSpan(text: '确定要删除当前策略组吗？'),
+    );
+    if (res == true && mounted) {
+      ref.read(proxyGroupsProvider(profileId).notifier).del(name);
+      context.safePop();
+    }
   }
 
-  void _handleSave(int profileId, ProxyGroup proxyGroup) {
-    ref.read(proxyGroupsProvider(profileId).notifier).put(proxyGroup);
-    context.safePop();
+  Future<void> _handleSave() async {
+    final profileId = ProfileIdProvider.of(context)!.profileId;
+    final proxyGroup = ref.read(proxyGroupProvider);
+    final ProxyGroup newProxyGroup;
+    if (proxyGroup.id == -1) {
+      newProxyGroup = proxyGroup.copyWith(id: snowflake.id);
+    } else {
+      newProxyGroup = proxyGroup;
+    }
+    final res = ref
+        .read(proxyGroupsProvider(profileId).notifier)
+        .put(newProxyGroup);
+    if (res == false) {
+      await globalState.showMessage(
+        message: TextSpan(text: '策略组名称重复'),
+        cancelable: false,
+      );
+    } else {
+      context.safePop();
+    }
   }
 
   @override
@@ -668,14 +693,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     final proxyGroup = ref.watch(proxyGroupProvider);
     return AdaptiveSheetScaffold(
       sheetTransparentToolBar: true,
-      actions: [
-        IconButtonData(
-          icon: Icons.check,
-          onPressed: () {
-            _handleSave(profileId, proxyGroup);
-          },
-        ),
-      ],
+      actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],
       body: SizedBox(
         height: isBottomSheet
             ? appController.viewSize.height * 0.65
@@ -724,23 +742,24 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
             generateSectionV3(
               title: '操作',
               items: [
-                _buildItem(
-                  title: Text(
-                    '删除',
-                    style: context.textTheme.bodyLarge?.copyWith(
-                      color: context.colorScheme.error,
+                if (proxyGroup.id != -1)
+                  _buildItem(
+                    title: Text(
+                      '删除',
+                      style: context.textTheme.bodyLarge?.copyWith(
+                        color: context.colorScheme.error,
+                      ),
                     ),
+                    onPressed: () {
+                      _handleDelete(profileId, proxyGroup.name);
+                    },
                   ),
-                  onPressed: () {
-                    _handleDelete(profileId, proxyGroup.name);
-                  },
-                ),
               ],
             ),
           ],
         ),
       ),
-      title: '编辑策略组',
+      title: proxyGroup.id == -1 ? '添加策略组' : '编辑策略组',
     );
   }
 }

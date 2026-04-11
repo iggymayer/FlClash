@@ -325,16 +325,21 @@ class ProxyGroups extends _$ProxyGroups with AsyncNotifierMixin {
     value = newList;
   }
 
-  void put(ProxyGroup proxyGroup) {
+  bool put(ProxyGroup proxyGroup) {
+    final index = value.indexWhere((item) => item.id == proxyGroup.id);
+    if (index == -1 &&
+        value.indexWhere((item) => item.name == proxyGroup.name) != -1) {
+      return false;
+    }
     database.proxyGroups.put(proxyGroup.toCompanion(profileId));
-    List<ProxyGroup> newList = List.from(value);
-    final index = newList.indexWhere((item) => item.id == proxyGroup.id);
+    final newList = [...value];
     if (index != -1) {
       newList[index] = proxyGroup;
     } else {
       newList.add(proxyGroup);
     }
     value = newList;
+    return true;
   }
 
   void order(int oldIndex, int newIndex) {
