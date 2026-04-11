@@ -12,7 +12,7 @@ extension BuildContextExtension on BuildContext {
     return findAncestorStateOfType<CommonScaffoldState>();
   }
 
-  void safePop<T extends Object?>([T? result]) {
+  void safeNestedPop<T extends Object?>([T? result]) {
     final nestedPop = SheetProvider.of(this)?.nestedNavigatorPop;
     if (nestedPop != null) {
       return nestedPop();

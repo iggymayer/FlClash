@@ -163,14 +163,53 @@ class CustomProxyGroupsView extends ConsumerWidget {
   }
 }
 
-class AddOrEditProxyGroupNestedSheet extends StatelessWidget {
+bool _handleSaveProxyGroup(BuildContext context, WidgetRef ref) {
+  final profileId = ProfileIdProvider.of(context)!.profileId;
+  final proxyGroup = ref.read(proxyGroupProvider);
+  final ProxyGroup newProxyGroup;
+  if (proxyGroup.id == -1) {
+    newProxyGroup = proxyGroup.copyWith(id: snowflake.id);
+  } else {
+    newProxyGroup = proxyGroup;
+  }
+  final isRepeat = ref
+      .read(proxyGroupsProvider(profileId).notifier)
+      .put(newProxyGroup);
+  if (isRepeat == false) {
+    globalState.showMessage(
+      message: TextSpan(text: '策略组名称重复'),
+      cancelable: false,
+    );
+    return false;
+  } else {
+    return true;
+  }
+}
+
+class AddOrEditProxyGroupNestedSheet extends ConsumerStatefulWidget {
   const AddOrEditProxyGroupNestedSheet({super.key});
 
-  Future<void> _handleClose(
-    BuildContext context,
-    NavigatorState? navigatorState,
-  ) async {
-    if (navigatorState != null && navigatorState.canPop()) {
+  @override
+  ConsumerState<AddOrEditProxyGroupNestedSheet> createState() =>
+      _AddOrEditProxyGroupNestedSheetState();
+}
+
+class _AddOrEditProxyGroupNestedSheetState
+    extends ConsumerState<AddOrEditProxyGroupNestedSheet> {
+  final GlobalKey<NavigatorState> _nestedNavigatorKey = GlobalKey();
+  late final ProxyGroup _originProxyGroup;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _originProxyGroup = ref.read(proxyGroupProvider);
+    });
+  }
+
+  Future<void> _handleClose() async {
+    final state = _nestedNavigatorKey.currentState;
+    if (state != null && state.canPop()) {
       final res = await globalState.showMessage(
         message: TextSpan(text: '确定要退出当前窗口吗?'),
       );
@@ -179,26 +218,44 @@ class AddOrEditProxyGroupNestedSheet extends StatelessWidget {
       }
     }
     if (context.mounted) {
+      _handleExit();
+    }
+  }
+
+  Future<void> _handleExit() async {
+    final proxyGroup = ref.read(proxyGroupProvider);
+    if (_originProxyGroup == proxyGroup) {
+      Navigator.of(context).pop();
+      return;
+    }
+    final res = await globalState.showMessage(
+      message: TextSpan(text: '检测到数据有更改，是否保存'),
+    );
+    if (!mounted) {
+      return;
+    }
+    if (res != true) {
+      Navigator.of(context).pop();
+      return;
+    }
+    if (_handleSaveProxyGroup(context, ref)) {
       Navigator.of(context).pop();
     }
   }
 
-  Future<void> _handlePop(
-    BuildContext context,
-    NavigatorState? navigatorState,
-  ) async {
-    if (navigatorState != null && navigatorState.canPop()) {
-      navigatorState.pop();
+  Future<void> _handlePop() async {
+    final state = _nestedNavigatorKey.currentState;
+    if (state != null && state.canPop()) {
+      state.pop();
     } else {
-      Navigator.of(context).pop();
+      _handleExit();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<NavigatorState> nestedNavigatorKey = GlobalKey();
     final nestedNavigator = Navigator(
-      key: nestedNavigatorKey,
+      key: _nestedNavigatorKey,
       onGenerateInitialRoutes: (navigator, initialRoute) {
         return [
           PagedSheetRoute(
@@ -212,7 +269,7 @@ class AddOrEditProxyGroupNestedSheet extends StatelessWidget {
     final sheetProvider = SheetProvider.of(context);
     return CommonPopScope(
       onPop: (_) async {
-        _handlePop(context, nestedNavigatorKey.currentState);
+        _handlePop();
         return false;
       },
       child: sheetProvider!.copyWith(
@@ -224,7 +281,7 @@ class AddOrEditProxyGroupNestedSheet extends StatelessWidget {
             Positioned.fill(
               child: GestureDetector(
                 onTap: () async {
-                  _handleClose(context, nestedNavigatorKey.currentState);
+                  _handleClose();
                 },
               ),
             ),
@@ -664,29 +721,13 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     );
     if (res == true && mounted) {
       ref.read(proxyGroupsProvider(profileId).notifier).del(name);
-      context.safePop();
+      context.safeNestedPop();
     }
   }
 
   Future<void> _handleSave() async {
-    final profileId = ProfileIdProvider.of(context)!.profileId;
-    final proxyGroup = ref.read(proxyGroupProvider);
-    final ProxyGroup newProxyGroup;
-    if (proxyGroup.id == -1) {
-      newProxyGroup = proxyGroup.copyWith(id: snowflake.id);
-    } else {
-      newProxyGroup = proxyGroup;
-    }
-    final res = ref
-        .read(proxyGroupsProvider(profileId).notifier)
-        .put(newProxyGroup);
-    if (res == false) {
-      await globalState.showMessage(
-        message: TextSpan(text: '策略组名称重复'),
-        cancelable: false,
-      );
-    } else {
-      context.safePop();
+    if (_handleSaveProxyGroup(context, ref)) {
+      context.safeNestedPop();
     }
   }
 

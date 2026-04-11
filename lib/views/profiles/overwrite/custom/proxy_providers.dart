@@ -4,6 +4,7 @@ import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart' hide FileInfo;
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,10 +36,10 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
     ).push(PagedSheetRoute(builder: (context) => _AddProxyProvidersView()));
   }
 
-  void _handleRemove(String proxyName) {
+  void _handleRemove(String providerName) {
     ref.read(itemsProvider(key).notifier).update((state) {
       final newSet = Set.from(state);
-      newSet.add(proxyName);
+      newSet.add(providerName);
       return newSet;
     });
   }
@@ -65,8 +66,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
   }
 
   Widget _buildItem({
-    required String proxyName,
-    required String? proxyType,
+    required String providerName,
     required int index,
     required int length,
     required ItemPosition position,
@@ -74,7 +74,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
   }) {
     return ExternalDismissible(
       dismiss: dismiss,
-      key: ValueKey(proxyName),
+      key: ValueKey(providerName),
       onDismissed: _handleRealRemove,
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
@@ -82,11 +82,11 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
           position: position,
           child: DecorationListItem(
             minVerticalPadding: 8,
-            title: Text(proxyName),
+            title: Text(providerName),
             leading: CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: () {
-                  _handleRemove(proxyName);
+                  _handleRemove(providerName);
                 },
                 icon: Icon(Icons.remove, size: 18),
                 padding: EdgeInsets.zero,
@@ -132,7 +132,6 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
 
   @override
   Widget build(BuildContext context) {
-    final profileId = ProfileIdProvider.of(context)!.profileId;
     final vm2 = ref.watch(
       proxyGroupProvider.select(
         (state) => VM2(state.includeAllProviders ?? false, state.use ?? []),
@@ -141,13 +140,6 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
     final dismissItems = ref.watch(itemsProvider(key));
     final includeAllProxyProviders = vm2.a;
     final proxyProviderNames = vm2.b;
-    final proxyTypeMap =
-        ref.watch(
-          clashConfigProvider(
-            profileId,
-          ).select((state) => state.value?.proxyTypeMap),
-        ) ??
-        {};
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     return SizedBox(
@@ -174,25 +166,23 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text('包含所有代理集'),
-                        // CommonMinIconButtonTheme(
-                        //   child: IconButton(
-                        //     padding: EdgeInsets.zero,
-                        //     onPressed: () {
-                        //       globalState.showMessage(
-                        //         title: appLocalizations.tip,
-                        //         message: TextSpan(
-                        //           text: '引入不包含策略组的所有代理，可在下方额外添加策略组',
-                        //         ),
-                        //         cancelable: false,
-                        //       );
-                        //     },
-                        //     icon: Icon(
-                        //       size: 16.ap,
-                        //       Icons.info_outline,
-                        //       color: context.colorScheme.onSurfaceVariant,
-                        //     ),
-                        //   ),
-                        // ),
+                        CommonMinIconButtonTheme(
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              globalState.showMessage(
+                                title: appLocalizations.tip,
+                                message: TextSpan(text: '开启后将覆盖引入的代理集'),
+                                cancelable: false,
+                              );
+                            },
+                            icon: Icon(
+                              size: 16.ap,
+                              Icons.info_outline,
+                              color: context.colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     delegate: SwitchDelegate(
@@ -225,7 +215,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
             if (proxyProviderNames.isNotEmpty)
               SliverReorderableList(
                 itemBuilder: (_, index) {
-                  final proxyName = proxyProviderNames[index];
+                  final providerName = proxyProviderNames[index];
                   final position = ItemPosition.calculateVisualPosition(
                     index,
                     proxyProviderNames,
@@ -233,9 +223,8 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                   );
                   return _buildItem(
                     position: position,
-                    dismiss: dismissItems.contains(proxyName),
-                    proxyName: proxyName,
-                    proxyType: proxyTypeMap[proxyName],
+                    dismiss: dismissItems.contains(providerName),
+                    providerName: providerName,
                     index: index,
                     length: proxyProviderNames.length,
                   );

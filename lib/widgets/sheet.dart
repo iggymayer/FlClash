@@ -193,9 +193,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
               ? buildIconButton(
                   IconButtonData(
                     icon: Icons.close,
-                    onPressed: () {
-                      context.safePop();
-                    },
+                    onPressed: context.safeNestedPop,
                   ),
                 )
               : buildIconButton(

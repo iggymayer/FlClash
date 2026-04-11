@@ -64,7 +64,7 @@ class _IconEditDialogState extends State<IconEditDialog>
   }
 
   void _handleSave() {
-    context.safePop(_srcController.text);
+    context.safeNestedPop(_srcController.text);
   }
 
   @override
@@ -74,7 +74,7 @@ class _IconEditDialogState extends State<IconEditDialog>
       title: '图标',
       actions: [
         TextButton(
-          onPressed: context.safePop,
+          onPressed: context.safeNestedPop,
           child: Text(appLocalizations.cancel),
         ),
         TextButton(onPressed: _handleSave, child: Text(appLocalizations.save)),
