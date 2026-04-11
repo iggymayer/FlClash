@@ -405,13 +405,13 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
                   ),
                   child: Container(
                     constraints: BoxConstraints(minWidth: 32),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        '${use.length}',
-                        style: context.textTheme.bodySmall,
-                      ),
+                    alignment: Alignment.center,
+                    height: globalState.measure.bodySmallHeight + 6,
+                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      '${use.length}',
+                      style: context.textTheme.bodySmall,
                     ),
                   ),
                 )
@@ -582,13 +582,13 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
                   ),
                   child: Container(
                     constraints: BoxConstraints(minWidth: 32),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        '${proxies.length}',
-                        style: context.textTheme.bodySmall,
-                      ),
+                    alignment: Alignment.center,
+                    height: globalState.measure.bodySmallHeight + 6,
+                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      '${proxies.length}',
+                      style: context.textTheme.bodySmall,
                     ),
                   ),
                 )
