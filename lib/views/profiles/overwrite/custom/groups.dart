@@ -6,6 +6,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart' hide FileInfo;
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/views/profiles/overwrite/custom/proxy_providers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -326,7 +327,11 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
     ).push(PagedSheetRoute(builder: (context) => EditProxiesView()));
   }
 
-  void _handleToProvidersView() {}
+  void _handleToProvidersView() {
+    Navigator.of(
+      context,
+    ).push(PagedSheetRoute(builder: (context) => EditProxyProvidersView()));
+  }
 
   Widget _buildProvidersItem(bool includeAllProviders, List<String> use) {
     return _buildItem(

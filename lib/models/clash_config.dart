@@ -149,6 +149,14 @@ abstract class RuleProvider with _$RuleProvider {
 }
 
 @freezed
+abstract class ProxyProvider with _$ProxyProvider {
+  const factory ProxyProvider({required String name}) = _ProxyProvider;
+
+  factory ProxyProvider.fromJson(Map<String, Object?> json) =>
+      _$ProxyProviderFromJson(json);
+}
+
+@freezed
 abstract class Sniffer with _$Sniffer {
   const factory Sniffer({
     @Default(false) bool enable,
@@ -438,12 +446,19 @@ List<Rule> _genRule(List<dynamic>? rules) {
 //   return json.entries.map((entry) => SubRule(name: entry.key)).toList();
 // }
 
+List<String> _genProviders(Map<String, dynamic> json) {
+  return json.entries.map((entry) => entry.key).toList();
+}
+
 @freezed
 abstract class ClashConfig with _$ClashConfig {
   const factory ClashConfig({
     @Default([]) @JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,
     @JsonKey(fromJson: _genRule) @Default([]) List<Rule> rules,
     @Default([]) List<Proxy> proxies,
+    @JsonKey(name: 'proxy-providers', fromJson: _genProviders)
+    @Default([])
+    List<String> proxyProviders,
     // @JsonKey(name: 'rule-providers', fromJson: _genRuleProviders)
     // @Default([])
     // List<RuleProvider> ruleProvider,

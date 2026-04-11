@@ -884,6 +884,269 @@ as String,
 
 
 /// @nodoc
+mixin _$ProxyProvider {
+
+ String get name;
+/// Create a copy of ProxyProvider
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProxyProviderCopyWith<ProxyProvider> get copyWith => _$ProxyProviderCopyWithImpl<ProxyProvider>(this as ProxyProvider, _$identity);
+
+  /// Serializes this ProxyProvider to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProxyProvider&&(identical(other.name, name) || other.name == name));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name);
+
+@override
+String toString() {
+  return 'ProxyProvider(name: $name)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProxyProviderCopyWith<$Res>  {
+  factory $ProxyProviderCopyWith(ProxyProvider value, $Res Function(ProxyProvider) _then) = _$ProxyProviderCopyWithImpl;
+@useResult
+$Res call({
+ String name
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProxyProviderCopyWithImpl<$Res>
+    implements $ProxyProviderCopyWith<$Res> {
+  _$ProxyProviderCopyWithImpl(this._self, this._then);
+
+  final ProxyProvider _self;
+  final $Res Function(ProxyProvider) _then;
+
+/// Create a copy of ProxyProvider
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,}) {
+  return _then(_self.copyWith(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ProxyProvider].
+extension ProxyProviderPatterns on ProxyProvider {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProxyProvider value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ProxyProvider() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProxyProvider value)  $default,){
+final _that = this;
+switch (_that) {
+case _ProxyProvider():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProxyProvider value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ProxyProvider() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ProxyProvider() when $default != null:
+return $default(_that.name);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name)  $default,) {final _that = this;
+switch (_that) {
+case _ProxyProvider():
+return $default(_that.name);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name)?  $default,) {final _that = this;
+switch (_that) {
+case _ProxyProvider() when $default != null:
+return $default(_that.name);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _ProxyProvider implements ProxyProvider {
+  const _ProxyProvider({required this.name});
+  factory _ProxyProvider.fromJson(Map<String, dynamic> json) => _$ProxyProviderFromJson(json);
+
+@override final  String name;
+
+/// Create a copy of ProxyProvider
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProxyProviderCopyWith<_ProxyProvider> get copyWith => __$ProxyProviderCopyWithImpl<_ProxyProvider>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProxyProviderToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProxyProvider&&(identical(other.name, name) || other.name == name));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name);
+
+@override
+String toString() {
+  return 'ProxyProvider(name: $name)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProxyProviderCopyWith<$Res> implements $ProxyProviderCopyWith<$Res> {
+  factory _$ProxyProviderCopyWith(_ProxyProvider value, $Res Function(_ProxyProvider) _then) = __$ProxyProviderCopyWithImpl;
+@override @useResult
+$Res call({
+ String name
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProxyProviderCopyWithImpl<$Res>
+    implements _$ProxyProviderCopyWith<$Res> {
+  __$ProxyProviderCopyWithImpl(this._self, this._then);
+
+  final _ProxyProvider _self;
+  final $Res Function(_ProxyProvider) _then;
+
+/// Create a copy of ProxyProvider
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,}) {
+  return _then(_ProxyProvider(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$Sniffer {
 
  bool get enable;@JsonKey(name: 'override-destination') bool get overrideDest; List<String> get sniffing;@JsonKey(name: 'force-domain') List<String> get forceDomain;@JsonKey(name: 'skip-src-address') List<String> get skipSrcAddress;@JsonKey(name: 'skip-dst-address') List<String> get skipDstAddress;@JsonKey(name: 'skip-domain') List<String> get skipDomain;@JsonKey(name: 'port-whitelist') List<String> get port;@JsonKey(name: 'force-dns-mapping') bool get forceDnsMapping;@JsonKey(name: 'parse-pure-ip') bool get parsePureIp; Map<String, SnifferConfig> get sniff;
@@ -3517,7 +3780,7 @@ as String,
 /// @nodoc
 mixin _$ClashConfig {
 
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> get proxyGroups;@JsonKey(fromJson: _genRule) List<Rule> get rules; List<Proxy> get proxies;// @JsonKey(name: 'rule-providers', fromJson: _genRuleProviders)
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> get proxyGroups;@JsonKey(fromJson: _genRule) List<Rule> get rules; List<Proxy> get proxies;@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> get proxyProviders;// @JsonKey(name: 'rule-providers', fromJson: _genRuleProviders)
 // @Default([])
 // List<RuleProvider> ruleProvider,
 // @JsonKey(name: 'sub-rules', fromJson: _genSubRules)
@@ -3536,16 +3799,16 @@ $ClashConfigCopyWith<ClashConfig> get copyWith => _$ClashConfigCopyWithImpl<Clas
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClashConfig&&const DeepCollectionEquality().equals(other.proxyGroups, proxyGroups)&&const DeepCollectionEquality().equals(other.rules, rules)&&const DeepCollectionEquality().equals(other.proxies, proxies)&&const DeepCollectionEquality().equals(other.proxyTypeMap, proxyTypeMap));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClashConfig&&const DeepCollectionEquality().equals(other.proxyGroups, proxyGroups)&&const DeepCollectionEquality().equals(other.rules, rules)&&const DeepCollectionEquality().equals(other.proxies, proxies)&&const DeepCollectionEquality().equals(other.proxyProviders, proxyProviders)&&const DeepCollectionEquality().equals(other.proxyTypeMap, proxyTypeMap));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(proxyGroups),const DeepCollectionEquality().hash(rules),const DeepCollectionEquality().hash(proxies),const DeepCollectionEquality().hash(proxyTypeMap));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(proxyGroups),const DeepCollectionEquality().hash(rules),const DeepCollectionEquality().hash(proxies),const DeepCollectionEquality().hash(proxyProviders),const DeepCollectionEquality().hash(proxyTypeMap));
 
 @override
 String toString() {
-  return 'ClashConfig(proxyGroups: $proxyGroups, rules: $rules, proxies: $proxies, proxyTypeMap: $proxyTypeMap)';
+  return 'ClashConfig(proxyGroups: $proxyGroups, rules: $rules, proxies: $proxies, proxyProviders: $proxyProviders, proxyTypeMap: $proxyTypeMap)';
 }
 
 
@@ -3556,7 +3819,7 @@ abstract mixin class $ClashConfigCopyWith<$Res>  {
   factory $ClashConfigCopyWith(ClashConfig value, $Res Function(ClashConfig) _then) = _$ClashConfigCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules, List<Proxy> proxies, Map<String, String> proxyTypeMap
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules, List<Proxy> proxies,@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> proxyProviders, Map<String, String> proxyTypeMap
 });
 
 
@@ -3573,12 +3836,13 @@ class _$ClashConfigCopyWithImpl<$Res>
 
 /// Create a copy of ClashConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? proxyGroups = null,Object? rules = null,Object? proxies = null,Object? proxyTypeMap = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? proxyGroups = null,Object? rules = null,Object? proxies = null,Object? proxyProviders = null,Object? proxyTypeMap = null,}) {
   return _then(_self.copyWith(
 proxyGroups: null == proxyGroups ? _self.proxyGroups : proxyGroups // ignore: cast_nullable_to_non_nullable
 as List<ProxyGroup>,rules: null == rules ? _self.rules : rules // ignore: cast_nullable_to_non_nullable
 as List<Rule>,proxies: null == proxies ? _self.proxies : proxies // ignore: cast_nullable_to_non_nullable
-as List<Proxy>,proxyTypeMap: null == proxyTypeMap ? _self.proxyTypeMap : proxyTypeMap // ignore: cast_nullable_to_non_nullable
+as List<Proxy>,proxyProviders: null == proxyProviders ? _self.proxyProviders : proxyProviders // ignore: cast_nullable_to_non_nullable
+as List<String>,proxyTypeMap: null == proxyTypeMap ? _self.proxyTypeMap : proxyTypeMap // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,
   ));
 }
@@ -3664,10 +3928,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies,  Map<String, String> proxyTypeMap)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders,  Map<String, String> proxyTypeMap)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ClashConfig() when $default != null:
-return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyTypeMap);case _:
+return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders,_that.proxyTypeMap);case _:
   return orElse();
 
 }
@@ -3685,10 +3949,10 @@ return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyTypeMap);
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies,  Map<String, String> proxyTypeMap)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders,  Map<String, String> proxyTypeMap)  $default,) {final _that = this;
 switch (_that) {
 case _ClashConfig():
-return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyTypeMap);case _:
+return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders,_that.proxyTypeMap);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -3705,10 +3969,10 @@ return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyTypeMap);
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies,  Map<String, String> proxyTypeMap)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders,  Map<String, String> proxyTypeMap)?  $default,) {final _that = this;
 switch (_that) {
 case _ClashConfig() when $default != null:
-return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyTypeMap);case _:
+return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders,_that.proxyTypeMap);case _:
   return null;
 
 }
@@ -3720,7 +3984,7 @@ return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyTypeMap);
 @JsonSerializable()
 
 class _ClashConfig implements ClashConfig {
-  const _ClashConfig({@JsonKey(name: 'proxy-groups') final  List<ProxyGroup> proxyGroups = const [], @JsonKey(fromJson: _genRule) final  List<Rule> rules = const [], final  List<Proxy> proxies = const [], final  Map<String, String> proxyTypeMap = const {}}): _proxyGroups = proxyGroups,_rules = rules,_proxies = proxies,_proxyTypeMap = proxyTypeMap;
+  const _ClashConfig({@JsonKey(name: 'proxy-groups') final  List<ProxyGroup> proxyGroups = const [], @JsonKey(fromJson: _genRule) final  List<Rule> rules = const [], final  List<Proxy> proxies = const [], @JsonKey(name: 'proxy-providers', fromJson: _genProviders) final  List<String> proxyProviders = const [], final  Map<String, String> proxyTypeMap = const {}}): _proxyGroups = proxyGroups,_rules = rules,_proxies = proxies,_proxyProviders = proxyProviders,_proxyTypeMap = proxyTypeMap;
   factory _ClashConfig.fromJson(Map<String, dynamic> json) => _$ClashConfigFromJson(json);
 
  final  List<ProxyGroup> _proxyGroups;
@@ -3742,6 +4006,13 @@ class _ClashConfig implements ClashConfig {
   if (_proxies is EqualUnmodifiableListView) return _proxies;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_proxies);
+}
+
+ final  List<String> _proxyProviders;
+@override@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> get proxyProviders {
+  if (_proxyProviders is EqualUnmodifiableListView) return _proxyProviders;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_proxyProviders);
 }
 
 // @JsonKey(name: 'rule-providers', fromJson: _genRuleProviders)
@@ -3777,16 +4048,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClashConfig&&const DeepCollectionEquality().equals(other._proxyGroups, _proxyGroups)&&const DeepCollectionEquality().equals(other._rules, _rules)&&const DeepCollectionEquality().equals(other._proxies, _proxies)&&const DeepCollectionEquality().equals(other._proxyTypeMap, _proxyTypeMap));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ClashConfig&&const DeepCollectionEquality().equals(other._proxyGroups, _proxyGroups)&&const DeepCollectionEquality().equals(other._rules, _rules)&&const DeepCollectionEquality().equals(other._proxies, _proxies)&&const DeepCollectionEquality().equals(other._proxyProviders, _proxyProviders)&&const DeepCollectionEquality().equals(other._proxyTypeMap, _proxyTypeMap));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_proxyGroups),const DeepCollectionEquality().hash(_rules),const DeepCollectionEquality().hash(_proxies),const DeepCollectionEquality().hash(_proxyTypeMap));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_proxyGroups),const DeepCollectionEquality().hash(_rules),const DeepCollectionEquality().hash(_proxies),const DeepCollectionEquality().hash(_proxyProviders),const DeepCollectionEquality().hash(_proxyTypeMap));
 
 @override
 String toString() {
-  return 'ClashConfig(proxyGroups: $proxyGroups, rules: $rules, proxies: $proxies, proxyTypeMap: $proxyTypeMap)';
+  return 'ClashConfig(proxyGroups: $proxyGroups, rules: $rules, proxies: $proxies, proxyProviders: $proxyProviders, proxyTypeMap: $proxyTypeMap)';
 }
 
 
@@ -3797,7 +4068,7 @@ abstract mixin class _$ClashConfigCopyWith<$Res> implements $ClashConfigCopyWith
   factory _$ClashConfigCopyWith(_ClashConfig value, $Res Function(_ClashConfig) _then) = __$ClashConfigCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules, List<Proxy> proxies, Map<String, String> proxyTypeMap
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules, List<Proxy> proxies,@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> proxyProviders, Map<String, String> proxyTypeMap
 });
 
 
@@ -3814,12 +4085,13 @@ class __$ClashConfigCopyWithImpl<$Res>
 
 /// Create a copy of ClashConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? proxyGroups = null,Object? rules = null,Object? proxies = null,Object? proxyTypeMap = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? proxyGroups = null,Object? rules = null,Object? proxies = null,Object? proxyProviders = null,Object? proxyTypeMap = null,}) {
   return _then(_ClashConfig(
 proxyGroups: null == proxyGroups ? _self._proxyGroups : proxyGroups // ignore: cast_nullable_to_non_nullable
 as List<ProxyGroup>,rules: null == rules ? _self._rules : rules // ignore: cast_nullable_to_non_nullable
 as List<Rule>,proxies: null == proxies ? _self._proxies : proxies // ignore: cast_nullable_to_non_nullable
-as List<Proxy>,proxyTypeMap: null == proxyTypeMap ? _self._proxyTypeMap : proxyTypeMap // ignore: cast_nullable_to_non_nullable
+as List<Proxy>,proxyProviders: null == proxyProviders ? _self._proxyProviders : proxyProviders // ignore: cast_nullable_to_non_nullable
+as List<String>,proxyTypeMap: null == proxyTypeMap ? _self._proxyTypeMap : proxyTypeMap // ignore: cast_nullable_to_non_nullable
 as Map<String, String>,
   ));
 }

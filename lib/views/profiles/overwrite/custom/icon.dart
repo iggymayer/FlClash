@@ -89,7 +89,7 @@ class _IconEditDialogState extends State<IconEditDialog>
               children: [
                 ListenableBuilder(
                   listenable: _state,
-                  builder: (_, __) {
+                  builder: (_, _) {
                     return Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

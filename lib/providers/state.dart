@@ -681,7 +681,9 @@ Future<Script?> script(Ref ref, int? scriptId) async {
 @riverpod
 Future<ClashConfig> clashConfig(Ref ref, int profileId) async {
   final configMap = await coreController.getConfig(profileId);
+  print(configMap);
   final clashConfig = ClashConfig.fromJson(configMap);
+  print(clashConfig);
   final Map<String, String> proxyTypeMap = {};
   for (final proxy in clashConfig.proxies) {
     proxyTypeMap[proxy.name] = proxy.type;

@@ -83,6 +83,12 @@ _RuleProvider _$RuleProviderFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RuleProviderToJson(_RuleProvider instance) =>
     <String, dynamic>{'name': instance.name};
 
+_ProxyProvider _$ProxyProviderFromJson(Map<String, dynamic> json) =>
+    _ProxyProvider(name: json['name'] as String);
+
+Map<String, dynamic> _$ProxyProviderToJson(_ProxyProvider instance) =>
+    <String, dynamic>{'name': instance.name};
+
 _Sniffer _$SnifferFromJson(Map<String, dynamic> json) => _Sniffer(
   enable: json['enable'] as bool? ?? false,
   overrideDest: json['override-destination'] as bool? ?? true,
@@ -340,6 +346,9 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
           ?.map((e) => Proxy.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  proxyProviders: json['proxy-providers'] == null
+      ? const []
+      : _genProviders(json['proxy-providers'] as Map<String, dynamic>),
   proxyTypeMap:
       (json['proxyTypeMap'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
@@ -352,6 +361,7 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
       'proxy-groups': instance.proxyGroups,
       'rules': instance.rules,
       'proxies': instance.proxies,
+      'proxy-providers': instance.proxyProviders,
       'proxyTypeMap': instance.proxyTypeMap,
     };
 
