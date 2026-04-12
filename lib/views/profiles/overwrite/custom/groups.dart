@@ -185,8 +185,15 @@ class CustomProxyGroupsView extends ConsumerWidget {
 }
 
 bool _handleSaveProxyGroup(BuildContext context, WidgetRef ref) {
-  final profileId = ProfileIdProvider.of(context)!.profileId;
   final proxyGroup = ref.read(proxyGroupProvider);
+  if (proxyGroup.name.isEmpty) {
+    globalState.showMessage(
+      message: TextSpan(text: '策略组名称不能为空'),
+      cancelable: false,
+    );
+    return false;
+  }
+  final profileId = ProfileIdProvider.of(context)!.profileId;
   final ProxyGroup newProxyGroup;
   if (proxyGroup.id == -1) {
     newProxyGroup = proxyGroup.copyWith(id: snowflake.id);

@@ -361,7 +361,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
           : double.maxFinite,
       child: AdaptiveSheetScaffold(
         sheetTransparentToolBar: true,
-        title: '添加代理',
+        title: '添加代理集',
         body: providerNames.isEmpty
             ? NullStatus(label: appLocalizations.noData)
             : CustomScrollView(
@@ -373,7 +373,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
                     SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverToBoxAdapter(
-                        child: InfoHeader(info: Info(label: '代理')),
+                        child: InfoHeader(info: Info(label: '代理集')),
                       ),
                     ),
                     SliverList(
