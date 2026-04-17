@@ -405,16 +405,19 @@ abstract class ParsedRule with _$ParsedRule {
 }
 
 extension ParsedRuleExt on ParsedRule {
-  String get value {
-    return [
-      ruleAction.value,
-      ruleAction == RuleAction.RULE_SET ? ruleProvider : content,
-      ruleAction == RuleAction.SUB_RULE ? subRule : ruleTarget,
-      if (ruleAction.hasParams) ...[
-        if (src) 'src',
-        if (noResolve) 'no-resolve',
-      ],
-    ].join(',');
+  Rule get toRawRule {
+    return Rule(
+      id: id == -1 ? snowflake.id : id,
+      value: [
+        ruleAction.value,
+        ruleAction == RuleAction.RULE_SET ? ruleProvider : content,
+        ruleAction == RuleAction.SUB_RULE ? subRule : ruleTarget,
+        if (ruleAction.hasParams) ...[
+          if (src) 'src',
+          if (noResolve) 'no-resolve',
+        ],
+      ].join(','),
+    );
   }
 }
 

@@ -151,9 +151,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
       noResolve: _noResolve,
       src: _src,
     );
-    final rule = widget.rule != null
-        ? widget.rule!.copyWith(value: parsedRule.value)
-        : Rule.value(parsedRule.value);
+    final rule = parsedRule.toRawRule;
     Navigator.of(context).pop(rule);
   }
 

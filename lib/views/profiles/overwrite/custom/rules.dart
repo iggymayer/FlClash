@@ -2,6 +2,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/features/overwrite/rule.dart';
 import 'package:fl_clash/models/clash_config.dart';
+import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/models/state.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -169,10 +170,14 @@ class _AddOrEditRuleNestedSheet extends ConsumerStatefulWidget {
 class _AddOrEditRuleNestedSheetState
     extends ConsumerState<_AddOrEditRuleNestedSheet> {
   final GlobalKey<NavigatorState> _nestedNavigatorKey = GlobalKey();
+  late final ParsedRule _originRule;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _originRule = ref.read(ruleProvider);
+    });
   }
 
   Future<void> _handleClose() async {
@@ -191,25 +196,24 @@ class _AddOrEditRuleNestedSheetState
   }
 
   Future<void> _handleExit() async {
-    Navigator.of(context).pop();
-    // final proxyGroup = ref.read(proxyGroupProvider);
-    // if (_originProxyGroup == proxyGroup) {
-    //   Navigator.of(context).pop();
-    //   return;
-    // }
-    // final res = await globalState.showMessage(
-    //   message: TextSpan(text: '检测到数据有更改，是否保存'),
-    // );
-    // if (!mounted) {
-    //   return;
-    // }
-    // if (res != true) {
-    //   Navigator.of(context).pop();
-    //   return;
-    // }
-    // if (_handleSaveProxyGroup(context, ref)) {
-    //   Navigator.of(context).pop();
-    // }
+    final rule = ref.read(ruleProvider);
+    if (_originRule == rule) {
+      Navigator.of(context).pop();
+      return;
+    }
+    final res = await globalState.showMessage(
+      message: TextSpan(text: '检测到数据有更改，是否保存'),
+    );
+    if (!mounted) {
+      return;
+    }
+    if (res != true) {
+      Navigator.of(context).pop();
+      return;
+    }
+    if (_handleSaveRule(context, ref)) {
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> _handlePop() async {
@@ -242,8 +246,8 @@ class _AddOrEditRuleNestedSheetState
         return false;
       },
       child: sheetProvider!.copyWith(
-        nestedNavigatorPop: ([data]) {
-          Navigator.of(context).pop(data);
+        nestedNavigatorPop: ([_]) {
+          Navigator.of(context).pop();
         },
         child: Stack(
           children: [
@@ -428,10 +432,17 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
         mainAxisSize: MainAxisSize.min,
         spacing: 4,
         children: [
-          Text(
-            target ?? '',
-            style: context.textTheme.bodyLarge?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
+          Flexible(
+            flex: 1,
+            child: TooltipText(
+              text: Text(
+                target ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.textTheme.bodyLarge?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
             ),
           ),
           Icon(Icons.arrow_forward_ios),
@@ -454,6 +465,14 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
     );
   }
 
+  Future<void> _handleSave() async {
+    if (_handleSaveRule(context, ref)) {
+      context.safeNestedPop();
+    }
+  }
+
+  void _handleDelete() {}
+
   @override
   Widget build(BuildContext context) {
     final isBottomSheet =
@@ -465,6 +484,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
       ),
     );
     return AdaptiveSheetScaffold(
+      actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],
       sheetTransparentToolBar: true,
       body: Container(
         constraints: BoxConstraints(maxHeight: height),
@@ -505,7 +525,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
                       ),
                     ),
                     onPressed: () {
-                      // _handleDelete();
+                      _handleDelete();
                     },
                   ),
               ],
@@ -589,6 +609,10 @@ class _RuleTargetSelectedView extends ConsumerWidget {
     );
   }
 
+  void _handleSelected(BuildContext context, String target) {
+    Navigator.of(context).pop(target);
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     final isBottomSheet =
@@ -637,7 +661,9 @@ class _RuleTargetSelectedView extends ConsumerWidget {
                   return _buildItem(
                     title: target.name,
                     position: position,
-                    onPressed: () {},
+                    onPressed: () {
+                      _handleSelected(context, target.name);
+                    },
                     isChecked: currentRuleTarget == target.name ? true : false,
                   );
                 },
@@ -660,7 +686,9 @@ class _RuleTargetSelectedView extends ConsumerWidget {
                     title: proxyGroup.name,
                     subtitle: proxyGroup.type.name,
                     position: position,
-                    onPressed: () {},
+                    onPressed: () {
+                      _handleSelected(context, proxyGroup.name);
+                    },
                     isChecked: currentRuleTarget == proxyGroup.name
                         ? true
                         : false,
@@ -685,7 +713,9 @@ class _RuleTargetSelectedView extends ConsumerWidget {
                     title: proxy.name,
                     subtitle: proxy.type,
                     position: position,
-                    onPressed: () {},
+                    onPressed: () {
+                      _handleSelected(context, proxy.name);
+                    },
                     isChecked: currentRuleTarget == proxy.name ? true : false,
                   );
                 },
@@ -776,4 +806,21 @@ class _RuleProviderSelectedView extends ConsumerWidget {
       title: '规则集',
     );
   }
+}
+
+bool _handleSaveRule(BuildContext context, WidgetRef ref) {
+  final rule = ref.read(ruleProvider);
+  if ((rule.ruleAction == RuleAction.RULE_SET && rule.ruleProvider == null) ||
+      (rule.ruleAction != RuleAction.RULE_SET && rule.content == null)) {
+    globalState.showMessage(
+      cancelable: false,
+      message: TextSpan(
+        text: rule.ruleAction == RuleAction.RULE_SET ? '代理集不能为空。' : '内容不能为空。',
+      ),
+    );
+    return false;
+  }
+  final profileId = ProfileIdProvider.of(context)!.profileId;
+  ref.read(profileCustomRulesProvider(profileId).notifier).put(rule.toRawRule);
+  return true;
 }

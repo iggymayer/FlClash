@@ -40,6 +40,8 @@ class CustomContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileId = ProfileIdProvider.of(context)!.profileId;
+    ref.listen(proxyGroupsProvider(profileId), (_, _) {});
+    ref.listen(profileCustomRulesProvider(profileId), (_, _) {});
     final proxyGroupNum =
         ref.watch(proxyGroupsCountProvider(profileId)).value ?? -1;
     final ruleNum = ref.watch(customRulesCountProvider(profileId)).value ?? -1;

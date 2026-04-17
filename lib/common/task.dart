@@ -252,7 +252,7 @@ Future<VM2<String, String>> _makeRealProfileTask(
         final parsed = parsedNewRules[i];
         if (parsed.ruleTarget?.toUpperCase() == 'MATCH') {
           finalAddedRules.add(
-            parsed.copyWith(ruleTarget: replacementTarget).value,
+            parsed.copyWith(ruleTarget: replacementTarget).toRawRule.value,
           );
         } else {
           finalAddedRules.add(addedRules[i].value);
