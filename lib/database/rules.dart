@@ -1,13 +1,26 @@
 part of 'database.dart';
 
 @DataClassName('RawRule')
+@TableIndex(name: 'rule_target', columns: {#ruleTarget})
 class Rules extends Table {
   @override
   String get tableName => 'rules';
 
   IntColumn get id => integer()();
 
-  TextColumn get value => text()();
+  TextColumn get ruleAction => textEnum<RuleAction>()();
+
+  TextColumn get content => text().nullable()();
+
+  TextColumn get ruleTarget => text().nullable()();
+
+  TextColumn get ruleProvider => text().nullable()();
+
+  TextColumn get subRule => text().nullable()();
+
+  BoolColumn get noResolve => boolean().withDefault(const Constant(false))();
+
+  BoolColumn get src => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => {id};
@@ -303,12 +316,31 @@ class RulesDao extends DatabaseAccessor<Database> with _$RulesDaoMixin {
 
 extension RawRuleExt on RawRule {
   Rule toRule([String? order]) {
-    return Rule(id: id, value: value, order: order);
+    return Rule(
+      id: id,
+      ruleAction: ruleAction,
+      content: content,
+      ruleTarget: ruleTarget,
+      ruleProvider: ruleProvider,
+      subRule: subRule,
+      noResolve: noResolve,
+      src: src,
+      order: order,
+    );
   }
 }
 
 extension RulesCompanionExt on Rule {
   RulesCompanion toCompanion() {
-    return RulesCompanion.insert(id: Value(id), value: value);
+    return RulesCompanion.insert(
+      id: Value(id),
+      ruleAction: ruleAction,
+      content: Value(content),
+      ruleTarget: Value(ruleTarget),
+      ruleProvider: Value(ruleProvider),
+      subRule: Value(subRule),
+      noResolve: Value(noResolve),
+      src: Value(src),
+    );
   }
 }

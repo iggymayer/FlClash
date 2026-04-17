@@ -334,8 +334,8 @@ abstract class GeoXUrl with _$GeoXUrl {
 }
 
 @freezed
-abstract class ParsedRule with _$ParsedRule {
-  const factory ParsedRule({
+abstract class Rule with _$Rule {
+  const factory Rule({
     @Default(-1) int id,
     @Default(RuleAction.DOMAIN) RuleAction ruleAction,
     String? content,
@@ -344,17 +344,17 @@ abstract class ParsedRule with _$ParsedRule {
     String? subRule,
     @Default(false) bool noResolve,
     @Default(false) bool src,
-  }) = _ParsedRule;
+    String? order,
+  }) = _Rule;
 
-  factory ParsedRule.parseString(String? value) {
-    return ParsedRule.parse(Rule.value(value ?? ''));
-  }
+  // factory Rule.parseString(String? value) {
+  //   return Rule.parse(Rule.value(value ?? ''));
+  // }
 
-  factory ParsedRule.parse(Rule rule) {
-    final id = rule.id;
-    final value = rule.value;
+  factory Rule.parse(String value, {int? id}) {
+    id ??= snowflake.id;
     if (value.isEmpty) {
-      return ParsedRule(
+      return Rule(
         id: id,
         ruleAction: RuleAction.DOMAIN,
         ruleTarget: RuleTarget.DIRECT.name,
@@ -368,6 +368,7 @@ abstract class ParsedRule with _$ParsedRule {
               !item.contains('no-resolve') &&
               item.isNotEmpty,
         )
+        .map((item) => item.trim())
         .toList();
     final ruleAction = RuleAction.values.firstWhere(
       (item) => item.value == shortSplits.first,
@@ -391,7 +392,7 @@ abstract class ParsedRule with _$ParsedRule {
       content = shortSplits[1];
     }
 
-    return ParsedRule(
+    return Rule(
       id: id,
       ruleAction: ruleAction,
       content: content,
@@ -402,9 +403,11 @@ abstract class ParsedRule with _$ParsedRule {
       ruleTarget: ruleTarget,
     );
   }
+
+  factory Rule.fromJson(Map<String, Object?> json) => _$RuleFromJson(json);
 }
 
-extension ParsedRuleExt on ParsedRule {
+extension RuleExt on Rule {
   String? get realContent {
     return switch (ruleAction == RuleAction.RULE_SET) {
       true => ruleProvider,
@@ -412,32 +415,17 @@ extension ParsedRuleExt on ParsedRule {
     };
   }
 
-  Rule get toRawRule {
-    return Rule(
-      id: id == -1 ? snowflake.id : id,
-      value: [
-        ruleAction.value,
-        ruleAction == RuleAction.RULE_SET ? ruleProvider : content,
-        ruleAction == RuleAction.SUB_RULE ? subRule : ruleTarget,
-        if (ruleAction.hasParams) ...[
-          if (src) 'src',
-          if (noResolve) 'no-resolve',
-        ],
-      ].join(','),
-    );
+  String get rawValue {
+    return [
+      ruleAction.value,
+      ruleAction == RuleAction.RULE_SET ? ruleProvider : content,
+      ruleAction == RuleAction.SUB_RULE ? subRule : ruleTarget,
+      if (ruleAction.hasParams) ...[
+        if (src) 'src',
+        if (noResolve) 'no-resolve',
+      ],
+    ].join(',');
   }
-}
-
-@freezed
-abstract class Rule with _$Rule {
-  const factory Rule({required int id, required String value, String? order}) =
-      _Rule;
-
-  factory Rule.value(String value) {
-    return Rule(value: value, id: snowflake.id);
-  }
-
-  factory Rule.fromJson(Map<String, Object?> json) => _$RuleFromJson(json);
 }
 
 extension RulesExt on List<Rule> {
@@ -453,19 +441,44 @@ extension RulesExt on List<Rule> {
   }
 }
 
-@freezed
-abstract class SubRule with _$SubRule {
-  const factory SubRule({required String name}) = _SubRule;
+// @freezed
+// abstract class Rule with _$Rule {
+//   const factory Rule({required int id, required String value, String? order}) =
+//       _Rule;
+//
+//   factory Rule.value(String value) {
+//     return Rule(value: value, id: snowflake.id);
+//   }
+//
+//   factory Rule.fromJson(Map<String, Object?> json) => _$RuleFromJson(json);
+// }
+//
+// extension RulesExt on List<Rule> {
+//   List<Rule> copyAndPut(Rule rule) {
+//     var newList = List<Rule>.from(this);
+//     final index = newList.indexWhere((item) => item.id == rule.id);
+//     if (index != -1) {
+//       rule = newList[index] = rule;
+//     } else {
+//       newList.insert(0, rule);
+//     }
+//     return newList;
+//   }
+// }
 
-  factory SubRule.fromJson(Map<String, Object?> json) =>
-      _$SubRuleFromJson(json);
-}
-
-List<Rule> _genRule(List<dynamic>? rules) {
+// @freezed
+// abstract class SubRule with _$SubRule {
+//   const factory SubRule({required String name}) = _SubRule;
+//
+//   factory SubRule.fromJson(Map<String, Object?> json) =>
+//       _$SubRuleFromJson(json);
+// }
+//
+List<Rule> _genRules(List<dynamic>? rules) {
   if (rules == null) {
     return [];
   }
-  return rules.map((item) => Rule.value(item)).toList();
+  return rules.map((item) => Rule.parse(item)).toList();
 }
 
 // List<RuleProvider> _genRuleProviders(Map<String, dynamic> json) {
@@ -484,7 +497,7 @@ List<String> _genProviders(Map<String, dynamic> json) {
 abstract class ClashConfig with _$ClashConfig {
   const factory ClashConfig({
     @Default([]) @JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,
-    @JsonKey(fromJson: _genRule) @Default([]) List<Rule> rules,
+    @JsonKey(fromJson: _genRules) @Default([]) List<Rule> rules,
     @Default([]) List<Proxy> proxies,
     @JsonKey(name: 'proxy-providers', fromJson: _genProviders)
     @Default([])

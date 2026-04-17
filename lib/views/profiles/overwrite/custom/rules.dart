@@ -72,7 +72,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
     ref.read(itemsProvider(key).notifier).value = {};
   }
 
-  void _handleAddOrUpdate({ParsedRule? rule}) {
+  void _handleAddOrUpdate({Rule? rule}) {
     showSheet(
       context: context,
       props: SheetProps(
@@ -85,7 +85,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
           profileId: widget.profileId,
           child: ProviderScope(
             overrides: [
-              ruleProvider.overrideWithBuild((_, _) => rule ?? ParsedRule()),
+              ruleProvider.overrideWithBuild((_, _) => rule ?? Rule()),
             ],
             child: _AddOrEditRuleNestedSheet(),
           ),
@@ -95,13 +95,13 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
   }
 
   Widget _buildItem({
-    required ParsedRule rule,
+    required Rule rule,
     required bool isEditing,
     required bool isSelected,
     required int index,
     required int total,
     required Function() onSelected,
-    required Function(ParsedRule rule) onEdit,
+    required Function(Rule rule) onEdit,
   }) {
     final position = ItemPosition.get(index, total);
     return ReorderableDelayedDragStartListener(
@@ -109,7 +109,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
       index: index,
       child: ItemPositionProvider(
         position: position,
-        child: RuleItemV2(
+        child: RuleItem(
           isEditing: isEditing,
           isSelected: isSelected,
           rule: rule,
@@ -157,7 +157,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
         buildDefaultDragHandles: false,
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         itemBuilder: (_, index) {
-          final rule = ParsedRule.parse(rules[index]);
+          final rule = rules[index];
           return _buildItem(
             index: index,
             total: rules.length,
@@ -175,7 +175,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
         itemExtent: ruleItemHeight,
         itemCount: rules.length,
         proxyDecorator: (child, index, animation) {
-          final rule = ParsedRule.parse(rules[index]);
+          final rule = rules[index];
           return commonProxyDecorator(
             _buildItem(
               index: index,
@@ -211,7 +211,7 @@ class _AddOrEditRuleNestedSheet extends ConsumerStatefulWidget {
 class _AddOrEditRuleNestedSheetState
     extends ConsumerState<_AddOrEditRuleNestedSheet> {
   final GlobalKey<NavigatorState> _nestedNavigatorKey = GlobalKey();
-  late final ParsedRule _originRule;
+  late final Rule _originRule;
 
   @override
   void initState() {
@@ -862,6 +862,10 @@ bool _handleSaveRule(BuildContext context, WidgetRef ref) {
     return false;
   }
   final profileId = ProfileIdProvider.of(context)!.profileId;
-  ref.read(profileCustomRulesProvider(profileId).notifier).put(rule.toRawRule);
+  Rule addedRule = rule;
+  if (rule.id == -1) {
+    addedRule = rule.copyWith(id: snowflake.id);
+  }
+  ref.read(profileCustomRulesProvider(profileId).notifier).put(addedRule);
   return true;
 }

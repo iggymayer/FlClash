@@ -47,17 +47,50 @@ class Database extends _$Database {
     return MigrationStrategy(
       onUpgrade: (m, from, to) async {
         if (from < 2) {
+          await _migrateRules(m);
           await m.createTable(proxyGroups);
           await m.createTable(iconRecords);
           await _resetOrders();
         }
       },
-      // beforeOpen: (details) async {
-      //   final m = Migrator(this);
-      //   await m.deleteTable('proxy_groups');
-      //   await m.createTable(proxyGroups);
-      // },
+      beforeOpen: (details) async {
+        final m = Migrator(this);
+        await _migrateRules(m);
+        // await m.deleteTable('proxy_groups');
+        // await m.createTable(proxyGroups);
+      },
     );
+  }
+
+  Future<void> _migrateRules(Migrator m) async {
+    final tableInfo = await customSelect('PRAGMA table_info(rules)').get();
+    final columnNames = tableInfo
+        .map((row) => row.read<String>('name'))
+        .toList();
+    if (columnNames.isEmpty) {
+      await m.createTable(rules);
+      return;
+    } else if (!columnNames.contains('rule_action')) {
+      return;
+    }
+    await customStatement('PRAGMA foreign_keys = OFF');
+    await customStatement('ALTER TABLE rules RENAME TO rules_old');
+    await m.createTable(rules);
+    final oldRows = await customSelect('SELECT id, value FROM rules_old').get();
+    for (final row in oldRows) {
+      final id = row.read<int>('id');
+      try {
+        final value = row.read<String>('value');
+        final parsed = Rule.parse(value, id: id);
+        await into(rules).insertOnConflictUpdate(parsed.toCompanion());
+      } catch (_) {
+        await into(
+          rules,
+        ).insertOnConflictUpdate(Rule.parse('', id: id).toCompanion());
+      }
+    }
+    await customStatement('DROP TABLE rules_old');
+    await customStatement('PRAGMA foreign_keys = ON');
   }
 
   Future<void> _resetOrders() async {
@@ -148,61 +181,5 @@ extension JoinedSelectStatementExt<T extends HasResultSet, D>
     return map((row) => row.read(countExp)!);
   }
 }
-
-// extension _AsyncMapPerSubscription<S> on Stream<S> {
-//   Stream<T> asyncMapPerSubscription<T>(FutureOr<T> Function(S) mapper) {
-//     return Stream.multi((listener) {
-//       late StreamSubscription<S> subscription;
-//
-//       void onData(S original) {
-//         subscription.pause();
-//         Future.sync(() => mapper(original))
-//             .then(listener.addSync, onError: listener.addErrorSync)
-//             .whenComplete(subscription.resume);
-//       }
-//
-//       subscription = listen(
-//         onData,
-//         onError: listener.addErrorSync,
-//         onDone: listener.closeSync,
-//         cancelOnError: false, // Determined by downstream subscription
-//       );
-//
-//       listener
-//         ..onPause = subscription.pause
-//         ..onResume = subscription.resume
-//         ..onCancel = subscription.cancel;
-//     }, isBroadcast: isBroadcast);
-//   }
-// }
-
-// extension SelectableExt<T> on Selectable<T> {
-//   Selectable<N> isolateMap<N>(N Function(T) mapper) {
-//     return _IsolateMappedSelectable<T, N>(this, mapper);
-//   }
-// }
-//
-// class _IsolateMappedSelectable<S, T> extends Selectable<T> {
-//   final Selectable<S> _source;
-//   final T Function(S) _mapper;
-//
-//   _IsolateMappedSelectable(this._source, this._mapper);
-//
-//   @override
-//   Future<List<T>> get() {
-//     return _source.get().then(_mapResults);
-//   }
-//
-//   @override
-//   Stream<List<T>> watch() {
-//     return _AsyncMapPerSubscription(
-//       _source.watch(),
-//     ).asyncMapPerSubscription(_mapResults);
-//   }
-//
-//   Future<List<T>> _mapResults(List<S> results) async {
-//     return mapListTask(results, _mapper);
-//   }
-// }
 
 final database = Database();

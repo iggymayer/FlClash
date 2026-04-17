@@ -14,6 +14,45 @@ import 'package:flutter/material.dart';
 
 final ruleItemHeight = globalState.measure.bodyMediumHeight * 2 + 14;
 
+// class RuleItem extends StatelessWidget {
+//   final bool isSelected;
+//   final bool isEditing;
+//   final Rule rule;
+//   final void Function() onSelected;
+//   final void Function(Rule rule) onEdit;
+//
+//   const RuleItem({
+//     super.key,
+//     required this.isSelected,
+//     required this.rule,
+//     required this.onSelected,
+//     required this.onEdit,
+//     this.isEditing = false,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return SelectedDecorationListItem(
+//       isSelected: isSelected,
+//       isEditing: isEditing,
+//       onSelected: () {
+//         onSelected();
+//       },
+//       title: TooltipText(
+//         text: Text(
+//           rule.value,
+//           maxLines: 2,
+//           overflow: TextOverflow.ellipsis,
+//           style: context.textTheme.bodyMedium?.toJetBrainsMono,
+//         ),
+//       ),
+//       onPressed: () {
+//         onEdit(rule);
+//       },
+//     );
+//   }
+// }
+
 class RuleItem extends StatelessWidget {
   final bool isSelected;
   final bool isEditing;
@@ -22,45 +61,6 @@ class RuleItem extends StatelessWidget {
   final void Function(Rule rule) onEdit;
 
   const RuleItem({
-    super.key,
-    required this.isSelected,
-    required this.rule,
-    required this.onSelected,
-    required this.onEdit,
-    this.isEditing = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SelectedDecorationListItem(
-      isSelected: isSelected,
-      isEditing: isEditing,
-      onSelected: () {
-        onSelected();
-      },
-      title: TooltipText(
-        text: Text(
-          rule.value,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodyMedium?.toJetBrainsMono,
-        ),
-      ),
-      onPressed: () {
-        onEdit(rule);
-      },
-    );
-  }
-}
-
-class RuleItemV2 extends StatelessWidget {
-  final bool isSelected;
-  final bool isEditing;
-  final ParsedRule rule;
-  final void Function() onSelected;
-  final void Function(ParsedRule rule) onEdit;
-
-  const RuleItemV2({
     super.key,
     required this.isSelected,
     required this.rule,
@@ -149,7 +149,7 @@ class RuleStatusItem extends StatelessWidget {
     return DecorationListItem(
       title: TooltipText(
         text: Text(
-          rule.value,
+          rule.rawValue,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: context.textTheme.bodyMedium?.toJetBrainsMono,
@@ -196,12 +196,11 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     ];
     final rule = widget.rule;
     if (rule != null) {
-      final parsedRule = ParsedRule.parse(rule);
-      _ruleAction = parsedRule.ruleAction;
-      _contentController.text = parsedRule.content ?? '';
-      _ruleTargetController.text = parsedRule.ruleTarget ?? '';
-      _noResolve = parsedRule.noResolve;
-      _src = parsedRule.src;
+      _ruleAction = rule.ruleAction;
+      _contentController.text = rule.content ?? '';
+      _ruleTargetController.text = rule.ruleTarget ?? '';
+      _noResolve = rule.noResolve;
+      _src = rule.src;
       return;
     }
     _ruleAction = RuleAction.addedRuleActions.first;
@@ -223,7 +222,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     if (res == false) {
       return;
     }
-    final parsedRule = ParsedRule(
+    final rule = Rule(
       id: widget.rule?.id ?? -1,
       ruleAction: _ruleAction,
       content: _contentController.text,
@@ -231,7 +230,6 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
       noResolve: _noResolve,
       src: _src,
     );
-    final rule = parsedRule.toRawRule;
     Navigator.of(context).pop(rule);
   }
 

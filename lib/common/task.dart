@@ -224,17 +224,14 @@ Future<VM2<String, String>> _makeRealProfileTask(
   }
   rawConfig.remove('rules');
   if (addedRules.isNotEmpty) {
-    final parsedNewRules = addedRules
-        .map((item) => ParsedRule.parseString(item.value))
-        .toList();
-    final hasMatchPlaceholder = parsedNewRules.any(
+    final hasMatchPlaceholder = addedRules.any(
       (item) => item.ruleTarget?.toUpperCase() == 'MATCH',
     );
     String? replacementTarget;
 
     if (hasMatchPlaceholder) {
       for (int i = rules.length - 1; i >= 0; i--) {
-        final parsed = ParsedRule.parseString(rules[i]);
+        final parsed = Rule.parse(rules[i]);
         if (parsed.ruleAction == RuleAction.MATCH) {
           final target = parsed.ruleTarget;
           if (target != null && target.isNotEmpty) {
@@ -248,18 +245,18 @@ Future<VM2<String, String>> _makeRealProfileTask(
 
     if (replacementTarget?.isNotEmpty == true) {
       finalAddedRules = [];
-      for (int i = 0; i < parsedNewRules.length; i++) {
-        final parsed = parsedNewRules[i];
+      for (int i = 0; i < addedRules.length; i++) {
+        final parsed = addedRules[i];
         if (parsed.ruleTarget?.toUpperCase() == 'MATCH') {
           finalAddedRules.add(
-            parsed.copyWith(ruleTarget: replacementTarget).toRawRule.value,
+            parsed.copyWith(ruleTarget: replacementTarget).rawValue,
           );
         } else {
-          finalAddedRules.add(addedRules[i].value);
+          finalAddedRules.add(addedRules[i].rawValue);
         }
       }
     } else {
-      finalAddedRules = addedRules.map((e) => e.value).toList();
+      finalAddedRules = addedRules.map((e) => e.rawValue).toList();
     }
     rules = [...finalAddedRules, ...rules];
   }
@@ -393,7 +390,8 @@ Future<MigrationData> _oldToNowTask(
   for (final rawRule in rawRules) {
     final id = idMap.updateCacheValue(rawRule['id'], () => snowflake.id);
     rawRule['id'] = id;
-    rules.add(Rule.fromJson(rawRule));
+    final value = rawRule['value'] ?? '';
+    rules.add(Rule.parse(value, id: id));
     links.add(ProfileRuleLink(ruleId: id));
   }
   List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
@@ -412,8 +410,8 @@ Future<MigrationData> _oldToNowTask(
         final addedRules = standardOverwrite['addedRules'] as List? ?? [];
         for (final addRule in addedRules) {
           final id = idMap.updateCacheValue(addRule['id'], () => snowflake.id);
-          addRule['id'] = id;
-          rules.add(Rule.fromJson(addRule));
+          final value = addRule['value'] ?? '';
+          rules.add(Rule.parse(value, id: id));
           links.add(
             ProfileRuleLink(
               profileId: profileId,

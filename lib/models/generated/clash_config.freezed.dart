@@ -2969,289 +2969,11 @@ as String,
 
 }
 
-/// @nodoc
-mixin _$ParsedRule {
-
- int get id; RuleAction get ruleAction; String? get content; String? get ruleTarget; String? get ruleProvider; String? get subRule; bool get noResolve; bool get src;
-/// Create a copy of ParsedRule
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ParsedRuleCopyWith<ParsedRule> get copyWith => _$ParsedRuleCopyWithImpl<ParsedRule>(this as ParsedRule, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ParsedRule&&(identical(other.id, id) || other.id == id)&&(identical(other.ruleAction, ruleAction) || other.ruleAction == ruleAction)&&(identical(other.content, content) || other.content == content)&&(identical(other.ruleTarget, ruleTarget) || other.ruleTarget == ruleTarget)&&(identical(other.ruleProvider, ruleProvider) || other.ruleProvider == ruleProvider)&&(identical(other.subRule, subRule) || other.subRule == subRule)&&(identical(other.noResolve, noResolve) || other.noResolve == noResolve)&&(identical(other.src, src) || other.src == src));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,id,ruleAction,content,ruleTarget,ruleProvider,subRule,noResolve,src);
-
-@override
-String toString() {
-  return 'ParsedRule(id: $id, ruleAction: $ruleAction, content: $content, ruleTarget: $ruleTarget, ruleProvider: $ruleProvider, subRule: $subRule, noResolve: $noResolve, src: $src)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ParsedRuleCopyWith<$Res>  {
-  factory $ParsedRuleCopyWith(ParsedRule value, $Res Function(ParsedRule) _then) = _$ParsedRuleCopyWithImpl;
-@useResult
-$Res call({
- int id, RuleAction ruleAction, String? content, String? ruleTarget, String? ruleProvider, String? subRule, bool noResolve, bool src
-});
-
-
-
-
-}
-/// @nodoc
-class _$ParsedRuleCopyWithImpl<$Res>
-    implements $ParsedRuleCopyWith<$Res> {
-  _$ParsedRuleCopyWithImpl(this._self, this._then);
-
-  final ParsedRule _self;
-  final $Res Function(ParsedRule) _then;
-
-/// Create a copy of ParsedRule
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? ruleAction = null,Object? content = freezed,Object? ruleTarget = freezed,Object? ruleProvider = freezed,Object? subRule = freezed,Object? noResolve = null,Object? src = null,}) {
-  return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,ruleAction: null == ruleAction ? _self.ruleAction : ruleAction // ignore: cast_nullable_to_non_nullable
-as RuleAction,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String?,ruleTarget: freezed == ruleTarget ? _self.ruleTarget : ruleTarget // ignore: cast_nullable_to_non_nullable
-as String?,ruleProvider: freezed == ruleProvider ? _self.ruleProvider : ruleProvider // ignore: cast_nullable_to_non_nullable
-as String?,subRule: freezed == subRule ? _self.subRule : subRule // ignore: cast_nullable_to_non_nullable
-as String?,noResolve: null == noResolve ? _self.noResolve : noResolve // ignore: cast_nullable_to_non_nullable
-as bool,src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
-as bool,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [ParsedRule].
-extension ParsedRulePatterns on ParsedRule {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ParsedRule value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _ParsedRule() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ParsedRule value)  $default,){
-final _that = this;
-switch (_that) {
-case _ParsedRule():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ParsedRule value)?  $default,){
-final _that = this;
-switch (_that) {
-case _ParsedRule() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  RuleAction ruleAction,  String? content,  String? ruleTarget,  String? ruleProvider,  String? subRule,  bool noResolve,  bool src)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _ParsedRule() when $default != null:
-return $default(_that.id,_that.ruleAction,_that.content,_that.ruleTarget,_that.ruleProvider,_that.subRule,_that.noResolve,_that.src);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  RuleAction ruleAction,  String? content,  String? ruleTarget,  String? ruleProvider,  String? subRule,  bool noResolve,  bool src)  $default,) {final _that = this;
-switch (_that) {
-case _ParsedRule():
-return $default(_that.id,_that.ruleAction,_that.content,_that.ruleTarget,_that.ruleProvider,_that.subRule,_that.noResolve,_that.src);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  RuleAction ruleAction,  String? content,  String? ruleTarget,  String? ruleProvider,  String? subRule,  bool noResolve,  bool src)?  $default,) {final _that = this;
-switch (_that) {
-case _ParsedRule() when $default != null:
-return $default(_that.id,_that.ruleAction,_that.content,_that.ruleTarget,_that.ruleProvider,_that.subRule,_that.noResolve,_that.src);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-
-
-class _ParsedRule implements ParsedRule {
-  const _ParsedRule({this.id = -1, this.ruleAction = RuleAction.DOMAIN, this.content, this.ruleTarget, this.ruleProvider, this.subRule, this.noResolve = false, this.src = false});
-  
-
-@override@JsonKey() final  int id;
-@override@JsonKey() final  RuleAction ruleAction;
-@override final  String? content;
-@override final  String? ruleTarget;
-@override final  String? ruleProvider;
-@override final  String? subRule;
-@override@JsonKey() final  bool noResolve;
-@override@JsonKey() final  bool src;
-
-/// Create a copy of ParsedRule
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ParsedRuleCopyWith<_ParsedRule> get copyWith => __$ParsedRuleCopyWithImpl<_ParsedRule>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ParsedRule&&(identical(other.id, id) || other.id == id)&&(identical(other.ruleAction, ruleAction) || other.ruleAction == ruleAction)&&(identical(other.content, content) || other.content == content)&&(identical(other.ruleTarget, ruleTarget) || other.ruleTarget == ruleTarget)&&(identical(other.ruleProvider, ruleProvider) || other.ruleProvider == ruleProvider)&&(identical(other.subRule, subRule) || other.subRule == subRule)&&(identical(other.noResolve, noResolve) || other.noResolve == noResolve)&&(identical(other.src, src) || other.src == src));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,id,ruleAction,content,ruleTarget,ruleProvider,subRule,noResolve,src);
-
-@override
-String toString() {
-  return 'ParsedRule(id: $id, ruleAction: $ruleAction, content: $content, ruleTarget: $ruleTarget, ruleProvider: $ruleProvider, subRule: $subRule, noResolve: $noResolve, src: $src)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ParsedRuleCopyWith<$Res> implements $ParsedRuleCopyWith<$Res> {
-  factory _$ParsedRuleCopyWith(_ParsedRule value, $Res Function(_ParsedRule) _then) = __$ParsedRuleCopyWithImpl;
-@override @useResult
-$Res call({
- int id, RuleAction ruleAction, String? content, String? ruleTarget, String? ruleProvider, String? subRule, bool noResolve, bool src
-});
-
-
-
-
-}
-/// @nodoc
-class __$ParsedRuleCopyWithImpl<$Res>
-    implements _$ParsedRuleCopyWith<$Res> {
-  __$ParsedRuleCopyWithImpl(this._self, this._then);
-
-  final _ParsedRule _self;
-  final $Res Function(_ParsedRule) _then;
-
-/// Create a copy of ParsedRule
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? ruleAction = null,Object? content = freezed,Object? ruleTarget = freezed,Object? ruleProvider = freezed,Object? subRule = freezed,Object? noResolve = null,Object? src = null,}) {
-  return _then(_ParsedRule(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,ruleAction: null == ruleAction ? _self.ruleAction : ruleAction // ignore: cast_nullable_to_non_nullable
-as RuleAction,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String?,ruleTarget: freezed == ruleTarget ? _self.ruleTarget : ruleTarget // ignore: cast_nullable_to_non_nullable
-as String?,ruleProvider: freezed == ruleProvider ? _self.ruleProvider : ruleProvider // ignore: cast_nullable_to_non_nullable
-as String?,subRule: freezed == subRule ? _self.subRule : subRule // ignore: cast_nullable_to_non_nullable
-as String?,noResolve: null == noResolve ? _self.noResolve : noResolve // ignore: cast_nullable_to_non_nullable
-as bool,src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
-as bool,
-  ));
-}
-
-
-}
-
 
 /// @nodoc
 mixin _$Rule {
 
- int get id; String get value; String? get order;
+ int get id; RuleAction get ruleAction; String? get content; String? get ruleTarget; String? get ruleProvider; String? get subRule; bool get noResolve; bool get src; String? get order;
 /// Create a copy of Rule
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -3264,16 +2986,16 @@ $RuleCopyWith<Rule> get copyWith => _$RuleCopyWithImpl<Rule>(this as Rule, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Rule&&(identical(other.id, id) || other.id == id)&&(identical(other.value, value) || other.value == value)&&(identical(other.order, order) || other.order == order));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Rule&&(identical(other.id, id) || other.id == id)&&(identical(other.ruleAction, ruleAction) || other.ruleAction == ruleAction)&&(identical(other.content, content) || other.content == content)&&(identical(other.ruleTarget, ruleTarget) || other.ruleTarget == ruleTarget)&&(identical(other.ruleProvider, ruleProvider) || other.ruleProvider == ruleProvider)&&(identical(other.subRule, subRule) || other.subRule == subRule)&&(identical(other.noResolve, noResolve) || other.noResolve == noResolve)&&(identical(other.src, src) || other.src == src)&&(identical(other.order, order) || other.order == order));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,value,order);
+int get hashCode => Object.hash(runtimeType,id,ruleAction,content,ruleTarget,ruleProvider,subRule,noResolve,src,order);
 
 @override
 String toString() {
-  return 'Rule(id: $id, value: $value, order: $order)';
+  return 'Rule(id: $id, ruleAction: $ruleAction, content: $content, ruleTarget: $ruleTarget, ruleProvider: $ruleProvider, subRule: $subRule, noResolve: $noResolve, src: $src, order: $order)';
 }
 
 
@@ -3284,7 +3006,7 @@ abstract mixin class $RuleCopyWith<$Res>  {
   factory $RuleCopyWith(Rule value, $Res Function(Rule) _then) = _$RuleCopyWithImpl;
 @useResult
 $Res call({
- int id, String value, String? order
+ int id, RuleAction ruleAction, String? content, String? ruleTarget, String? ruleProvider, String? subRule, bool noResolve, bool src, String? order
 });
 
 
@@ -3301,11 +3023,17 @@ class _$RuleCopyWithImpl<$Res>
 
 /// Create a copy of Rule
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? value = null,Object? order = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? ruleAction = null,Object? content = freezed,Object? ruleTarget = freezed,Object? ruleProvider = freezed,Object? subRule = freezed,Object? noResolve = null,Object? src = null,Object? order = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
-as String,order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+as int,ruleAction: null == ruleAction ? _self.ruleAction : ruleAction // ignore: cast_nullable_to_non_nullable
+as RuleAction,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String?,ruleTarget: freezed == ruleTarget ? _self.ruleTarget : ruleTarget // ignore: cast_nullable_to_non_nullable
+as String?,ruleProvider: freezed == ruleProvider ? _self.ruleProvider : ruleProvider // ignore: cast_nullable_to_non_nullable
+as String?,subRule: freezed == subRule ? _self.subRule : subRule // ignore: cast_nullable_to_non_nullable
+as String?,noResolve: null == noResolve ? _self.noResolve : noResolve // ignore: cast_nullable_to_non_nullable
+as bool,src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
+as bool,order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -3391,10 +3119,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String value,  String? order)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  RuleAction ruleAction,  String? content,  String? ruleTarget,  String? ruleProvider,  String? subRule,  bool noResolve,  bool src,  String? order)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Rule() when $default != null:
-return $default(_that.id,_that.value,_that.order);case _:
+return $default(_that.id,_that.ruleAction,_that.content,_that.ruleTarget,_that.ruleProvider,_that.subRule,_that.noResolve,_that.src,_that.order);case _:
   return orElse();
 
 }
@@ -3412,10 +3140,10 @@ return $default(_that.id,_that.value,_that.order);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String value,  String? order)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  RuleAction ruleAction,  String? content,  String? ruleTarget,  String? ruleProvider,  String? subRule,  bool noResolve,  bool src,  String? order)  $default,) {final _that = this;
 switch (_that) {
 case _Rule():
-return $default(_that.id,_that.value,_that.order);case _:
+return $default(_that.id,_that.ruleAction,_that.content,_that.ruleTarget,_that.ruleProvider,_that.subRule,_that.noResolve,_that.src,_that.order);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -3432,10 +3160,10 @@ return $default(_that.id,_that.value,_that.order);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String value,  String? order)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  RuleAction ruleAction,  String? content,  String? ruleTarget,  String? ruleProvider,  String? subRule,  bool noResolve,  bool src,  String? order)?  $default,) {final _that = this;
 switch (_that) {
 case _Rule() when $default != null:
-return $default(_that.id,_that.value,_that.order);case _:
+return $default(_that.id,_that.ruleAction,_that.content,_that.ruleTarget,_that.ruleProvider,_that.subRule,_that.noResolve,_that.src,_that.order);case _:
   return null;
 
 }
@@ -3447,11 +3175,17 @@ return $default(_that.id,_that.value,_that.order);case _:
 @JsonSerializable()
 
 class _Rule implements Rule {
-  const _Rule({required this.id, required this.value, this.order});
+  const _Rule({this.id = -1, this.ruleAction = RuleAction.DOMAIN, this.content, this.ruleTarget, this.ruleProvider, this.subRule, this.noResolve = false, this.src = false, this.order});
   factory _Rule.fromJson(Map<String, dynamic> json) => _$RuleFromJson(json);
 
-@override final  int id;
-@override final  String value;
+@override@JsonKey() final  int id;
+@override@JsonKey() final  RuleAction ruleAction;
+@override final  String? content;
+@override final  String? ruleTarget;
+@override final  String? ruleProvider;
+@override final  String? subRule;
+@override@JsonKey() final  bool noResolve;
+@override@JsonKey() final  bool src;
 @override final  String? order;
 
 /// Create a copy of Rule
@@ -3467,16 +3201,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Rule&&(identical(other.id, id) || other.id == id)&&(identical(other.value, value) || other.value == value)&&(identical(other.order, order) || other.order == order));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Rule&&(identical(other.id, id) || other.id == id)&&(identical(other.ruleAction, ruleAction) || other.ruleAction == ruleAction)&&(identical(other.content, content) || other.content == content)&&(identical(other.ruleTarget, ruleTarget) || other.ruleTarget == ruleTarget)&&(identical(other.ruleProvider, ruleProvider) || other.ruleProvider == ruleProvider)&&(identical(other.subRule, subRule) || other.subRule == subRule)&&(identical(other.noResolve, noResolve) || other.noResolve == noResolve)&&(identical(other.src, src) || other.src == src)&&(identical(other.order, order) || other.order == order));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,value,order);
+int get hashCode => Object.hash(runtimeType,id,ruleAction,content,ruleTarget,ruleProvider,subRule,noResolve,src,order);
 
 @override
 String toString() {
-  return 'Rule(id: $id, value: $value, order: $order)';
+  return 'Rule(id: $id, ruleAction: $ruleAction, content: $content, ruleTarget: $ruleTarget, ruleProvider: $ruleProvider, subRule: $subRule, noResolve: $noResolve, src: $src, order: $order)';
 }
 
 
@@ -3487,7 +3221,7 @@ abstract mixin class _$RuleCopyWith<$Res> implements $RuleCopyWith<$Res> {
   factory _$RuleCopyWith(_Rule value, $Res Function(_Rule) _then) = __$RuleCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String value, String? order
+ int id, RuleAction ruleAction, String? content, String? ruleTarget, String? ruleProvider, String? subRule, bool noResolve, bool src, String? order
 });
 
 
@@ -3504,275 +3238,18 @@ class __$RuleCopyWithImpl<$Res>
 
 /// Create a copy of Rule
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? value = null,Object? order = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? ruleAction = null,Object? content = freezed,Object? ruleTarget = freezed,Object? ruleProvider = freezed,Object? subRule = freezed,Object? noResolve = null,Object? src = null,Object? order = freezed,}) {
   return _then(_Rule(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
-as String,order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
+as int,ruleAction: null == ruleAction ? _self.ruleAction : ruleAction // ignore: cast_nullable_to_non_nullable
+as RuleAction,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as String?,ruleTarget: freezed == ruleTarget ? _self.ruleTarget : ruleTarget // ignore: cast_nullable_to_non_nullable
+as String?,ruleProvider: freezed == ruleProvider ? _self.ruleProvider : ruleProvider // ignore: cast_nullable_to_non_nullable
+as String?,subRule: freezed == subRule ? _self.subRule : subRule // ignore: cast_nullable_to_non_nullable
+as String?,noResolve: null == noResolve ? _self.noResolve : noResolve // ignore: cast_nullable_to_non_nullable
+as bool,src: null == src ? _self.src : src // ignore: cast_nullable_to_non_nullable
+as bool,order: freezed == order ? _self.order : order // ignore: cast_nullable_to_non_nullable
 as String?,
-  ));
-}
-
-
-}
-
-
-/// @nodoc
-mixin _$SubRule {
-
- String get name;
-/// Create a copy of SubRule
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SubRuleCopyWith<SubRule> get copyWith => _$SubRuleCopyWithImpl<SubRule>(this as SubRule, _$identity);
-
-  /// Serializes this SubRule to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubRule&&(identical(other.name, name) || other.name == name));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,name);
-
-@override
-String toString() {
-  return 'SubRule(name: $name)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $SubRuleCopyWith<$Res>  {
-  factory $SubRuleCopyWith(SubRule value, $Res Function(SubRule) _then) = _$SubRuleCopyWithImpl;
-@useResult
-$Res call({
- String name
-});
-
-
-
-
-}
-/// @nodoc
-class _$SubRuleCopyWithImpl<$Res>
-    implements $SubRuleCopyWith<$Res> {
-  _$SubRuleCopyWithImpl(this._self, this._then);
-
-  final SubRule _self;
-  final $Res Function(SubRule) _then;
-
-/// Create a copy of SubRule
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,}) {
-  return _then(_self.copyWith(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [SubRule].
-extension SubRulePatterns on SubRule {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SubRule value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _SubRule() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SubRule value)  $default,){
-final _that = this;
-switch (_that) {
-case _SubRule():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SubRule value)?  $default,){
-final _that = this;
-switch (_that) {
-case _SubRule() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _SubRule() when $default != null:
-return $default(_that.name);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name)  $default,) {final _that = this;
-switch (_that) {
-case _SubRule():
-return $default(_that.name);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name)?  $default,) {final _that = this;
-switch (_that) {
-case _SubRule() when $default != null:
-return $default(_that.name);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class _SubRule implements SubRule {
-  const _SubRule({required this.name});
-  factory _SubRule.fromJson(Map<String, dynamic> json) => _$SubRuleFromJson(json);
-
-@override final  String name;
-
-/// Create a copy of SubRule
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SubRuleCopyWith<_SubRule> get copyWith => __$SubRuleCopyWithImpl<_SubRule>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$SubRuleToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubRule&&(identical(other.name, name) || other.name == name));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,name);
-
-@override
-String toString() {
-  return 'SubRule(name: $name)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$SubRuleCopyWith<$Res> implements $SubRuleCopyWith<$Res> {
-  factory _$SubRuleCopyWith(_SubRule value, $Res Function(_SubRule) _then) = __$SubRuleCopyWithImpl;
-@override @useResult
-$Res call({
- String name
-});
-
-
-
-
-}
-/// @nodoc
-class __$SubRuleCopyWithImpl<$Res>
-    implements _$SubRuleCopyWith<$Res> {
-  __$SubRuleCopyWithImpl(this._self, this._then);
-
-  final _SubRule _self;
-  final $Res Function(_SubRule) _then;
-
-/// Create a copy of SubRule
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,}) {
-  return _then(_SubRule(
-name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,
   ));
 }
 
@@ -3783,7 +3260,7 @@ as String,
 /// @nodoc
 mixin _$ClashConfig {
 
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> get proxyGroups;@JsonKey(fromJson: _genRule) List<Rule> get rules; List<Proxy> get proxies;@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> get proxyProviders;@JsonKey(name: 'rule-providers', fromJson: _genProviders) List<String> get ruleProviders;// @JsonKey(name: 'sub-rules', fromJson: _genSubRules)
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> get proxyGroups;@JsonKey(fromJson: _genRules) List<Rule> get rules; List<Proxy> get proxies;@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> get proxyProviders;@JsonKey(name: 'rule-providers', fromJson: _genProviders) List<String> get ruleProviders;// @JsonKey(name: 'sub-rules', fromJson: _genSubRules)
 // @Default([])
 // List<SubRule> subRules,
  Map<String, String> get proxyTypeMap;
@@ -3819,7 +3296,7 @@ abstract mixin class $ClashConfigCopyWith<$Res>  {
   factory $ClashConfigCopyWith(ClashConfig value, $Res Function(ClashConfig) _then) = _$ClashConfigCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules, List<Proxy> proxies,@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> proxyProviders,@JsonKey(name: 'rule-providers', fromJson: _genProviders) List<String> ruleProviders, Map<String, String> proxyTypeMap
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRules) List<Rule> rules, List<Proxy> proxies,@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> proxyProviders,@JsonKey(name: 'rule-providers', fromJson: _genProviders) List<String> ruleProviders, Map<String, String> proxyTypeMap
 });
 
 
@@ -3929,7 +3406,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders, @JsonKey(name: 'rule-providers', fromJson: _genProviders)  List<String> ruleProviders,  Map<String, String> proxyTypeMap)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRules)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders, @JsonKey(name: 'rule-providers', fromJson: _genProviders)  List<String> ruleProviders,  Map<String, String> proxyTypeMap)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ClashConfig() when $default != null:
 return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders,_that.ruleProviders,_that.proxyTypeMap);case _:
@@ -3950,7 +3427,7 @@ return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders, @JsonKey(name: 'rule-providers', fromJson: _genProviders)  List<String> ruleProviders,  Map<String, String> proxyTypeMap)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRules)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders, @JsonKey(name: 'rule-providers', fromJson: _genProviders)  List<String> ruleProviders,  Map<String, String> proxyTypeMap)  $default,) {final _that = this;
 switch (_that) {
 case _ClashConfig():
 return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders,_that.ruleProviders,_that.proxyTypeMap);case _:
@@ -3970,7 +3447,7 @@ return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRule)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders, @JsonKey(name: 'rule-providers', fromJson: _genProviders)  List<String> ruleProviders,  Map<String, String> proxyTypeMap)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'proxy-groups')  List<ProxyGroup> proxyGroups, @JsonKey(fromJson: _genRules)  List<Rule> rules,  List<Proxy> proxies, @JsonKey(name: 'proxy-providers', fromJson: _genProviders)  List<String> proxyProviders, @JsonKey(name: 'rule-providers', fromJson: _genProviders)  List<String> ruleProviders,  Map<String, String> proxyTypeMap)?  $default,) {final _that = this;
 switch (_that) {
 case _ClashConfig() when $default != null:
 return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders,_that.ruleProviders,_that.proxyTypeMap);case _:
@@ -3985,7 +3462,7 @@ return $default(_that.proxyGroups,_that.rules,_that.proxies,_that.proxyProviders
 @JsonSerializable()
 
 class _ClashConfig implements ClashConfig {
-  const _ClashConfig({@JsonKey(name: 'proxy-groups') final  List<ProxyGroup> proxyGroups = const [], @JsonKey(fromJson: _genRule) final  List<Rule> rules = const [], final  List<Proxy> proxies = const [], @JsonKey(name: 'proxy-providers', fromJson: _genProviders) final  List<String> proxyProviders = const [], @JsonKey(name: 'rule-providers', fromJson: _genProviders) final  List<String> ruleProviders = const [], final  Map<String, String> proxyTypeMap = const {}}): _proxyGroups = proxyGroups,_rules = rules,_proxies = proxies,_proxyProviders = proxyProviders,_ruleProviders = ruleProviders,_proxyTypeMap = proxyTypeMap;
+  const _ClashConfig({@JsonKey(name: 'proxy-groups') final  List<ProxyGroup> proxyGroups = const [], @JsonKey(fromJson: _genRules) final  List<Rule> rules = const [], final  List<Proxy> proxies = const [], @JsonKey(name: 'proxy-providers', fromJson: _genProviders) final  List<String> proxyProviders = const [], @JsonKey(name: 'rule-providers', fromJson: _genProviders) final  List<String> ruleProviders = const [], final  Map<String, String> proxyTypeMap = const {}}): _proxyGroups = proxyGroups,_rules = rules,_proxies = proxies,_proxyProviders = proxyProviders,_ruleProviders = ruleProviders,_proxyTypeMap = proxyTypeMap;
   factory _ClashConfig.fromJson(Map<String, dynamic> json) => _$ClashConfigFromJson(json);
 
  final  List<ProxyGroup> _proxyGroups;
@@ -3996,7 +3473,7 @@ class _ClashConfig implements ClashConfig {
 }
 
  final  List<Rule> _rules;
-@override@JsonKey(fromJson: _genRule) List<Rule> get rules {
+@override@JsonKey(fromJson: _genRules) List<Rule> get rules {
   if (_rules is EqualUnmodifiableListView) return _rules;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_rules);
@@ -4070,7 +3547,7 @@ abstract mixin class _$ClashConfigCopyWith<$Res> implements $ClashConfigCopyWith
   factory _$ClashConfigCopyWith(_ClashConfig value, $Res Function(_ClashConfig) _then) = __$ClashConfigCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRule) List<Rule> rules, List<Proxy> proxies,@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> proxyProviders,@JsonKey(name: 'rule-providers', fromJson: _genProviders) List<String> ruleProviders, Map<String, String> proxyTypeMap
+@JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,@JsonKey(fromJson: _genRules) List<Rule> rules, List<Proxy> proxies,@JsonKey(name: 'proxy-providers', fromJson: _genProviders) List<String> proxyProviders,@JsonKey(name: 'rule-providers', fromJson: _genProviders) List<String> ruleProviders, Map<String, String> proxyTypeMap
 });
 
 
