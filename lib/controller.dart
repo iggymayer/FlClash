@@ -583,15 +583,6 @@ extension SetupControllerExt on AppController {
     }
   }
 
-  Future<bool> needSetup() async {
-    final profileId = _ref.read(currentProfileIdProvider);
-    if (profileId == null) {
-      return false;
-    }
-    final setupState = await _ref.read(setupStateProvider(profileId).future);
-    return setupState.needSetup(globalState.lastSetupState) == true;
-  }
-
   Future<void> updateConfigDebounce() async {
     debouncer.call(FunctionTag.updateConfig, () async {
       await safeRun(() async {
@@ -652,12 +643,9 @@ extension SetupControllerExt on AppController {
     bool force = false,
     VoidCallback? preloadInvoke,
   }) async {
-    if (!force && !await needSetup()) {
-      return;
-    }
     await loadingRun(
       () async {
-        await _setupConfig(preloadInvoke);
+        await _setupConfig(force: force, preloadInvoke: preloadInvoke);
         await updateGroups();
         await updateProviders();
       },
@@ -666,13 +654,13 @@ extension SetupControllerExt on AppController {
     );
   }
 
-  Future<Map<String, dynamic>> getProfile({
+  Future<VM2<String, String>> getProfile({
     required SetupState setupState,
     required PatchClashConfig patchConfig,
   }) async {
     final profileId = setupState.profileId;
     if (profileId == null) {
-      return {};
+      return VM2('', '');
     }
     final defaultUA = globalState.packageInfo.ua;
     final networkVM2 = _ref.read(
@@ -714,22 +702,25 @@ extension SetupControllerExt on AppController {
     return res;
   }
 
-  Future<Map> getProfileWithId(int profileId) async {
-    var res = {};
+  Future<String> getProfileWithId(int profileId) async {
     try {
       final setupState = await _ref.read(setupStateProvider(profileId).future);
       final patchClashConfig = _ref.read(patchClashConfigProvider);
-      res = await getProfile(
+      final res = await getProfile(
         setupState: setupState,
         patchConfig: patchClashConfig,
       );
+      return res.a;
     } catch (e) {
       globalState.showNotifier(e.toString());
     }
-    return res;
+    return '';
   }
 
-  Future<void> _setupConfig([VoidCallback? preloadInvoke]) async {
+  Future<void> _setupConfig({
+    bool force = false,
+    VoidCallback? preloadInvoke,
+  }) async {
     commonPrint.log('setup ===>');
     var profile = _ref.read(currentProfileProvider);
     final nextProfile = await profile?.checkAndUpdateAndCopy();
@@ -745,17 +736,20 @@ extension SetupControllerExt on AppController {
     final realTunEnable = _ref.read(realTunEnableProvider);
     final realPatchConfig = patchConfig.copyWith.tun(enable: realTunEnable);
     final setupState = await _ref.read(setupStateProvider(profile?.id).future);
-    globalState.lastSetupState = setupState;
     if (system.isAndroid) {
       globalState.lastVpnState = _ref.read(vpnStateProvider);
       preferences.saveShareState(this.sharedState);
     }
-    final config = await getProfile(
+    final vm2 = await getProfile(
       setupState: setupState,
       patchConfig: realPatchConfig,
     );
+    final yamlMd5 = vm2.b;
+    if (yamlMd5 == globalState.lastConfigMd5 && force == false) {
+      return;
+    }
     final configFilePath = await appPath.configFilePath;
-    final yamlString = await encodeYamlTask(config);
+    final yamlString = vm2.a;
     await File(configFilePath).safeWriteAsString(yamlString);
     final message = await coreController.setupConfig(
       setupState: setupState,
@@ -765,6 +759,7 @@ extension SetupControllerExt on AppController {
     if (message.isNotEmpty) {
       throw message;
     }
+    globalState.lastConfigMd5 = yamlMd5;
     addCheckIp();
   }
 }

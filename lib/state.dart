@@ -42,7 +42,7 @@ class GlobalState {
   CorePalette? corePalette;
   DateTime? startTime;
   UpdateTasks tasks = [];
-  SetupState? lastSetupState;
+  String? lastConfigMd5;
   VpnState? lastVpnState;
 
   bool get isStart => startTime != null && startTime!.isBeforeNow;

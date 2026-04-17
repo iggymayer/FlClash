@@ -37,6 +37,14 @@ Future<String> _encodeYaml<T>(T content) async {
   return yaml.encode(content);
 }
 
+Future<String> encodeMD5Task(String data) async {
+  return await compute<String, String>(_encodeMD5, data);
+}
+
+Future<String> _encodeMD5<T>(String content) async {
+  return content.toMd5();
+}
+
 Future<List<Group>> toGroupsTask(ComputeGroupsState data) async {
   return await compute<ComputeGroupsState, List<Group>>(_toGroupsTask, data);
 }
@@ -74,16 +82,16 @@ Future<List<Group>> _toGroupsTask(ComputeGroupsState state) async {
   );
 }
 
-Future<Map<String, dynamic>> makeRealProfileTask(
+Future<VM2<String, String>> makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
-  return await compute<MakeRealProfileState, Map<String, dynamic>>(
+  return await compute<MakeRealProfileState, VM2<String, String>>(
     _makeRealProfileTask,
     data,
   );
 }
 
-Future<Map<String, dynamic>> _makeRealProfileTask(
+Future<VM2<String, String>> _makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
   final rawConfig = Map.from(data.rawConfig);
@@ -256,7 +264,8 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
     rules = [...finalAddedRules, ...rules];
   }
   rawConfig['rules'] = rules;
-  return Map<String, dynamic>.from(rawConfig);
+  final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
+  return VM2(yaml, yaml.toMd5());
 }
 
 Future<List<String>> shakingProfileTask(
