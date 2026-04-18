@@ -101,7 +101,6 @@ class GlobalState {
       overrides: [...appStateOverrides, ...configOverrides],
     );
     final profiles = await database.profilesDao.all().get();
-    print('121313==>');
     container.read(profilesProvider.notifier).setAndReorder(profiles);
     await AppLocalizations.load(
       utils.getLocaleForString(config.appSettingProps.locale) ??
