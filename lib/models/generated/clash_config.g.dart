@@ -391,10 +391,13 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
       const [],
   proxyProviders: json['proxy-providers'] == null
       ? const []
-      : _genProviders(json['proxy-providers'] as Map<String, dynamic>),
+      : _genList(json['proxy-providers'] as Map<String, dynamic>),
   ruleProviders: json['rule-providers'] == null
       ? const []
-      : _genProviders(json['rule-providers'] as Map<String, dynamic>),
+      : _genList(json['rule-providers'] as Map<String, dynamic>),
+  subRules: json['sub-rules'] == null
+      ? const []
+      : _genList(json['sub-rules'] as Map<String, dynamic>),
   proxyTypeMap:
       (json['proxyTypeMap'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
@@ -409,6 +412,7 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
       'proxies': instance.proxies,
       'proxy-providers': instance.proxyProviders,
       'rule-providers': instance.ruleProviders,
+      'sub-rules': instance.subRules,
       'proxyTypeMap': instance.proxyTypeMap,
     };
 

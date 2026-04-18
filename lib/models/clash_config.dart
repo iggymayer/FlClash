@@ -489,7 +489,7 @@ List<Rule> _genRules(List<dynamic>? rules) {
 //   return json.entries.map((entry) => SubRule(name: entry.key)).toList();
 // }
 
-List<String> _genProviders(Map<String, dynamic> json) {
+List<String> _genList(Map<String, dynamic> json) {
   return json.entries.map((entry) => entry.key).toList();
 }
 
@@ -499,15 +499,15 @@ abstract class ClashConfig with _$ClashConfig {
     @Default([]) @JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,
     @JsonKey(fromJson: _genRules) @Default([]) List<Rule> rules,
     @Default([]) List<Proxy> proxies,
-    @JsonKey(name: 'proxy-providers', fromJson: _genProviders)
+    @JsonKey(name: 'proxy-providers', fromJson: _genList)
     @Default([])
     List<String> proxyProviders,
-    @JsonKey(name: 'rule-providers', fromJson: _genProviders)
+    @JsonKey(name: 'rule-providers', fromJson: _genList)
     @Default([])
     List<String> ruleProviders,
-    // @JsonKey(name: 'sub-rules', fromJson: _genSubRules)
-    // @Default([])
-    // List<SubRule> subRules,
+    @JsonKey(name: 'sub-rules', fromJson: _genList)
+    @Default([])
+    List<String> subRules,
     @Default({}) Map<String, String> proxyTypeMap,
   }) = _ClashConfig;
 

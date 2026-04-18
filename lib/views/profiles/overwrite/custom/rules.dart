@@ -494,7 +494,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
             flex: 1,
             child: TooltipText(
               text: Text(
-                target ?? '',
+                target ?? '请选择分流策略',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: context.textTheme.bodyLarge?.copyWith(
@@ -506,6 +506,49 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
           Icon(Icons.arrow_forward_ios),
         ],
       ),
+    );
+  }
+
+  Future<void> _handleSelectedSubRule() async {
+    final res = await Navigator.of(
+      context,
+    ).push(PagedSheetRoute(builder: (context) => _SubRuleSelectedView()));
+    if (res == null) {
+      return;
+    }
+    ref
+        .read(ruleProvider.notifier)
+        .update((state) => state.copyWith(subRule: res));
+  }
+
+  Widget _buildSubRuleItem(int profileId, String? subRule) {
+    return Consumer(
+      builder: (_, ref, _) {
+        return _buildItem(
+          title: Text('子规则'),
+          onPressed: _handleSelectedSubRule,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 4,
+            children: [
+              Flexible(
+                flex: 1,
+                child: TooltipText(
+                  text: Text(
+                    subRule ?? '请选择子规则',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ),
+              Icon(Icons.arrow_forward_ios),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -533,6 +576,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
 
   @override
   Widget build(BuildContext context) {
+    final profileId = ProfileIdProvider.of(context)!.profileId;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final rule = ref.watch(ruleProvider);
@@ -560,7 +604,9 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
                   rule.ruleAction == RuleAction.RULE_SET
                       ? _buildRuleProviderItem(rule.ruleProvider)
                       : _buildContentItem(rule.content),
-                _buildTargetItem(rule.ruleTarget),
+                rule.ruleAction != RuleAction.SUB_RULE
+                    ? _buildTargetItem(rule.ruleTarget)
+                    : _buildSubRuleItem(profileId, rule.subRule),
               ],
             ),
             if (rule.ruleAction.hasParams)
@@ -839,28 +885,113 @@ class _RuleProviderSelectedView extends ConsumerWidget {
       sheetTransparentToolBar: true,
       body: SizedBox(
         height: height,
-        child: ListView.builder(
-          padding: EdgeInsets.symmetric(
-            horizontal: 16,
-          ).copyWith(bottom: 20, top: context.sheetTopPadding),
-          itemCount: ruleProviders.length,
-          itemBuilder: (_, index) {
-            final ruleProvider = ruleProviders[index];
-            final position = ItemPosition.get(index, ruleProviders.length);
-            return ItemPositionProvider(
-              position: position,
-              child: _buildItem(
-                onPressed: () {
-                  Navigator.of(context).pop(ruleProvider);
+        child: ruleProviders.isEmpty
+            ? NullStatus(label: '代理集为空')
+            : ListView.builder(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                ).copyWith(bottom: 20, top: context.sheetTopPadding),
+                itemCount: ruleProviders.length,
+                itemBuilder: (_, index) {
+                  final ruleProvider = ruleProviders[index];
+                  final position = ItemPosition.get(
+                    index,
+                    ruleProviders.length,
+                  );
+                  return ItemPositionProvider(
+                    position: position,
+                    child: _buildItem(
+                      onPressed: () {
+                        Navigator.of(context).pop(ruleProvider);
+                      },
+                      title: Text(ruleProvider),
+                      trailing: currentRuleProvider == ruleProvider
+                          ? Icon(Icons.check)
+                          : null,
+                    ),
+                  );
                 },
-                title: Text(ruleProvider),
-                trailing: currentRuleProvider == ruleProvider
-                    ? Icon(Icons.check)
-                    : null,
               ),
-            );
-          },
-        ),
+      ),
+      title: '规则集',
+    );
+  }
+}
+
+class _SubRuleSelectedView extends ConsumerWidget {
+  const _SubRuleSelectedView();
+
+  Widget _buildItem({
+    required Widget title,
+    Widget? trailing,
+    final VoidCallback? onPressed,
+  }) {
+    return DecorationListItem(
+      onPressed: onPressed,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        spacing: 16,
+        children: [
+          title,
+          if (trailing != null)
+            Flexible(
+              child: Container(
+                alignment: Alignment.centerRight,
+                height: globalState.measure.bodyLargeHeight + 24,
+                child: trailing,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final isBottomSheet =
+        SheetProvider.of(context)?.type == SheetType.bottomSheet;
+    final profileId = ProfileIdProvider.of(context)!.profileId;
+    final height = ref.watch(
+      viewSizeProvider.select(
+        (state) => isBottomSheet ? state.height * 0.70 : double.maxFinite,
+      ),
+    );
+    final subRules = ref.watch(
+      clashConfigProvider(
+        profileId,
+      ).select((state) => state.value?.subRules ?? []),
+    );
+    final currentSubRule = ref.watch(
+      ruleProvider.select((state) => state.subRule),
+    );
+    return AdaptiveSheetScaffold(
+      sheetTransparentToolBar: true,
+      body: SizedBox(
+        height: height,
+        child: subRules.isEmpty
+            ? NullStatus(label: '子规则为空')
+            : ListView.builder(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16,
+                ).copyWith(bottom: 20, top: context.sheetTopPadding),
+                itemCount: subRules.length,
+                itemBuilder: (_, index) {
+                  final subRule = subRules[index];
+                  final position = ItemPosition.get(index, subRules.length);
+                  return ItemPositionProvider(
+                    position: position,
+                    child: _buildItem(
+                      onPressed: () {
+                        Navigator.of(context).pop(subRule);
+                      },
+                      title: Text(subRule),
+                      trailing: currentSubRule == subRule
+                          ? Icon(Icons.check)
+                          : null,
+                    ),
+                  );
+                },
+              ),
       ),
       title: '规则集',
     );

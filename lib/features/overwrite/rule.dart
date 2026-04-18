@@ -14,45 +14,6 @@ import 'package:flutter/material.dart';
 
 final ruleItemHeight = globalState.measure.bodyMediumHeight * 2 + 14;
 
-// class RuleItem extends StatelessWidget {
-//   final bool isSelected;
-//   final bool isEditing;
-//   final Rule rule;
-//   final void Function() onSelected;
-//   final void Function(Rule rule) onEdit;
-//
-//   const RuleItem({
-//     super.key,
-//     required this.isSelected,
-//     required this.rule,
-//     required this.onSelected,
-//     required this.onEdit,
-//     this.isEditing = false,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return SelectedDecorationListItem(
-//       isSelected: isSelected,
-//       isEditing: isEditing,
-//       onSelected: () {
-//         onSelected();
-//       },
-//       title: TooltipText(
-//         text: Text(
-//           rule.value,
-//           maxLines: 2,
-//           overflow: TextOverflow.ellipsis,
-//           style: context.textTheme.bodyMedium?.toJetBrainsMono,
-//         ),
-//       ),
-//       onPressed: () {
-//         onEdit(rule);
-//       },
-//     );
-//   }
-// }
-
 class RuleItem extends StatelessWidget {
   final bool isSelected;
   final bool isEditing;
@@ -98,7 +59,10 @@ class RuleItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(rule.ruleAction.name),
+                Text(
+                  rule.ruleAction.name,
+                  style: context.textTheme.bodyLarge?.toJetBrainsMono,
+                ),
                 Flexible(
                   child: TooltipText(
                     text: Text(
@@ -119,7 +83,7 @@ class RuleItem extends StatelessWidget {
           if (rule.ruleTarget != null)
             Text(
               rule.ruleTarget!,
-              style: context.textTheme.bodyMedium?.copyWith(
+              style: context.textTheme.bodyMedium?.toJetBrainsMono.copyWith(
                 color: _buildRuleTargetColor(context, rule.ruleTarget!),
               ),
             ),
