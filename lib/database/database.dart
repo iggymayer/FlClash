@@ -33,7 +33,7 @@ class Database extends _$Database {
   Database([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 2;
 
   static LazyDatabase _openConnection() {
     return LazyDatabase(() async {
@@ -46,19 +46,16 @@ class Database extends _$Database {
   MigrationStrategy get migration {
     return MigrationStrategy(
       onUpgrade: (m, from, to) async {
-        print('from: ${from},to ${to}');
         if (from < 2) {
+          await _migrateRules(m);
           await m.createTable(proxyGroups);
           await m.createTable(iconRecords);
           await _resetOrders();
-          return;
-        } else if (from < 3) {
-          await _migrateRules(m);
         }
       },
       beforeOpen: (details) async {
-        // final m = Migrator(this);
-        // await _migrateRules(m);
+        final m = Migrator(this);
+        await _migrateRules(m);
         // await m.deleteTable('proxy_groups');
         // await m.createTable(proxyGroups);
       },
@@ -70,30 +67,45 @@ class Database extends _$Database {
     final columnNames = tableInfo
         .map((row) => row.read<String>('name'))
         .toList();
-    print('column===> $columnNames');
     if (columnNames.isEmpty) {
       await m.createTable(rules);
       return;
     } else if (columnNames.contains('rule_action')) {
       return;
     }
-    await customStatement('PRAGMA foreign_keys = OFF');
-    try {
-      await customStatement('ALTER TABLE rules RENAME TO rules_old');
-      await m.createTable(rules);
-      final oldRows = await customSelect(
-        'SELECT id, value FROM rules_old',
-      ).get();
-      for (final row in oldRows) {
-        final id = row.read<int>('id');
-        final value = row.read<String>('value');
-        final parsed = Rule.parse(value, id: id);
-        await into(rules).insertOnConflictUpdate(parsed.toCompanion());
-      }
-      await customStatement('DROP TABLE rules_old');
-    } finally {
-      await customStatement('PRAGMA foreign_keys = ON');
+    await customStatement(
+      'ALTER TABLE rules ADD COLUMN rule_action TEXT NOT NULL DEFAULT ""',
+    );
+    await customStatement('ALTER TABLE rules ADD COLUMN content TEXT');
+    await customStatement('ALTER TABLE rules ADD COLUMN rule_target TEXT');
+    await customStatement('ALTER TABLE rules ADD COLUMN rule_provider TEXT');
+    await customStatement('ALTER TABLE rules ADD COLUMN sub_rule TEXT');
+    await customStatement(
+      'ALTER TABLE rules ADD COLUMN no_resolve INTEGER NOT NULL DEFAULT 0',
+    );
+    await customStatement(
+      'ALTER TABLE rules ADD COLUMN src INTEGER NOT NULL DEFAULT 0',
+    );
+    final oldRows = await customSelect('SELECT id, value FROM rules').get();
+    for (final row in oldRows) {
+      final id = row.read<int>('id');
+      final value = row.read<String>('value');
+      final parsed = Rule.parse(value, id: id);
+      await customStatement(
+        'UPDATE rules SET rule_action = ?, content = ?, rule_target = ?, rule_provider = ?, sub_rule = ?, no_resolve = ?, src = ? WHERE id = ?',
+        [
+          parsed.ruleAction.name,
+          parsed.content,
+          parsed.ruleTarget,
+          parsed.ruleProvider,
+          parsed.subRule,
+          parsed.noResolve ? 1 : 0,
+          parsed.src ? 1 : 0,
+          id,
+        ],
+      );
     }
+    await customStatement('ALTER TABLE rules DROP COLUMN value');
   }
 
   Future<void> _resetOrders() async {
