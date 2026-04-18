@@ -87,7 +87,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
           profileId: widget.profileId,
           child: ProviderScope(
             overrides: [
-              ruleProvider.overrideWithBuild((_, _) => rule ?? Rule()),
+              ruleProvider.overrideWithBuild((_, _) => rule ?? Rule.init()),
             ],
             child: _AddOrEditRuleNestedSheet(),
           ),

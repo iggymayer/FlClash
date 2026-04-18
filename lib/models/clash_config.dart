@@ -351,6 +351,13 @@ abstract class Rule with _$Rule {
   //   return Rule.parse(Rule.value(value ?? ''));
   // }
 
+  factory Rule.init() {
+    return Rule(
+      ruleAction: RuleAction.DOMAIN,
+      ruleTarget: RuleTarget.DIRECT.name,
+    );
+  }
+
   factory Rule.parse(String value, {int? id}) {
     id ??= snowflake.id;
     if (value.isEmpty) {
