@@ -1,7 +1,7 @@
 part of 'database.dart';
 
 @DataClassName('RawRule')
-@TableIndex(name: 'rule_target', columns: {#ruleTarget})
+@TableIndex(name: 'idx_rule_target', columns: {#ruleTarget})
 class Rules extends Table {
   @override
   String get tableName => 'rules';

@@ -106,6 +106,7 @@ class Database extends _$Database {
       );
     }
     await customStatement('ALTER TABLE rules DROP COLUMN value');
+    await m.createIndex(idxRuleTarget);
   }
 
   Future<void> _resetOrders() async {

@@ -3402,9 +3402,9 @@ abstract class _$Database extends GeneratedDatabase {
   );
   late final $ProxyGroupsTable proxyGroups = $ProxyGroupsTable(this);
   late final $IconRecordsTable iconRecords = $IconRecordsTable(this);
-  late final Index ruleTarget = Index(
-    'rule_target',
-    'CREATE INDEX rule_target ON rules (rule_target)',
+  late final Index idxRuleTarget = Index(
+    'idx_rule_target',
+    'CREATE INDEX idx_rule_target ON rules (rule_target)',
   );
   late final Index idxProfileSceneOrder = Index(
     'idx_profile_scene_order',
@@ -3434,7 +3434,7 @@ abstract class _$Database extends GeneratedDatabase {
     profileRuleLinks,
     proxyGroups,
     iconRecords,
-    ruleTarget,
+    idxRuleTarget,
     idxProfileSceneOrder,
     idxProfileNameOrder,
     lastAccessedUrl,
