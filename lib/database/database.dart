@@ -47,10 +47,10 @@ class Database extends _$Database {
     return MigrationStrategy(
       onUpgrade: (m, from, to) async {
         if (from < 2) {
-          await _migrateRules(m);
           await m.createTable(proxyGroups);
           await m.createTable(iconRecords);
           await _resetOrders();
+          await _migrateRules(m);
         }
       },
       beforeOpen: (details) async {
