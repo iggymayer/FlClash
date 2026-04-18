@@ -972,12 +972,20 @@ class _SubRuleSelectedView extends ConsumerWidget {
 
 bool _handleSaveRule(BuildContext context, WidgetRef ref) {
   final rule = ref.read(ruleProvider);
-  if ((rule.ruleAction == RuleAction.RULE_SET && rule.ruleProvider == null) ||
-      (rule.ruleAction != RuleAction.RULE_SET && rule.content == null)) {
+  if (rule.realContent?.isNotEmpty != true) {
     globalState.showMessage(
       cancelable: false,
       message: TextSpan(
         text: rule.ruleAction == RuleAction.RULE_SET ? '代理集不能为空。' : '内容不能为空。',
+      ),
+    );
+    return false;
+  }
+  if (rule.realTarget?.isNotEmpty != true) {
+    globalState.showMessage(
+      cancelable: false,
+      message: TextSpan(
+        text: rule.ruleAction == RuleAction.SUB_RULE ? '子规则不能为空。' : '分流策略不能为空',
       ),
     );
     return false;

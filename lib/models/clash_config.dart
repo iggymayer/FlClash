@@ -422,11 +422,18 @@ extension RuleExt on Rule {
     };
   }
 
+  String? get realTarget {
+    return switch (ruleAction == RuleAction.SUB_RULE) {
+      true => subRule,
+      false => ruleTarget,
+    };
+  }
+
   String get rawValue {
     return [
       ruleAction.value,
-      ruleAction == RuleAction.RULE_SET ? ruleProvider : content,
-      ruleAction == RuleAction.SUB_RULE ? subRule : ruleTarget,
+      realContent,
+      realTarget,
       if (ruleAction.hasParams) ...[
         if (src) 'src',
         if (noResolve) 'no-resolve',
