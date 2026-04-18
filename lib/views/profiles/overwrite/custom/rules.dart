@@ -675,6 +675,7 @@ class _RuleTypeSelectedView extends ConsumerWidget {
                 onPressed: () {
                   Navigator.of(context).pop(ruleAction);
                 },
+                isSelected: ruleAction == currentRuleAction,
                 subtitle: Text(ruleAction.desc),
                 title: Text(ruleAction.name),
                 trailing: ruleAction == currentRuleAction
@@ -697,7 +698,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
     required String title,
     String? subtitle,
     required ItemPosition position,
-    bool isChecked = true,
+    bool isSelected = true,
     final VoidCallback? onPressed,
   }) {
     return ItemPositionProvider(
@@ -708,7 +709,8 @@ class _RuleTargetSelectedView extends ConsumerWidget {
         title: TooltipText(
           text: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         ),
-        trailing: isChecked ? Icon(Icons.check) : null,
+        isSelected: isSelected,
+        trailing: isSelected ? Icon(Icons.check) : null,
       ),
     );
   }
@@ -768,7 +770,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
                     onPressed: () {
                       _handleSelected(context, target.name);
                     },
-                    isChecked: currentRuleTarget == target.name ? true : false,
+                    isSelected: currentRuleTarget == target.name,
                   );
                 },
                 itemCount: RuleTarget.values.length,
@@ -793,9 +795,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
                     onPressed: () {
                       _handleSelected(context, proxyGroup.name);
                     },
-                    isChecked: currentRuleTarget == proxyGroup.name
-                        ? true
-                        : false,
+                    isSelected: currentRuleTarget == proxyGroup.name,
                   );
                 },
                 itemCount: proxyGroups.length,
@@ -820,7 +820,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
                     onPressed: () {
                       _handleSelected(context, proxy.name);
                     },
-                    isChecked: currentRuleTarget == proxy.name ? true : false,
+                    isSelected: currentRuleTarget == proxy.name,
                   );
                 },
                 itemCount: proxies.length,
@@ -840,26 +840,14 @@ class _RuleProviderSelectedView extends ConsumerWidget {
 
   Widget _buildItem({
     required Widget title,
-    Widget? trailing,
     final VoidCallback? onPressed,
+    bool isSelected = false,
   }) {
     return DecorationListItem(
       onPressed: onPressed,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        spacing: 16,
-        children: [
-          title,
-          if (trailing != null)
-            Flexible(
-              child: Container(
-                alignment: Alignment.centerRight,
-                height: globalState.measure.bodyLargeHeight + 24,
-                child: trailing,
-              ),
-            ),
-        ],
-      ),
+      isSelected: isSelected,
+      trailing: isSelected ? Icon(Icons.check) : null,
+      title: title,
     );
   }
 
@@ -905,9 +893,7 @@ class _RuleProviderSelectedView extends ConsumerWidget {
                         Navigator.of(context).pop(ruleProvider);
                       },
                       title: Text(ruleProvider),
-                      trailing: currentRuleProvider == ruleProvider
-                          ? Icon(Icons.check)
-                          : null,
+                      isSelected: currentRuleProvider == ruleProvider,
                     ),
                   );
                 },
@@ -923,26 +909,14 @@ class _SubRuleSelectedView extends ConsumerWidget {
 
   Widget _buildItem({
     required Widget title,
-    Widget? trailing,
     final VoidCallback? onPressed,
+    bool isSelected = false,
   }) {
     return DecorationListItem(
+      isSelected: isSelected,
       onPressed: onPressed,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        spacing: 16,
-        children: [
-          title,
-          if (trailing != null)
-            Flexible(
-              child: Container(
-                alignment: Alignment.centerRight,
-                height: globalState.measure.bodyLargeHeight + 24,
-                child: trailing,
-              ),
-            ),
-        ],
-      ),
+      title: title,
+      trailing: isSelected ? Icon(Icons.check) : null,
     );
   }
 
@@ -985,9 +959,7 @@ class _SubRuleSelectedView extends ConsumerWidget {
                         Navigator.of(context).pop(subRule);
                       },
                       title: Text(subRule),
-                      trailing: currentSubRule == subRule
-                          ? Icon(Icons.check)
-                          : null,
+                      isSelected: currentSubRule == subRule,
                     ),
                   );
                 },
