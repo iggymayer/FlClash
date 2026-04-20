@@ -94,22 +94,23 @@ class _IconEditViewState extends ConsumerState<IconEditView>
       vsync: this,
       duration: commonDuration * 2,
     );
-    if (widget.value != null && widget.value!.isNotEmpty) {
-      _getImageFormCache();
-    }
+    _handleInputRealChange();
   }
 
   Future<void> _handleInputChange() async {
     debouncer.call('_IconEditDialogState_search', () {
-      _handleUpdateIconRecords();
-      _getImageFormCache();
+      _handleInputRealChange();
     });
+  }
+
+  void _handleInputRealChange() {
+    _handleUpdateIconRecords();
+    _getImageFormCache();
   }
 
   Future<void> _handleUpdateIconRecords() async {
     _recordsNotifier.value = [];
     final text = _srcController.text;
-    if (text.isEmpty) return;
     final res = await database.iconRecordsDao.query(text);
     if (mounted) {
       _recordsNotifier.value = res;
