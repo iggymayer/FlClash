@@ -1,5 +1,6 @@
 library;
 
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/clash_config.dart';
@@ -29,21 +30,64 @@ class RuleItem extends StatelessWidget {
     this.isEditing = false,
   });
 
+  Color _buildRuleTargetColor(BuildContext context, String ruleTarget) {
+    if (ruleTarget.toUpperCase() == 'DIRECT') {
+      return Colors.green.harmonizeWith(context.colorScheme.primary);
+    } else if (ruleTarget.toUpperCase() == 'REJECT') {
+      return context.colorScheme.error;
+    }
+    return context.colorScheme.onSecondaryContainer;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SelectedDecorationListItem(
       isSelected: isSelected,
       isEditing: isEditing,
+      horizontalTitleGap: 0,
       onSelected: () {
         onSelected();
       },
-      title: TooltipText(
-        text: Text(
-          rule.value,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodyMedium?.toJetBrainsMono,
-        ),
+      title: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  rule.ruleAction.name,
+                  style: context.textTheme.bodyLarge?.toJetBrainsMono,
+                ),
+                Flexible(
+                  child: TooltipText(
+                    text: Text(
+                      rule.realContent ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textTheme.bodySmall?.toJetBrainsMono
+                          .copyWith(
+                            color:
+                                context.colorScheme.onSurfaceVariant.opacity80,
+                          ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (rule.ruleTarget != null)
+            Text(
+              rule.ruleTarget!,
+              style: context.textTheme.bodyMedium?.toJetBrainsMono.copyWith(
+                color: _buildRuleTargetColor(context, rule.ruleTarget!),
+              ),
+            ),
+        ],
       ),
       onPressed: () {
         onEdit(rule);
@@ -69,7 +113,7 @@ class RuleStatusItem extends StatelessWidget {
     return DecorationListItem(
       title: TooltipText(
         text: Text(
-          rule.value,
+          rule.rawValue,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: context.textTheme.bodyMedium?.toJetBrainsMono,
@@ -112,14 +156,15 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
       ...RuleTarget.values.map(
         (item) => DropdownMenuEntry(value: item.name, label: item.name),
       ),
+      DropdownMenuEntry(value: 'MATCH', label: 'MATCH'),
     ];
-    if (widget.rule != null) {
-      final parsedRule = ParsedRule.parseString(widget.rule!.value);
-      _ruleAction = parsedRule.ruleAction;
-      _contentController.text = parsedRule.content ?? '';
-      _ruleTargetController.text = parsedRule.ruleTarget ?? '';
-      _noResolve = parsedRule.noResolve;
-      _src = parsedRule.src;
+    final rule = widget.rule;
+    if (rule != null) {
+      _ruleAction = rule.ruleAction;
+      _contentController.text = rule.content ?? '';
+      _ruleTargetController.text = rule.ruleTarget ?? '';
+      _noResolve = rule.noResolve;
+      _src = rule.src;
       return;
     }
     _ruleAction = RuleAction.addedRuleActions.first;
@@ -141,16 +186,14 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
     if (res == false) {
       return;
     }
-    final parsedRule = ParsedRule(
+    final rule = Rule(
+      id: widget.rule?.id ?? -1,
       ruleAction: _ruleAction,
       content: _contentController.text,
       ruleTarget: _ruleTargetController.text,
       noResolve: _noResolve,
       src: _src,
     );
-    final rule = widget.rule != null
-        ? widget.rule!.copyWith(value: parsedRule.value)
-        : Rule.value(parsedRule.value);
     Navigator.of(context).pop(rule);
   }
 

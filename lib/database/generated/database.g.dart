@@ -1061,17 +1061,98 @@ class $RulesTable extends Rules with TableInfo<$RulesTable, RawRule> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _valueMeta = const VerificationMeta('value');
   @override
-  late final GeneratedColumn<String> value = GeneratedColumn<String>(
-    'value',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
+  late final GeneratedColumnWithTypeConverter<RuleAction, String> ruleAction =
+      GeneratedColumn<String>(
+        'rule_action',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: true,
+      ).withConverter<RuleAction>($RulesTable.$converterruleAction);
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
   );
   @override
-  List<GeneratedColumn> get $columns => [id, value];
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ruleTargetMeta = const VerificationMeta(
+    'ruleTarget',
+  );
+  @override
+  late final GeneratedColumn<String> ruleTarget = GeneratedColumn<String>(
+    'rule_target',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _ruleProviderMeta = const VerificationMeta(
+    'ruleProvider',
+  );
+  @override
+  late final GeneratedColumn<String> ruleProvider = GeneratedColumn<String>(
+    'rule_provider',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _subRuleMeta = const VerificationMeta(
+    'subRule',
+  );
+  @override
+  late final GeneratedColumn<String> subRule = GeneratedColumn<String>(
+    'sub_rule',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _noResolveMeta = const VerificationMeta(
+    'noResolve',
+  );
+  @override
+  late final GeneratedColumn<bool> noResolve = GeneratedColumn<bool>(
+    'no_resolve',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("no_resolve" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _srcMeta = const VerificationMeta('src');
+  @override
+  late final GeneratedColumn<bool> src = GeneratedColumn<bool>(
+    'src',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("src" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    ruleAction,
+    content,
+    ruleTarget,
+    ruleProvider,
+    subRule,
+    noResolve,
+    src,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1087,13 +1168,44 @@ class $RulesTable extends Rules with TableInfo<$RulesTable, RawRule> {
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('value')) {
+    if (data.containsKey('content')) {
       context.handle(
-        _valueMeta,
-        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
       );
-    } else if (isInserting) {
-      context.missing(_valueMeta);
+    }
+    if (data.containsKey('rule_target')) {
+      context.handle(
+        _ruleTargetMeta,
+        ruleTarget.isAcceptableOrUnknown(data['rule_target']!, _ruleTargetMeta),
+      );
+    }
+    if (data.containsKey('rule_provider')) {
+      context.handle(
+        _ruleProviderMeta,
+        ruleProvider.isAcceptableOrUnknown(
+          data['rule_provider']!,
+          _ruleProviderMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sub_rule')) {
+      context.handle(
+        _subRuleMeta,
+        subRule.isAcceptableOrUnknown(data['sub_rule']!, _subRuleMeta),
+      );
+    }
+    if (data.containsKey('no_resolve')) {
+      context.handle(
+        _noResolveMeta,
+        noResolve.isAcceptableOrUnknown(data['no_resolve']!, _noResolveMeta),
+      );
+    }
+    if (data.containsKey('src')) {
+      context.handle(
+        _srcMeta,
+        src.isAcceptableOrUnknown(data['src']!, _srcMeta),
+      );
     }
     return context;
   }
@@ -1108,9 +1220,35 @@ class $RulesTable extends Rules with TableInfo<$RulesTable, RawRule> {
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      value: attachedDatabase.typeMapping.read(
+      ruleAction: $RulesTable.$converterruleAction.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}rule_action'],
+        )!,
+      ),
+      content: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}value'],
+        data['${effectivePrefix}content'],
+      ),
+      ruleTarget: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rule_target'],
+      ),
+      ruleProvider: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rule_provider'],
+      ),
+      subRule: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sub_rule'],
+      ),
+      noResolve: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}no_resolve'],
+      )!,
+      src: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}src'],
       )!,
     );
   }
@@ -1119,22 +1257,75 @@ class $RulesTable extends Rules with TableInfo<$RulesTable, RawRule> {
   $RulesTable createAlias(String alias) {
     return $RulesTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<RuleAction, String, String> $converterruleAction =
+      const EnumNameConverter<RuleAction>(RuleAction.values);
 }
 
 class RawRule extends DataClass implements Insertable<RawRule> {
   final int id;
-  final String value;
-  const RawRule({required this.id, required this.value});
+  final RuleAction ruleAction;
+  final String? content;
+  final String? ruleTarget;
+  final String? ruleProvider;
+  final String? subRule;
+  final bool noResolve;
+  final bool src;
+  const RawRule({
+    required this.id,
+    required this.ruleAction,
+    this.content,
+    this.ruleTarget,
+    this.ruleProvider,
+    this.subRule,
+    required this.noResolve,
+    required this.src,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['value'] = Variable<String>(value);
+    {
+      map['rule_action'] = Variable<String>(
+        $RulesTable.$converterruleAction.toSql(ruleAction),
+      );
+    }
+    if (!nullToAbsent || content != null) {
+      map['content'] = Variable<String>(content);
+    }
+    if (!nullToAbsent || ruleTarget != null) {
+      map['rule_target'] = Variable<String>(ruleTarget);
+    }
+    if (!nullToAbsent || ruleProvider != null) {
+      map['rule_provider'] = Variable<String>(ruleProvider);
+    }
+    if (!nullToAbsent || subRule != null) {
+      map['sub_rule'] = Variable<String>(subRule);
+    }
+    map['no_resolve'] = Variable<bool>(noResolve);
+    map['src'] = Variable<bool>(src);
     return map;
   }
 
   RulesCompanion toCompanion(bool nullToAbsent) {
-    return RulesCompanion(id: Value(id), value: Value(value));
+    return RulesCompanion(
+      id: Value(id),
+      ruleAction: Value(ruleAction),
+      content: content == null && nullToAbsent
+          ? const Value.absent()
+          : Value(content),
+      ruleTarget: ruleTarget == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ruleTarget),
+      ruleProvider: ruleProvider == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ruleProvider),
+      subRule: subRule == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subRule),
+      noResolve: Value(noResolve),
+      src: Value(src),
+    );
   }
 
   factory RawRule.fromJson(
@@ -1144,7 +1335,15 @@ class RawRule extends DataClass implements Insertable<RawRule> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RawRule(
       id: serializer.fromJson<int>(json['id']),
-      value: serializer.fromJson<String>(json['value']),
+      ruleAction: $RulesTable.$converterruleAction.fromJson(
+        serializer.fromJson<String>(json['ruleAction']),
+      ),
+      content: serializer.fromJson<String?>(json['content']),
+      ruleTarget: serializer.fromJson<String?>(json['ruleTarget']),
+      ruleProvider: serializer.fromJson<String?>(json['ruleProvider']),
+      subRule: serializer.fromJson<String?>(json['subRule']),
+      noResolve: serializer.fromJson<bool>(json['noResolve']),
+      src: serializer.fromJson<bool>(json['src']),
     );
   }
   @override
@@ -1152,16 +1351,53 @@ class RawRule extends DataClass implements Insertable<RawRule> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'value': serializer.toJson<String>(value),
+      'ruleAction': serializer.toJson<String>(
+        $RulesTable.$converterruleAction.toJson(ruleAction),
+      ),
+      'content': serializer.toJson<String?>(content),
+      'ruleTarget': serializer.toJson<String?>(ruleTarget),
+      'ruleProvider': serializer.toJson<String?>(ruleProvider),
+      'subRule': serializer.toJson<String?>(subRule),
+      'noResolve': serializer.toJson<bool>(noResolve),
+      'src': serializer.toJson<bool>(src),
     };
   }
 
-  RawRule copyWith({int? id, String? value}) =>
-      RawRule(id: id ?? this.id, value: value ?? this.value);
+  RawRule copyWith({
+    int? id,
+    RuleAction? ruleAction,
+    Value<String?> content = const Value.absent(),
+    Value<String?> ruleTarget = const Value.absent(),
+    Value<String?> ruleProvider = const Value.absent(),
+    Value<String?> subRule = const Value.absent(),
+    bool? noResolve,
+    bool? src,
+  }) => RawRule(
+    id: id ?? this.id,
+    ruleAction: ruleAction ?? this.ruleAction,
+    content: content.present ? content.value : this.content,
+    ruleTarget: ruleTarget.present ? ruleTarget.value : this.ruleTarget,
+    ruleProvider: ruleProvider.present ? ruleProvider.value : this.ruleProvider,
+    subRule: subRule.present ? subRule.value : this.subRule,
+    noResolve: noResolve ?? this.noResolve,
+    src: src ?? this.src,
+  );
   RawRule copyWithCompanion(RulesCompanion data) {
     return RawRule(
       id: data.id.present ? data.id.value : this.id,
-      value: data.value.present ? data.value.value : this.value,
+      ruleAction: data.ruleAction.present
+          ? data.ruleAction.value
+          : this.ruleAction,
+      content: data.content.present ? data.content.value : this.content,
+      ruleTarget: data.ruleTarget.present
+          ? data.ruleTarget.value
+          : this.ruleTarget,
+      ruleProvider: data.ruleProvider.present
+          ? data.ruleProvider.value
+          : this.ruleProvider,
+      subRule: data.subRule.present ? data.subRule.value : this.subRule,
+      noResolve: data.noResolve.present ? data.noResolve.value : this.noResolve,
+      src: data.src.present ? data.src.value : this.src,
     );
   }
 
@@ -1169,40 +1405,113 @@ class RawRule extends DataClass implements Insertable<RawRule> {
   String toString() {
     return (StringBuffer('RawRule(')
           ..write('id: $id, ')
-          ..write('value: $value')
+          ..write('ruleAction: $ruleAction, ')
+          ..write('content: $content, ')
+          ..write('ruleTarget: $ruleTarget, ')
+          ..write('ruleProvider: $ruleProvider, ')
+          ..write('subRule: $subRule, ')
+          ..write('noResolve: $noResolve, ')
+          ..write('src: $src')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, value);
+  int get hashCode => Object.hash(
+    id,
+    ruleAction,
+    content,
+    ruleTarget,
+    ruleProvider,
+    subRule,
+    noResolve,
+    src,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is RawRule && other.id == this.id && other.value == this.value);
+      (other is RawRule &&
+          other.id == this.id &&
+          other.ruleAction == this.ruleAction &&
+          other.content == this.content &&
+          other.ruleTarget == this.ruleTarget &&
+          other.ruleProvider == this.ruleProvider &&
+          other.subRule == this.subRule &&
+          other.noResolve == this.noResolve &&
+          other.src == this.src);
 }
 
 class RulesCompanion extends UpdateCompanion<RawRule> {
   final Value<int> id;
-  final Value<String> value;
+  final Value<RuleAction> ruleAction;
+  final Value<String?> content;
+  final Value<String?> ruleTarget;
+  final Value<String?> ruleProvider;
+  final Value<String?> subRule;
+  final Value<bool> noResolve;
+  final Value<bool> src;
   const RulesCompanion({
     this.id = const Value.absent(),
-    this.value = const Value.absent(),
+    this.ruleAction = const Value.absent(),
+    this.content = const Value.absent(),
+    this.ruleTarget = const Value.absent(),
+    this.ruleProvider = const Value.absent(),
+    this.subRule = const Value.absent(),
+    this.noResolve = const Value.absent(),
+    this.src = const Value.absent(),
   });
-  RulesCompanion.insert({this.id = const Value.absent(), required String value})
-    : value = Value(value);
+  RulesCompanion.insert({
+    this.id = const Value.absent(),
+    required RuleAction ruleAction,
+    this.content = const Value.absent(),
+    this.ruleTarget = const Value.absent(),
+    this.ruleProvider = const Value.absent(),
+    this.subRule = const Value.absent(),
+    this.noResolve = const Value.absent(),
+    this.src = const Value.absent(),
+  }) : ruleAction = Value(ruleAction);
   static Insertable<RawRule> custom({
     Expression<int>? id,
-    Expression<String>? value,
+    Expression<String>? ruleAction,
+    Expression<String>? content,
+    Expression<String>? ruleTarget,
+    Expression<String>? ruleProvider,
+    Expression<String>? subRule,
+    Expression<bool>? noResolve,
+    Expression<bool>? src,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (value != null) 'value': value,
+      if (ruleAction != null) 'rule_action': ruleAction,
+      if (content != null) 'content': content,
+      if (ruleTarget != null) 'rule_target': ruleTarget,
+      if (ruleProvider != null) 'rule_provider': ruleProvider,
+      if (subRule != null) 'sub_rule': subRule,
+      if (noResolve != null) 'no_resolve': noResolve,
+      if (src != null) 'src': src,
     });
   }
 
-  RulesCompanion copyWith({Value<int>? id, Value<String>? value}) {
-    return RulesCompanion(id: id ?? this.id, value: value ?? this.value);
+  RulesCompanion copyWith({
+    Value<int>? id,
+    Value<RuleAction>? ruleAction,
+    Value<String?>? content,
+    Value<String?>? ruleTarget,
+    Value<String?>? ruleProvider,
+    Value<String?>? subRule,
+    Value<bool>? noResolve,
+    Value<bool>? src,
+  }) {
+    return RulesCompanion(
+      id: id ?? this.id,
+      ruleAction: ruleAction ?? this.ruleAction,
+      content: content ?? this.content,
+      ruleTarget: ruleTarget ?? this.ruleTarget,
+      ruleProvider: ruleProvider ?? this.ruleProvider,
+      subRule: subRule ?? this.subRule,
+      noResolve: noResolve ?? this.noResolve,
+      src: src ?? this.src,
+    );
   }
 
   @override
@@ -1211,8 +1520,28 @@ class RulesCompanion extends UpdateCompanion<RawRule> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (value.present) {
-      map['value'] = Variable<String>(value.value);
+    if (ruleAction.present) {
+      map['rule_action'] = Variable<String>(
+        $RulesTable.$converterruleAction.toSql(ruleAction.value),
+      );
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (ruleTarget.present) {
+      map['rule_target'] = Variable<String>(ruleTarget.value);
+    }
+    if (ruleProvider.present) {
+      map['rule_provider'] = Variable<String>(ruleProvider.value);
+    }
+    if (subRule.present) {
+      map['sub_rule'] = Variable<String>(subRule.value);
+    }
+    if (noResolve.present) {
+      map['no_resolve'] = Variable<bool>(noResolve.value);
+    }
+    if (src.present) {
+      map['src'] = Variable<bool>(src.value);
     }
     return map;
   }
@@ -1221,7 +1550,13 @@ class RulesCompanion extends UpdateCompanion<RawRule> {
   String toString() {
     return (StringBuffer('RulesCompanion(')
           ..write('id: $id, ')
-          ..write('value: $value')
+          ..write('ruleAction: $ruleAction, ')
+          ..write('content: $content, ')
+          ..write('ruleTarget: $ruleTarget, ')
+          ..write('ruleProvider: $ruleProvider, ')
+          ..write('subRule: $subRule, ')
+          ..write('noResolve: $noResolve, ')
+          ..write('src: $src')
           ..write(')'))
         .toString();
   }
@@ -1602,6 +1937,15 @@ class $ProxyGroupsTable extends ProxyGroups
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $ProxyGroupsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _profileIdMeta = const VerificationMeta(
     'profileId',
   );
@@ -1835,6 +2179,7 @@ class $ProxyGroupsTable extends ProxyGroups
   );
   @override
   List<GeneratedColumn> get $columns => [
+    id,
     profileId,
     name,
     type,
@@ -1869,6 +2214,9 @@ class $ProxyGroupsTable extends ProxyGroups
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
     if (data.containsKey('profile_id')) {
       context.handle(
         _profileIdMeta,
@@ -2012,11 +2360,15 @@ class $ProxyGroupsTable extends ProxyGroups
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {profileId, name};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   RawProxyGroup map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return RawProxyGroup(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
       profileId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}profile_id'],
@@ -2124,6 +2476,7 @@ class $ProxyGroupsTable extends ProxyGroups
 }
 
 class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
+  final int id;
   final int? profileId;
   final String name;
   final String type;
@@ -2146,6 +2499,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   final String? icon;
   final String? order;
   const RawProxyGroup({
+    required this.id,
     this.profileId,
     required this.name,
     required this.type,
@@ -2171,6 +2525,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
     if (!nullToAbsent || profileId != null) {
       map['profile_id'] = Variable<int>(profileId);
     }
@@ -2239,6 +2594,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
 
   ProxyGroupsCompanion toCompanion(bool nullToAbsent) {
     return ProxyGroupsCompanion(
+      id: Value(id),
       profileId: profileId == null && nullToAbsent
           ? const Value.absent()
           : Value(profileId),
@@ -2299,6 +2655,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return RawProxyGroup(
+      id: serializer.fromJson<int>(json['id']),
       profileId: serializer.fromJson<int?>(json['profileId']),
       name: serializer.fromJson<String>(json['name']),
       type: serializer.fromJson<String>(json['type']),
@@ -2328,6 +2685,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
       'profileId': serializer.toJson<int?>(profileId),
       'name': serializer.toJson<String>(name),
       'type': serializer.toJson<String>(type),
@@ -2353,6 +2711,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   }
 
   RawProxyGroup copyWith({
+    int? id,
     Value<int?> profileId = const Value.absent(),
     String? name,
     String? type,
@@ -2375,6 +2734,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
     Value<String?> icon = const Value.absent(),
     Value<String?> order = const Value.absent(),
   }) => RawProxyGroup(
+    id: id ?? this.id,
     profileId: profileId.present ? profileId.value : this.profileId,
     name: name ?? this.name,
     type: type ?? this.type,
@@ -2409,6 +2769,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   );
   RawProxyGroup copyWithCompanion(ProxyGroupsCompanion data) {
     return RawProxyGroup(
+      id: data.id.present ? data.id.value : this.id,
       profileId: data.profileId.present ? data.profileId.value : this.profileId,
       name: data.name.present ? data.name.value : this.name,
       type: data.type.present ? data.type.value : this.type,
@@ -2452,6 +2813,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   @override
   String toString() {
     return (StringBuffer('RawProxyGroup(')
+          ..write('id: $id, ')
           ..write('profileId: $profileId, ')
           ..write('name: $name, ')
           ..write('type: $type, ')
@@ -2479,6 +2841,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
 
   @override
   int get hashCode => Object.hashAll([
+    id,
     profileId,
     name,
     type,
@@ -2505,6 +2868,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is RawProxyGroup &&
+          other.id == this.id &&
           other.profileId == this.profileId &&
           other.name == this.name &&
           other.type == this.type &&
@@ -2529,6 +2893,7 @@ class RawProxyGroup extends DataClass implements Insertable<RawProxyGroup> {
 }
 
 class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
+  final Value<int> id;
   final Value<int?> profileId;
   final Value<String> name;
   final Value<String> type;
@@ -2550,8 +2915,8 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
   final Value<bool?> hidden;
   final Value<String?> icon;
   final Value<String?> order;
-  final Value<int> rowid;
   const ProxyGroupsCompanion({
+    this.id = const Value.absent(),
     this.profileId = const Value.absent(),
     this.name = const Value.absent(),
     this.type = const Value.absent(),
@@ -2573,9 +2938,9 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     this.hidden = const Value.absent(),
     this.icon = const Value.absent(),
     this.order = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   ProxyGroupsCompanion.insert({
+    this.id = const Value.absent(),
     this.profileId = const Value.absent(),
     required String name,
     required String type,
@@ -2597,10 +2962,10 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     this.hidden = const Value.absent(),
     this.icon = const Value.absent(),
     this.order = const Value.absent(),
-    this.rowid = const Value.absent(),
   }) : name = Value(name),
        type = Value(type);
   static Insertable<RawProxyGroup> custom({
+    Expression<int>? id,
     Expression<int>? profileId,
     Expression<String>? name,
     Expression<String>? type,
@@ -2622,9 +2987,9 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     Expression<bool>? hidden,
     Expression<String>? icon,
     Expression<String>? order,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
+      if (id != null) 'id': id,
       if (profileId != null) 'profile_id': profileId,
       if (name != null) 'name': name,
       if (type != null) 'type': type,
@@ -2647,11 +3012,11 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
       if (hidden != null) 'hidden': hidden,
       if (icon != null) 'icon': icon,
       if (order != null) 'order': order,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
   ProxyGroupsCompanion copyWith({
+    Value<int>? id,
     Value<int?>? profileId,
     Value<String>? name,
     Value<String>? type,
@@ -2673,9 +3038,9 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     Value<bool?>? hidden,
     Value<String?>? icon,
     Value<String?>? order,
-    Value<int>? rowid,
   }) {
     return ProxyGroupsCompanion(
+      id: id ?? this.id,
       profileId: profileId ?? this.profileId,
       name: name ?? this.name,
       type: type ?? this.type,
@@ -2697,13 +3062,15 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
       hidden: hidden ?? this.hidden,
       icon: icon ?? this.icon,
       order: order ?? this.order,
-      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
     if (profileId.present) {
       map['profile_id'] = Variable<int>(profileId.value);
     }
@@ -2771,15 +3138,13 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
     if (order.present) {
       map['order'] = Variable<String>(order.value);
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('ProxyGroupsCompanion(')
+          ..write('id: $id, ')
           ..write('profileId: $profileId, ')
           ..write('name: $name, ')
           ..write('type: $type, ')
@@ -2800,8 +3165,7 @@ class ProxyGroupsCompanion extends UpdateCompanion<RawProxyGroup> {
           ..write('includeAllProviders: $includeAllProviders, ')
           ..write('hidden: $hidden, ')
           ..write('icon: $icon, ')
-          ..write('order: $order, ')
-          ..write('rowid: $rowid')
+          ..write('order: $order')
           ..write(')'))
         .toString();
   }
@@ -3038,6 +3402,10 @@ abstract class _$Database extends GeneratedDatabase {
   );
   late final $ProxyGroupsTable proxyGroups = $ProxyGroupsTable(this);
   late final $IconRecordsTable iconRecords = $IconRecordsTable(this);
+  late final Index idxRuleTarget = Index(
+    'idx_rule_target',
+    'CREATE INDEX idx_rule_target ON rules (rule_target)',
+  );
   late final Index idxProfileSceneOrder = Index(
     'idx_profile_scene_order',
     'CREATE INDEX idx_profile_scene_order ON profile_rule_mapping (profile_id, scene, "order")',
@@ -3066,6 +3434,7 @@ abstract class _$Database extends GeneratedDatabase {
     profileRuleLinks,
     proxyGroups,
     iconRecords,
+    idxRuleTarget,
     idxProfileSceneOrder,
     idxProfileNameOrder,
     lastAccessedUrl,
@@ -3825,9 +4194,27 @@ typedef $$ScriptsTableProcessedTableManager =
       PrefetchHooks Function()
     >;
 typedef $$RulesTableCreateCompanionBuilder =
-    RulesCompanion Function({Value<int> id, required String value});
+    RulesCompanion Function({
+      Value<int> id,
+      required RuleAction ruleAction,
+      Value<String?> content,
+      Value<String?> ruleTarget,
+      Value<String?> ruleProvider,
+      Value<String?> subRule,
+      Value<bool> noResolve,
+      Value<bool> src,
+    });
 typedef $$RulesTableUpdateCompanionBuilder =
-    RulesCompanion Function({Value<int> id, Value<String> value});
+    RulesCompanion Function({
+      Value<int> id,
+      Value<RuleAction> ruleAction,
+      Value<String?> content,
+      Value<String?> ruleTarget,
+      Value<String?> ruleProvider,
+      Value<String?> subRule,
+      Value<bool> noResolve,
+      Value<bool> src,
+    });
 
 final class $$RulesTableReferences
     extends BaseReferences<_$Database, $RulesTable, RawRule> {
@@ -3867,8 +4254,39 @@ class $$RulesTableFilterComposer extends Composer<_$Database, $RulesTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get value => $composableBuilder(
-    column: $table.value,
+  ColumnWithTypeConverterFilters<RuleAction, RuleAction, String>
+  get ruleAction => $composableBuilder(
+    column: $table.ruleAction,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ruleTarget => $composableBuilder(
+    column: $table.ruleTarget,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ruleProvider => $composableBuilder(
+    column: $table.ruleProvider,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get subRule => $composableBuilder(
+    column: $table.subRule,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get noResolve => $composableBuilder(
+    column: $table.noResolve,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get src => $composableBuilder(
+    column: $table.src,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3911,8 +4329,38 @@ class $$RulesTableOrderingComposer extends Composer<_$Database, $RulesTable> {
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get value => $composableBuilder(
-    column: $table.value,
+  ColumnOrderings<String> get ruleAction => $composableBuilder(
+    column: $table.ruleAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ruleTarget => $composableBuilder(
+    column: $table.ruleTarget,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ruleProvider => $composableBuilder(
+    column: $table.ruleProvider,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get subRule => $composableBuilder(
+    column: $table.subRule,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get noResolve => $composableBuilder(
+    column: $table.noResolve,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get src => $composableBuilder(
+    column: $table.src,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -3928,8 +4376,33 @@ class $$RulesTableAnnotationComposer extends Composer<_$Database, $RulesTable> {
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
 
-  GeneratedColumn<String> get value =>
-      $composableBuilder(column: $table.value, builder: (column) => column);
+  GeneratedColumnWithTypeConverter<RuleAction, String> get ruleAction =>
+      $composableBuilder(
+        column: $table.ruleAction,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get ruleTarget => $composableBuilder(
+    column: $table.ruleTarget,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get ruleProvider => $composableBuilder(
+    column: $table.ruleProvider,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get subRule =>
+      $composableBuilder(column: $table.subRule, builder: (column) => column);
+
+  GeneratedColumn<bool> get noResolve =>
+      $composableBuilder(column: $table.noResolve, builder: (column) => column);
+
+  GeneratedColumn<bool> get src =>
+      $composableBuilder(column: $table.src, builder: (column) => column);
 
   Expression<T> profileRuleLinksRefs<T extends Object>(
     Expression<T> Function($$ProfileRuleLinksTableAnnotationComposer a) f,
@@ -3986,11 +4459,43 @@ class $$RulesTableTableManager
           updateCompanionCallback:
               ({
                 Value<int> id = const Value.absent(),
-                Value<String> value = const Value.absent(),
-              }) => RulesCompanion(id: id, value: value),
+                Value<RuleAction> ruleAction = const Value.absent(),
+                Value<String?> content = const Value.absent(),
+                Value<String?> ruleTarget = const Value.absent(),
+                Value<String?> ruleProvider = const Value.absent(),
+                Value<String?> subRule = const Value.absent(),
+                Value<bool> noResolve = const Value.absent(),
+                Value<bool> src = const Value.absent(),
+              }) => RulesCompanion(
+                id: id,
+                ruleAction: ruleAction,
+                content: content,
+                ruleTarget: ruleTarget,
+                ruleProvider: ruleProvider,
+                subRule: subRule,
+                noResolve: noResolve,
+                src: src,
+              ),
           createCompanionCallback:
-              ({Value<int> id = const Value.absent(), required String value}) =>
-                  RulesCompanion.insert(id: id, value: value),
+              ({
+                Value<int> id = const Value.absent(),
+                required RuleAction ruleAction,
+                Value<String?> content = const Value.absent(),
+                Value<String?> ruleTarget = const Value.absent(),
+                Value<String?> ruleProvider = const Value.absent(),
+                Value<String?> subRule = const Value.absent(),
+                Value<bool> noResolve = const Value.absent(),
+                Value<bool> src = const Value.absent(),
+              }) => RulesCompanion.insert(
+                id: id,
+                ruleAction: ruleAction,
+                content: content,
+                ruleTarget: ruleTarget,
+                ruleProvider: ruleProvider,
+                subRule: subRule,
+                noResolve: noResolve,
+                src: src,
+              ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) =>
@@ -4466,6 +4971,7 @@ typedef $$ProfileRuleLinksTableProcessedTableManager =
     >;
 typedef $$ProxyGroupsTableCreateCompanionBuilder =
     ProxyGroupsCompanion Function({
+      Value<int> id,
       Value<int?> profileId,
       required String name,
       required String type,
@@ -4487,10 +4993,10 @@ typedef $$ProxyGroupsTableCreateCompanionBuilder =
       Value<bool?> hidden,
       Value<String?> icon,
       Value<String?> order,
-      Value<int> rowid,
     });
 typedef $$ProxyGroupsTableUpdateCompanionBuilder =
     ProxyGroupsCompanion Function({
+      Value<int> id,
       Value<int?> profileId,
       Value<String> name,
       Value<String> type,
@@ -4512,7 +5018,6 @@ typedef $$ProxyGroupsTableUpdateCompanionBuilder =
       Value<bool?> hidden,
       Value<String?> icon,
       Value<String?> order,
-      Value<int> rowid,
     });
 
 final class $$ProxyGroupsTableReferences
@@ -4548,6 +5053,11 @@ class $$ProxyGroupsTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnFilters(column),
@@ -4683,6 +5193,11 @@ class $$ProxyGroupsTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get name => $composableBuilder(
     column: $table.name,
     builder: (column) => ColumnOrderings(column),
@@ -4816,6 +5331,9 @@ class $$ProxyGroupsTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -4944,6 +5462,7 @@ class $$ProxyGroupsTableTableManager
               $$ProxyGroupsTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
+                Value<int> id = const Value.absent(),
                 Value<int?> profileId = const Value.absent(),
                 Value<String> name = const Value.absent(),
                 Value<String> type = const Value.absent(),
@@ -4965,8 +5484,8 @@ class $$ProxyGroupsTableTableManager
                 Value<bool?> hidden = const Value.absent(),
                 Value<String?> icon = const Value.absent(),
                 Value<String?> order = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => ProxyGroupsCompanion(
+                id: id,
                 profileId: profileId,
                 name: name,
                 type: type,
@@ -4988,10 +5507,10 @@ class $$ProxyGroupsTableTableManager
                 hidden: hidden,
                 icon: icon,
                 order: order,
-                rowid: rowid,
               ),
           createCompanionCallback:
               ({
+                Value<int> id = const Value.absent(),
                 Value<int?> profileId = const Value.absent(),
                 required String name,
                 required String type,
@@ -5013,8 +5532,8 @@ class $$ProxyGroupsTableTableManager
                 Value<bool?> hidden = const Value.absent(),
                 Value<String?> icon = const Value.absent(),
                 Value<String?> order = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => ProxyGroupsCompanion.insert(
+                id: id,
                 profileId: profileId,
                 name: name,
                 type: type,
@@ -5036,7 +5555,6 @@ class $$ProxyGroupsTableTableManager
                 hidden: hidden,
                 icon: icon,
                 order: order,
-                rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
               .map(

@@ -650,18 +650,22 @@ class DecorationListItem extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final bool? isSelected;
+  final double? horizontalTitleGap;
+  final EdgeInsetsGeometry? contentPadding;
   final VoidCallback? onPressed;
   final double minVerticalPadding;
 
   const DecorationListItem({
     super.key,
     this.isDecorator = false,
+    this.contentPadding,
     required this.title,
     this.leading,
     this.trailing,
     this.subtitle,
     this.isSelected,
     this.onPressed,
+    this.horizontalTitleGap,
     this.minVerticalPadding = 6,
   });
 
@@ -699,11 +703,13 @@ class DecorationListItem extends StatelessWidget {
             final isInfinite = constraints.maxHeight >= double.infinity;
             final tile = ListTile(
               leading: leading,
-              contentPadding: const EdgeInsets.only(right: 16, left: 16),
+              contentPadding:
+                  contentPadding ?? const EdgeInsets.only(right: 16, left: 16),
               title: title,
               subtitle: subtitle,
               minVerticalPadding: minVerticalPadding,
               minTileHeight: 54,
+              horizontalTitleGap: horizontalTitleGap,
               trailing: trailing,
             );
             return Column(
@@ -732,6 +738,7 @@ class SelectedDecorationListItem extends StatelessWidget {
   final Widget? subtitle;
   final VoidCallback onSelected;
   final VoidCallback onPressed;
+  final double? horizontalTitleGap;
   final bool isDecorator;
   final Widget? leading;
 
@@ -739,6 +746,7 @@ class SelectedDecorationListItem extends StatelessWidget {
     super.key,
     required this.isSelected,
     required this.onSelected,
+    this.horizontalTitleGap,
     this.isEditing = false,
     required this.title,
     required this.onPressed,
@@ -751,9 +759,11 @@ class SelectedDecorationListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecorationListItem(
       title: title,
+      contentPadding: EdgeInsets.only(left: 16, right: 0),
       isDecorator: isDecorator,
       isSelected: isSelected,
       leading: leading,
+      horizontalTitleGap: horizontalTitleGap,
       onPressed: isDecorator
           ? null
           : () {
@@ -764,16 +774,12 @@ class SelectedDecorationListItem extends StatelessWidget {
               onPressed();
             },
       subtitle: subtitle,
-      trailing: SizedBox(
-        width: 24,
-        height: 24,
-        child: CommonCheckBox(
-          value: isSelected,
-          isCircle: true,
-          onChanged: (_) {
-            onSelected();
-          },
-        ),
+      trailing: CommonCheckBox(
+        value: isSelected,
+        isCircle: true,
+        onChanged: (_) {
+          onSelected();
+        },
       ),
     );
   }

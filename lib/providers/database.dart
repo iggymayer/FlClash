@@ -325,6 +325,27 @@ class ProxyGroups extends _$ProxyGroups with AsyncNotifierMixin {
     value = newList;
   }
 
+  bool put(ProxyGroup proxyGroup) {
+    final index = value.indexWhere((item) => item.id == proxyGroup.id);
+    if (index == -1 &&
+        value.indexWhere((item) => item.name == proxyGroup.name) != -1) {
+      return false;
+    }
+    database.proxyGroups.put(proxyGroup.toCompanion(profileId));
+    final newList = [...value];
+    if (index != -1) {
+      newList[index] = proxyGroup;
+    } else {
+      newList.add(
+        proxyGroup.copyWith(
+          order: indexing.generateKeyBetween(null, proxyGroup.order),
+        ),
+      );
+    }
+    value = newList;
+    return true;
+  }
+
   void order(int oldIndex, int newIndex) {
     if (oldIndex < newIndex) {
       newIndex -= 1;
@@ -388,3 +409,15 @@ class ProfileDisabledRuleIds extends _$ProfileDisabledRuleIds
     database.rulesDao.putDisabledLink(profileId, ruleId);
   }
 }
+
+// @Riverpod(name: 'iconRecordProvider')
+// class IconRecordsProvider extends _$IconRecordsProvider
+//     with AsyncNotifierMixin {
+//   @override
+//   List<IconRecord> get value => state.value ?? [];
+//
+//   @override
+//   Stream<List<IconRecord>> build(int profileId) {
+//     return database.iconRecordsDao.
+//   }
+// }

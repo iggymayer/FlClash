@@ -60,26 +60,25 @@ class ItemPositionProvider extends InheritedWidget {
       position != oldWidget.position;
 }
 
-class SheetProvider extends InheritedWidget {
+class SheetProvider<T> extends InheritedWidget {
   final SheetType type;
-  final VoidCallback? nestedNavigatorPopCallback;
+  final void Function([T? result])? nestedNavigatorPop;
 
   const SheetProvider({
     super.key,
     required super.child,
     required this.type,
-    this.nestedNavigatorPopCallback,
+    this.nestedNavigatorPop,
   });
 
   SheetProvider copyWith({
     SheetType? type,
-    VoidCallback? nestedNavigatorPopCallback,
+    void Function([T? result])? nestedNavigatorPop,
     required Widget child,
   }) {
-    return SheetProvider(
+    return SheetProvider<T>(
       type: type ?? this.type,
-      nestedNavigatorPopCallback:
-          nestedNavigatorPopCallback ?? this.nestedNavigatorPopCallback,
+      nestedNavigatorPop: nestedNavigatorPop ?? this.nestedNavigatorPop,
       child: child,
     );
   }
@@ -91,5 +90,23 @@ class SheetProvider extends InheritedWidget {
   @override
   bool updateShouldNotify(SheetProvider oldWidget) =>
       type != oldWidget.type &&
-      nestedNavigatorPopCallback != oldWidget.nestedNavigatorPopCallback;
+      nestedNavigatorPop != oldWidget.nestedNavigatorPop;
+}
+
+class ProfileIdProvider extends InheritedWidget {
+  final int profileId;
+
+  const ProfileIdProvider({
+    super.key,
+    required this.profileId,
+    required super.child,
+  });
+
+  static ProfileIdProvider? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ProfileIdProvider>();
+  }
+
+  @override
+  bool updateShouldNotify(ProfileIdProvider oldWidget) =>
+      profileId != oldWidget.profileId;
 }

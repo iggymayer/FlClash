@@ -9,6 +9,8 @@ class ProxyGroups extends Table {
   @override
   String get tableName => 'proxy_groups';
 
+  IntColumn get id => integer()();
+
   IntColumn get profileId => integer().nullable().references(
     Profiles,
     #id,
@@ -57,7 +59,7 @@ class ProxyGroups extends Table {
   TextColumn get order => text().nullable()();
 
   @override
-  Set<Column> get primaryKey => {profileId, name};
+  Set<Column> get primaryKey => {id};
 }
 
 @DriftAccessor(tables: [ProxyGroups])
@@ -121,9 +123,11 @@ class ProxyGroupsDao extends DatabaseAccessor<Database>
 extension RawProxyGroupExt on RawProxyGroup {
   ProxyGroup toProxyGroup() {
     return ProxyGroup(
+      id: id,
       name: name,
       type: GroupType.parseProfileType(type),
       proxies: proxies,
+      use: use,
       url: url,
       interval: interval,
       timeout: timeout,
@@ -147,10 +151,12 @@ extension RawProxyGroupExt on RawProxyGroup {
 extension ProxyGroupsCompanionExt on ProxyGroup {
   ProxyGroupsCompanion toCompanion(int profileId, [String? order]) {
     return ProxyGroupsCompanion.insert(
+      id: Value(id),
       profileId: Value(profileId),
       name: name,
       type: type.value,
       proxies: Value(proxies),
+      use: Value(use),
       url: Value(url),
       interval: Value(interval),
       timeout: Value(timeout),

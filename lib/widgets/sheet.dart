@@ -114,6 +114,7 @@ class AdaptiveSheetScaffold extends StatefulWidget {
   final String title;
   final bool sheetTransparentToolBar;
   final List<IconButtonData> actions;
+  final VoidCallback? backAction;
 
   const AdaptiveSheetScaffold({
     super.key,
@@ -121,6 +122,7 @@ class AdaptiveSheetScaffold extends StatefulWidget {
     required this.title,
     this.sheetTransparentToolBar = false,
     this.actions = const [],
+    this.backAction,
   });
 
   @override
@@ -147,6 +149,14 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
   }
 
   @override
+  void didUpdateWidget(covariant AdaptiveSheetScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.backAction != widget.backAction) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
     _isScrolledController.dispose();
     super.dispose();
@@ -155,8 +165,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
   @override
   Widget build(BuildContext context) {
     final sheetProvider = SheetProvider.of(context);
-    final nestedNavigatorPopCallback =
-        sheetProvider?.nestedNavigatorPopCallback;
+    final nestedNavigatorPop = sheetProvider?.nestedNavigatorPop;
     final ModalRoute<dynamic>? route = ModalRoute.of(context);
     final type = sheetProvider?.type ?? SheetType.page;
     final backgroundColor = type == SheetType.bottomSheet
@@ -164,9 +173,8 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
         : context.colorScheme.surface;
     final useCloseIcon =
         type != SheetType.page &&
-        (nestedNavigatorPopCallback != null &&
-                route?.impliesAppBarDismissal == false ||
-            nestedNavigatorPopCallback == null);
+        (nestedNavigatorPop != null && route?.impliesAppBarDismissal == false ||
+            nestedNavigatorPop == null);
     Widget buildIconButton(IconButtonData data) {
       if (type == SheetType.bottomSheet) {
         return IconButton.filledTonal(
@@ -195,21 +203,17 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
               ? buildIconButton(
                   IconButtonData(
                     icon: Icons.close,
-                    onPressed: () {
-                      if (nestedNavigatorPopCallback != null) {
-                        nestedNavigatorPopCallback();
-                      } else {
-                        Navigator.of(context).pop();
-                      }
-                    },
+                    onPressed: context.safeNestedPop,
                   ),
                 )
               : buildIconButton(
                   IconButtonData(
                     icon: backIconData,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                    onPressed:
+                        widget.backAction ??
+                        () {
+                          Navigator.of(context).pop();
+                        },
                   ),
                 ))
         : null;
@@ -251,72 +255,66 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
           SizedBox(height: 6),
         ],
       );
-      return ScrollConfiguration(
-        behavior: HiddenBarScrollBehavior(),
-        child: ClipRRect(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (!widget.sheetTransparentToolBar) ...[
-                sheetAppBar,
-                Flexible(child: widget.body),
-              ] else ...[
-                Flexible(
-                  child: Stack(
-                    children: [
-                      NotificationListener<ScrollNotification>(
-                        child: widget.body,
-                        onNotification: (notification) {
-                          if (notification is ScrollUpdateNotification) {
-                            final pixels = notification.metrics.pixels;
-                            _isScrolledController.value = pixels > 6;
-                          }
-                          return false;
+      return ClipRRect(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!widget.sheetTransparentToolBar) ...[
+              sheetAppBar,
+              Flexible(child: widget.body),
+            ] else ...[
+              Flexible(
+                child: Stack(
+                  children: [
+                    NotificationListener<ScrollNotification>(
+                      child: widget.body,
+                      onNotification: (notification) {
+                        if (notification is ScrollUpdateNotification) {
+                          final pixels = notification.metrics.pixels;
+                          _isScrolledController.value = pixels > 6;
+                        }
+                        return false;
+                      },
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: ValueListenableBuilder(
+                        valueListenable: _isScrolledController,
+                        builder: (_, isScrolled, child) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(28),
+                            ),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(
+                                sigmaX: 12.0,
+                                sigmaY: 12.0,
+                              ),
+                              child: ColoredBox(
+                                color: isScrolled
+                                    ? backgroundColor.opacity60
+                                    : backgroundColor,
+                                child: child!,
+                              ),
+                            ),
+                          );
                         },
+                        child: sheetAppBar,
                       ),
-                      Positioned(
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        child: ValueListenableBuilder(
-                          valueListenable: _isScrolledController,
-                          builder: (_, isScrolled, child) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(28),
-                              ),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 12.0,
-                                  sigmaY: 12.0,
-                                ),
-                                child: ColoredBox(
-                                  color: isScrolled
-                                      ? backgroundColor.opacity60
-                                      : backgroundColor,
-                                  child: child!,
-                                ),
-                              ),
-                            );
-                          },
-                          child: sheetAppBar,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-              SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+              ),
             ],
-          ),
+            SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+            SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+          ],
         ),
       );
     }
-    return CommonScaffold(
-      appBar: appBar,
-      backgroundColor: backgroundColor,
-      body: widget.body,
-    );
+    return CommonScaffold(appBar: appBar, body: widget.body);
   }
 }

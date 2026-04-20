@@ -7,6 +7,7 @@ part of '../clash_config.dart';
 // **************************************************************************
 
 _ProxyGroup _$ProxyGroupFromJson(Map<String, dynamic> json) => _ProxyGroup(
+  id: Snowflake.buildId((json['id'] as num?)?.toInt()),
   name: json['name'] as String,
   type: GroupType.parseProfileType(json['type'] as String),
   proxies: (json['proxies'] as List<dynamic>?)
@@ -33,6 +34,7 @@ _ProxyGroup _$ProxyGroupFromJson(Map<String, dynamic> json) => _ProxyGroup(
 
 Map<String, dynamic> _$ProxyGroupToJson(_ProxyGroup instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'name': instance.name,
       'type': _$GroupTypeEnumMap[instance.type]!,
       'proxies': instance.proxies,
@@ -79,6 +81,12 @@ _RuleProvider _$RuleProviderFromJson(Map<String, dynamic> json) =>
     _RuleProvider(name: json['name'] as String);
 
 Map<String, dynamic> _$RuleProviderToJson(_RuleProvider instance) =>
+    <String, dynamic>{'name': instance.name};
+
+_ProxyProvider _$ProxyProviderFromJson(Map<String, dynamic> json) =>
+    _ProxyProvider(name: json['name'] as String);
+
+Map<String, dynamic> _$ProxyProviderToJson(_ProxyProvider instance) =>
     <String, dynamic>{'name': instance.name};
 
 _Sniffer _$SnifferFromJson(Map<String, dynamic> json) => _Sniffer(
@@ -308,22 +316,65 @@ Map<String, dynamic> _$GeoXUrlToJson(_GeoXUrl instance) => <String, dynamic>{
 };
 
 _Rule _$RuleFromJson(Map<String, dynamic> json) => _Rule(
-  id: (json['id'] as num).toInt(),
-  value: json['value'] as String,
+  id: (json['id'] as num?)?.toInt() ?? -1,
+  ruleAction:
+      $enumDecodeNullable(_$RuleActionEnumMap, json['ruleAction']) ??
+      RuleAction.DOMAIN,
+  content: json['content'] as String?,
+  ruleTarget: json['ruleTarget'] as String?,
+  ruleProvider: json['ruleProvider'] as String?,
+  subRule: json['subRule'] as String?,
+  noResolve: json['noResolve'] as bool? ?? false,
+  src: json['src'] as bool? ?? false,
   order: json['order'] as String?,
 );
 
 Map<String, dynamic> _$RuleToJson(_Rule instance) => <String, dynamic>{
   'id': instance.id,
-  'value': instance.value,
+  'ruleAction': _$RuleActionEnumMap[instance.ruleAction]!,
+  'content': instance.content,
+  'ruleTarget': instance.ruleTarget,
+  'ruleProvider': instance.ruleProvider,
+  'subRule': instance.subRule,
+  'noResolve': instance.noResolve,
+  'src': instance.src,
   'order': instance.order,
 };
 
-_SubRule _$SubRuleFromJson(Map<String, dynamic> json) =>
-    _SubRule(name: json['name'] as String);
-
-Map<String, dynamic> _$SubRuleToJson(_SubRule instance) => <String, dynamic>{
-  'name': instance.name,
+const _$RuleActionEnumMap = {
+  RuleAction.DOMAIN: 'DOMAIN',
+  RuleAction.DOMAIN_SUFFIX: 'DOMAIN_SUFFIX',
+  RuleAction.DOMAIN_KEYWORD: 'DOMAIN_KEYWORD',
+  RuleAction.DOMAIN_REGEX: 'DOMAIN_REGEX',
+  RuleAction.GEOSITE: 'GEOSITE',
+  RuleAction.IP_CIDR: 'IP_CIDR',
+  RuleAction.IP_CIDR6: 'IP_CIDR6',
+  RuleAction.IP_SUFFIX: 'IP_SUFFIX',
+  RuleAction.IP_ASN: 'IP_ASN',
+  RuleAction.GEOIP: 'GEOIP',
+  RuleAction.SRC_GEOIP: 'SRC_GEOIP',
+  RuleAction.SRC_IP_ASN: 'SRC_IP_ASN',
+  RuleAction.SRC_IP_CIDR: 'SRC_IP_CIDR',
+  RuleAction.SRC_IP_SUFFIX: 'SRC_IP_SUFFIX',
+  RuleAction.DST_PORT: 'DST_PORT',
+  RuleAction.SRC_PORT: 'SRC_PORT',
+  RuleAction.IN_PORT: 'IN_PORT',
+  RuleAction.IN_TYPE: 'IN_TYPE',
+  RuleAction.IN_USER: 'IN_USER',
+  RuleAction.IN_NAME: 'IN_NAME',
+  RuleAction.PROCESS_PATH: 'PROCESS_PATH',
+  RuleAction.PROCESS_PATH_REGEX: 'PROCESS_PATH_REGEX',
+  RuleAction.PROCESS_NAME: 'PROCESS_NAME',
+  RuleAction.PROCESS_NAME_REGEX: 'PROCESS_NAME_REGEX',
+  RuleAction.UID: 'UID',
+  RuleAction.NETWORK: 'NETWORK',
+  RuleAction.DSCP: 'DSCP',
+  RuleAction.RULE_SET: 'RULE_SET',
+  RuleAction.AND: 'AND',
+  RuleAction.OR: 'OR',
+  RuleAction.NOT: 'NOT',
+  RuleAction.SUB_RULE: 'SUB_RULE',
+  RuleAction.MATCH: 'MATCH',
 };
 
 _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
@@ -332,12 +383,21 @@ _ClashConfig _$ClashConfigFromJson(Map<String, dynamic> json) => _ClashConfig(
           ?.map((e) => ProxyGroup.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
-  rules: json['rules'] == null ? const [] : _genRule(json['rules'] as List?),
+  rules: json['rules'] == null ? const [] : _genRules(json['rules'] as List?),
   proxies:
       (json['proxies'] as List<dynamic>?)
           ?.map((e) => Proxy.fromJson(e as Map<String, dynamic>))
           .toList() ??
       const [],
+  proxyProviders: json['proxy-providers'] == null
+      ? const []
+      : _genList(json['proxy-providers'] as Map<String, dynamic>),
+  ruleProviders: json['rule-providers'] == null
+      ? const []
+      : _genList(json['rule-providers'] as Map<String, dynamic>),
+  subRules: json['sub-rules'] == null
+      ? const []
+      : _genList(json['sub-rules'] as Map<String, dynamic>),
   proxyTypeMap:
       (json['proxyTypeMap'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
@@ -350,6 +410,9 @@ Map<String, dynamic> _$ClashConfigToJson(_ClashConfig instance) =>
       'proxy-groups': instance.proxyGroups,
       'rules': instance.rules,
       'proxies': instance.proxies,
+      'proxy-providers': instance.proxyProviders,
+      'rule-providers': instance.ruleProviders,
+      'sub-rules': instance.subRules,
       'proxyTypeMap': instance.proxyTypeMap,
     };
 

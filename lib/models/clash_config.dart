@@ -102,6 +102,7 @@ const defaultBypassPrivateRouteAddress = [
 @freezed
 abstract class ProxyGroup with _$ProxyGroup {
   const factory ProxyGroup({
+    @JsonKey(fromJson: Snowflake.buildId) required int id,
     required String name,
     @JsonKey(fromJson: GroupType.parseProfileType) required GroupType type,
     List<String>? proxies,
@@ -145,6 +146,14 @@ abstract class RuleProvider with _$RuleProvider {
 
   factory RuleProvider.fromJson(Map<String, Object?> json) =>
       _$RuleProviderFromJson(json);
+}
+
+@freezed
+abstract class ProxyProvider with _$ProxyProvider {
+  const factory ProxyProvider({required String name}) = _ProxyProvider;
+
+  factory ProxyProvider.fromJson(Map<String, Object?> json) =>
+      _$ProxyProviderFromJson(json);
 }
 
 @freezed
@@ -325,21 +334,48 @@ abstract class GeoXUrl with _$GeoXUrl {
 }
 
 @freezed
-abstract class ParsedRule with _$ParsedRule {
-  const factory ParsedRule({
-    required RuleAction ruleAction,
+abstract class Rule with _$Rule {
+  const factory Rule({
+    @Default(-1) int id,
+    @Default(RuleAction.DOMAIN) RuleAction ruleAction,
     String? content,
     String? ruleTarget,
     String? ruleProvider,
     String? subRule,
     @Default(false) bool noResolve,
     @Default(false) bool src,
-  }) = _ParsedRule;
+    String? order,
+  }) = _Rule;
 
-  factory ParsedRule.parseString(String value) {
+  // factory Rule.parseString(String? value) {
+  //   return Rule.parse(Rule.value(value ?? ''));
+  // }
+
+  factory Rule.init() {
+    return Rule(
+      ruleAction: RuleAction.DOMAIN,
+      ruleTarget: RuleTarget.DIRECT.name,
+    );
+  }
+
+  factory Rule.parse(String value, {int? id}) {
+    id ??= snowflake.id;
+    if (value.isEmpty) {
+      return Rule(
+        id: id,
+        ruleAction: RuleAction.DOMAIN,
+        ruleTarget: RuleTarget.DIRECT.name,
+      );
+    }
     final splits = value.split(',');
     final shortSplits = splits
-        .where((item) => !item.contains('src') && !item.contains('no-resolve'))
+        .where(
+          (item) =>
+              !item.contains('src') &&
+              !item.contains('no-resolve') &&
+              item.isNotEmpty,
+        )
+        .map((item) => item.trim())
         .toList();
     final ruleAction = RuleAction.values.firstWhere(
       (item) => item.value == shortSplits.first,
@@ -358,12 +394,13 @@ abstract class ParsedRule with _$ParsedRule {
     String? ruleProvider;
 
     if (ruleAction == RuleAction.RULE_SET) {
-      ruleProvider = shortSplits.sublist(1, shortSplits.length - 1).join(',');
+      ruleProvider = shortSplits[1];
     } else {
-      content = shortSplits.sublist(1, shortSplits.length - 1).join(',');
+      content = shortSplits[1];
     }
 
-    return ParsedRule(
+    return Rule(
+      id: id,
       ruleAction: ruleAction,
       content: content,
       src: splits.contains('src'),
@@ -373,32 +410,36 @@ abstract class ParsedRule with _$ParsedRule {
       ruleTarget: ruleTarget,
     );
   }
+
+  factory Rule.fromJson(Map<String, Object?> json) => _$RuleFromJson(json);
 }
 
-extension ParsedRuleExt on ParsedRule {
-  String get value {
+extension RuleExt on Rule {
+  String? get realContent {
+    return switch (ruleAction == RuleAction.RULE_SET) {
+      true => ruleProvider,
+      false => content,
+    };
+  }
+
+  String? get realTarget {
+    return switch (ruleAction == RuleAction.SUB_RULE) {
+      true => subRule,
+      false => ruleTarget,
+    };
+  }
+
+  String get rawValue {
     return [
       ruleAction.value,
-      ruleAction == RuleAction.RULE_SET ? ruleProvider : content,
-      ruleAction == RuleAction.SUB_RULE ? subRule : ruleTarget,
+      realContent,
+      realTarget,
       if (ruleAction.hasParams) ...[
         if (src) 'src',
         if (noResolve) 'no-resolve',
       ],
     ].join(',');
   }
-}
-
-@freezed
-abstract class Rule with _$Rule {
-  const factory Rule({required int id, required String value, String? order}) =
-      _Rule;
-
-  factory Rule.value(String value) {
-    return Rule(value: value, id: snowflake.id);
-  }
-
-  factory Rule.fromJson(Map<String, Object?> json) => _$RuleFromJson(json);
 }
 
 extension RulesExt on List<Rule> {
@@ -414,19 +455,44 @@ extension RulesExt on List<Rule> {
   }
 }
 
-@freezed
-abstract class SubRule with _$SubRule {
-  const factory SubRule({required String name}) = _SubRule;
+// @freezed
+// abstract class Rule with _$Rule {
+//   const factory Rule({required int id, required String value, String? order}) =
+//       _Rule;
+//
+//   factory Rule.value(String value) {
+//     return Rule(value: value, id: snowflake.id);
+//   }
+//
+//   factory Rule.fromJson(Map<String, Object?> json) => _$RuleFromJson(json);
+// }
+//
+// extension RulesExt on List<Rule> {
+//   List<Rule> copyAndPut(Rule rule) {
+//     var newList = List<Rule>.from(this);
+//     final index = newList.indexWhere((item) => item.id == rule.id);
+//     if (index != -1) {
+//       rule = newList[index] = rule;
+//     } else {
+//       newList.insert(0, rule);
+//     }
+//     return newList;
+//   }
+// }
 
-  factory SubRule.fromJson(Map<String, Object?> json) =>
-      _$SubRuleFromJson(json);
-}
-
-List<Rule> _genRule(List<dynamic>? rules) {
+// @freezed
+// abstract class SubRule with _$SubRule {
+//   const factory SubRule({required String name}) = _SubRule;
+//
+//   factory SubRule.fromJson(Map<String, Object?> json) =>
+//       _$SubRuleFromJson(json);
+// }
+//
+List<Rule> _genRules(List<dynamic>? rules) {
   if (rules == null) {
     return [];
   }
-  return rules.map((item) => Rule.value(item)).toList();
+  return rules.map((item) => Rule.parse(item)).toList();
 }
 
 // List<RuleProvider> _genRuleProviders(Map<String, dynamic> json) {
@@ -437,18 +503,25 @@ List<Rule> _genRule(List<dynamic>? rules) {
 //   return json.entries.map((entry) => SubRule(name: entry.key)).toList();
 // }
 
+List<String> _genList(Map<String, dynamic> json) {
+  return json.entries.map((entry) => entry.key).toList();
+}
+
 @freezed
 abstract class ClashConfig with _$ClashConfig {
   const factory ClashConfig({
     @Default([]) @JsonKey(name: 'proxy-groups') List<ProxyGroup> proxyGroups,
-    @JsonKey(fromJson: _genRule) @Default([]) List<Rule> rules,
+    @JsonKey(fromJson: _genRules) @Default([]) List<Rule> rules,
     @Default([]) List<Proxy> proxies,
-    // @JsonKey(name: 'rule-providers', fromJson: _genRuleProviders)
-    // @Default([])
-    // List<RuleProvider> ruleProvider,
-    // @JsonKey(name: 'sub-rules', fromJson: _genSubRules)
-    // @Default([])
-    // List<SubRule> subRules,
+    @JsonKey(name: 'proxy-providers', fromJson: _genList)
+    @Default([])
+    List<String> proxyProviders,
+    @JsonKey(name: 'rule-providers', fromJson: _genList)
+    @Default([])
+    List<String> ruleProviders,
+    @JsonKey(name: 'sub-rules', fromJson: _genList)
+    @Default([])
+    List<String> subRules,
     @Default({}) Map<String, String> proxyTypeMap,
   }) = _ClashConfig;
 

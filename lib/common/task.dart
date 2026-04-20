@@ -37,6 +37,14 @@ Future<String> _encodeYaml<T>(T content) async {
   return yaml.encode(content);
 }
 
+Future<String> encodeMD5Task(String data) async {
+  return await compute<String, String>(_encodeMD5, data);
+}
+
+Future<String> _encodeMD5<T>(String content) async {
+  return content.toMd5();
+}
+
 Future<List<Group>> toGroupsTask(ComputeGroupsState data) async {
   return await compute<ComputeGroupsState, List<Group>>(_toGroupsTask, data);
 }
@@ -74,16 +82,16 @@ Future<List<Group>> _toGroupsTask(ComputeGroupsState state) async {
   );
 }
 
-Future<Map<String, dynamic>> makeRealProfileTask(
+Future<VM2<String, String>> makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
-  return await compute<MakeRealProfileState, Map<String, dynamic>>(
+  return await compute<MakeRealProfileState, VM2<String, String>>(
     _makeRealProfileTask,
     data,
   );
 }
 
-Future<Map<String, dynamic>> _makeRealProfileTask(
+Future<VM2<String, String>> _makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
   final rawConfig = Map.from(data.rawConfig);
@@ -216,17 +224,14 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
   }
   rawConfig.remove('rules');
   if (addedRules.isNotEmpty) {
-    final parsedNewRules = addedRules
-        .map((item) => ParsedRule.parseString(item.value))
-        .toList();
-    final hasMatchPlaceholder = parsedNewRules.any(
+    final hasMatchPlaceholder = addedRules.any(
       (item) => item.ruleTarget?.toUpperCase() == 'MATCH',
     );
     String? replacementTarget;
 
     if (hasMatchPlaceholder) {
       for (int i = rules.length - 1; i >= 0; i--) {
-        final parsed = ParsedRule.parseString(rules[i]);
+        final parsed = Rule.parse(rules[i]);
         if (parsed.ruleAction == RuleAction.MATCH) {
           final target = parsed.ruleTarget;
           if (target != null && target.isNotEmpty) {
@@ -240,23 +245,24 @@ Future<Map<String, dynamic>> _makeRealProfileTask(
 
     if (replacementTarget?.isNotEmpty == true) {
       finalAddedRules = [];
-      for (int i = 0; i < parsedNewRules.length; i++) {
-        final parsed = parsedNewRules[i];
+      for (int i = 0; i < addedRules.length; i++) {
+        final parsed = addedRules[i];
         if (parsed.ruleTarget?.toUpperCase() == 'MATCH') {
           finalAddedRules.add(
-            parsed.copyWith(ruleTarget: replacementTarget).value,
+            parsed.copyWith(ruleTarget: replacementTarget).rawValue,
           );
         } else {
-          finalAddedRules.add(addedRules[i].value);
+          finalAddedRules.add(addedRules[i].rawValue);
         }
       }
     } else {
-      finalAddedRules = addedRules.map((e) => e.value).toList();
+      finalAddedRules = addedRules.map((e) => e.rawValue).toList();
     }
     rules = [...finalAddedRules, ...rules];
   }
   rawConfig['rules'] = rules;
-  return Map<String, dynamic>.from(rawConfig);
+  final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
+  return VM2(yaml, yaml.toMd5());
 }
 
 Future<List<String>> shakingProfileTask(
@@ -346,7 +352,8 @@ Future<MigrationData> _oldToNowTask(
     vpnPropsRaw['accessControlProps'] = vpnPropsRaw['accessControl'];
   }
   configMap['davProps'] = configMap['dav'];
-  final appSettingProps = configMap['appSetting'] as Map? ?? {};
+  final appSettingProps =
+      configMap['appSetting'] as Map<String, dynamic>? ?? {};
   appSettingProps['restoreStrategy'] = appSettingProps['recoveryStrategy'];
   configMap['appSettingProps'] = appSettingProps;
   configMap['proxiesStyleProps'] = configMap['proxiesStyle'];
@@ -384,7 +391,8 @@ Future<MigrationData> _oldToNowTask(
   for (final rawRule in rawRules) {
     final id = idMap.updateCacheValue(rawRule['id'], () => snowflake.id);
     rawRule['id'] = id;
-    rules.add(Rule.fromJson(rawRule));
+    final value = rawRule['value'] ?? '';
+    rules.add(Rule.parse(value, id: id));
     links.add(ProfileRuleLink(ruleId: id));
   }
   List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
@@ -403,8 +411,8 @@ Future<MigrationData> _oldToNowTask(
         final addedRules = standardOverwrite['addedRules'] as List? ?? [];
         for (final addRule in addedRules) {
           final id = idMap.updateCacheValue(addRule['id'], () => snowflake.id);
-          addRule['id'] = id;
-          rules.add(Rule.fromJson(addRule));
+          final value = addRule['value'] ?? '';
+          rules.add(Rule.parse(value, id: id));
           links.add(
             ProfileRuleLink(
               profileId: profileId,

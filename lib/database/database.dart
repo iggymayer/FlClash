@@ -50,9 +50,64 @@ class Database extends _$Database {
           await m.createTable(proxyGroups);
           await m.createTable(iconRecords);
           await _resetOrders();
+          await _migrateRules(m);
         }
       },
+      beforeOpen: (details) async {
+        // final m = Migrator(this);
+        // await m.createTable(iconRecords);
+        // await _migrateRules(m);
+        // await m.deleteTable('proxy_groups');
+        // await m.createTable(proxyGroups);
+      },
     );
+  }
+
+  Future<void> _migrateRules(Migrator m) async {
+    final tableInfo = await customSelect('PRAGMA table_info(rules)').get();
+    final columnNames = tableInfo
+        .map((row) => row.read<String>('name'))
+        .toList();
+    if (columnNames.isEmpty) {
+      await m.createTable(rules);
+      return;
+    } else if (columnNames.contains('rule_action')) {
+      return;
+    }
+    await customStatement(
+      'ALTER TABLE rules ADD COLUMN rule_action TEXT NOT NULL DEFAULT ""',
+    );
+    await customStatement('ALTER TABLE rules ADD COLUMN content TEXT');
+    await customStatement('ALTER TABLE rules ADD COLUMN rule_target TEXT');
+    await customStatement('ALTER TABLE rules ADD COLUMN rule_provider TEXT');
+    await customStatement('ALTER TABLE rules ADD COLUMN sub_rule TEXT');
+    await customStatement(
+      'ALTER TABLE rules ADD COLUMN no_resolve INTEGER NOT NULL DEFAULT 0',
+    );
+    await customStatement(
+      'ALTER TABLE rules ADD COLUMN src INTEGER NOT NULL DEFAULT 0',
+    );
+    final oldRows = await customSelect('SELECT id, value FROM rules').get();
+    for (final row in oldRows) {
+      final id = row.read<int>('id');
+      final value = row.read<String>('value');
+      final parsed = Rule.parse(value, id: id);
+      await customStatement(
+        'UPDATE rules SET rule_action = ?, content = ?, rule_target = ?, rule_provider = ?, sub_rule = ?, no_resolve = ?, src = ? WHERE id = ?',
+        [
+          parsed.ruleAction.name,
+          parsed.content,
+          parsed.ruleTarget,
+          parsed.ruleProvider,
+          parsed.subRule,
+          parsed.noResolve ? 1 : 0,
+          parsed.src ? 1 : 0,
+          id,
+        ],
+      );
+    }
+    await customStatement('ALTER TABLE rules DROP COLUMN value');
+    await m.createIndex(idxRuleTarget);
   }
 
   Future<void> _resetOrders() async {
@@ -143,61 +198,5 @@ extension JoinedSelectStatementExt<T extends HasResultSet, D>
     return map((row) => row.read(countExp)!);
   }
 }
-
-// extension _AsyncMapPerSubscription<S> on Stream<S> {
-//   Stream<T> asyncMapPerSubscription<T>(FutureOr<T> Function(S) mapper) {
-//     return Stream.multi((listener) {
-//       late StreamSubscription<S> subscription;
-//
-//       void onData(S original) {
-//         subscription.pause();
-//         Future.sync(() => mapper(original))
-//             .then(listener.addSync, onError: listener.addErrorSync)
-//             .whenComplete(subscription.resume);
-//       }
-//
-//       subscription = listen(
-//         onData,
-//         onError: listener.addErrorSync,
-//         onDone: listener.closeSync,
-//         cancelOnError: false, // Determined by downstream subscription
-//       );
-//
-//       listener
-//         ..onPause = subscription.pause
-//         ..onResume = subscription.resume
-//         ..onCancel = subscription.cancel;
-//     }, isBroadcast: isBroadcast);
-//   }
-// }
-
-// extension SelectableExt<T> on Selectable<T> {
-//   Selectable<N> isolateMap<N>(N Function(T) mapper) {
-//     return _IsolateMappedSelectable<T, N>(this, mapper);
-//   }
-// }
-//
-// class _IsolateMappedSelectable<S, T> extends Selectable<T> {
-//   final Selectable<S> _source;
-//   final T Function(S) _mapper;
-//
-//   _IsolateMappedSelectable(this._source, this._mapper);
-//
-//   @override
-//   Future<List<T>> get() {
-//     return _source.get().then(_mapResults);
-//   }
-//
-//   @override
-//   Stream<List<T>> watch() {
-//     return _AsyncMapPerSubscription(
-//       _source.watch(),
-//     ).asyncMapPerSubscription(_mapResults);
-//   }
-//
-//   Future<List<T>> _mapResults(List<S> results) async {
-//     return mapListTask(results, _mapper);
-//   }
-// }
 
 final database = Database();
