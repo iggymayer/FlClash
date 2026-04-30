@@ -39,6 +39,7 @@ class GlobalState {
   late CommonTheme theme;
   late Color accentColor;
   bool needInitStatus = true;
+
   CorePalette? corePalette;
   DateTime? startTime;
   UpdateTasks tasks = [];
