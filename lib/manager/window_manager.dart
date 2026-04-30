@@ -6,6 +6,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_ext/window_ext.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -164,17 +165,41 @@ class _WindowHeaderState extends State<WindowHeader> {
     super.dispose();
   }
 
+  Rect? _previousBounds;
+
   Future<void> _updateMaximized() async {
-    final isMaximized = await windowManager.isMaximized();
-    switch (isMaximized) {
-      case true:
+    if (isMaximizedNotifier.value) {
+      if (_previousBounds != null) {
+        await windowManager.setBounds(_previousBounds);
+        _previousBounds = null;
+      } else {
         await windowManager.unmaximize();
-        break;
-      case false:
+      }
+      isMaximizedNotifier.value = false;
+    } else {
+      if (system.isWindows) {
+        _previousBounds = await windowManager.getBounds();
+        final windowPos = await windowManager.getPosition();
+        final displays = await screenRetriever.getAllDisplays();
+        final display = displays.firstWhere(
+          (d) {
+            final pos = d.visiblePosition ?? Offset.zero;
+            final size = d.visibleSize ?? d.size;
+            return Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height)
+                .contains(windowPos);
+          },
+          orElse: () => displays.first,
+        );
+        final pos = display.visiblePosition ?? Offset.zero;
+        final size = display.visibleSize ?? display.size;
+        await windowManager.setBounds(
+          Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height),
+        );
+      } else {
         await windowManager.maximize();
-        break;
+      }
+      isMaximizedNotifier.value = true;
     }
-    isMaximizedNotifier.value = await windowManager.isMaximized();
   }
 
   Future<void> _updatePin() async {
