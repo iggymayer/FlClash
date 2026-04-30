@@ -15,6 +15,7 @@ class OutboundMode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final height = getWidgetHeight(2);
     return SizedBox(
       height: height,

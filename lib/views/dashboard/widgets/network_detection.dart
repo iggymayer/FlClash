@@ -26,6 +26,7 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final networkDetection = ref.watch(networkDetectionProvider);
     final ipInfo = networkDetection.ipInfo;
     final isLoading = networkDetection.isLoading;

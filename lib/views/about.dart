@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/controller.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/list.dart';
@@ -28,12 +29,13 @@ class AboutView extends StatelessWidget {
   Future<void> _checkUpdate(BuildContext context) async {
     final data = await appController.safeRun<Map<String, dynamic>?>(
       request.checkForUpdate,
-      title: appLocalizations.checkUpdate,
+      title: context.appLocalizations.checkUpdate,
     );
     appController.checkUpdateResultHandle(data: data, isUser: true);
   }
 
   List<Widget> _buildMoreSection(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return generateSection(
       separated: false,
       title: appLocalizations.more,
@@ -71,7 +73,7 @@ class AboutView extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildContributorsSection() {
+  List<Widget> _buildContributorsSection(AppLocalizations appLocalizations) {
     const contributors = [
       Contributor(
         avatar: 'assets/images/avatar/june2.jpg',
@@ -106,6 +108,7 @@ class AboutView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final items = [
       ListTile(
         title: Column(
@@ -161,7 +164,7 @@ class AboutView extends StatelessWidget {
         ),
       ),
       const SizedBox(height: 12),
-      ..._buildContributorsSection(),
+      ..._buildContributorsSection(appLocalizations),
       ..._buildMoreSection(context),
     ];
     return BaseScaffold(

@@ -40,6 +40,7 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final providers = ref.watch(providersProvider);
     final proxyProviders = providers
         .where((item) => item.type == 'Proxy')
@@ -97,12 +98,12 @@ class ProviderItem extends StatelessWidget {
     appController.updateGroupsDebounce();
   }
 
-  String _buildProviderDesc() {
-    final baseInfo = provider.updateAt.lastUpdateTimeDesc;
+  String _buildProviderDesc(BuildContext context) {
+    final baseInfo = provider.updateAt.getLastUpdateTimeDesc(context);
     final count = provider.count;
     return switch (count == 0) {
       true => baseInfo,
-      false => '$baseInfo  ·  $count${appLocalizations.entries}',
+      false => '$baseInfo  ·  $count${context.appLocalizations.entries}',
     };
   }
 
@@ -116,7 +117,7 @@ class ProviderItem extends StatelessWidget {
         children: [
           const SizedBox(height: 4),
           if (provider.updateAt.microsecondsSinceEpoch > 0)
-            Text(_buildProviderDesc()),
+            Text(_buildProviderDesc(context)),
           const SizedBox(height: 4),
           if (provider.subscriptionInfo != null)
             SubscriptionInfoView(subscriptionInfo: provider.subscriptionInfo),
@@ -128,7 +129,7 @@ class ProviderItem extends StatelessWidget {
             children: [
               CommonChip(
                 avatar: const Icon(Icons.upload),
-                label: appLocalizations.upload,
+                label: context.appLocalizations.upload,
                 onPressed: _handleSideLoadProvider,
               ),
               if (provider.vehicleType == 'HTTP')
@@ -148,7 +149,7 @@ class ProviderItem extends StatelessWidget {
                           )
                         : CommonChip(
                             avatar: const Icon(Icons.sync),
-                            label: appLocalizations.sync,
+                            label: context.appLocalizations.sync,
                             onPressed: _handleUpdateProvider,
                           );
                   },

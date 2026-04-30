@@ -625,10 +625,10 @@ SharedState sharedState(Ref ref) {
   return SharedState(
     currentProfileName: currentProfileName,
     onlyStatisticsProxy: onlyStatisticsProxy,
-    stopText: appLocalizations.stop,
+    stopText: currentAppLocalizations.stop,
     crashlytics: crashlytics,
-    stopTip: appLocalizations.stopVpn,
-    startTip: appLocalizations.startVpn,
+    stopTip: currentAppLocalizations.stopVpn,
+    startTip: currentAppLocalizations.startVpn,
     setupParams: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
     vpnOptions: VpnOptions(
       enable: vpnSetting.enable,

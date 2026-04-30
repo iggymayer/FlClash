@@ -144,6 +144,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
   }
 
   Future<void> _handleImportFormUrl() async {
+    final appLocalizations = context.appLocalizations;
     final url = await globalState.showCommonDialog(
       child: InputDialog(
         title: appLocalizations.import,
@@ -169,6 +170,7 @@ class _EditorPageState extends ConsumerState<EditorPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final isMobileView = ref.watch(isMobileViewProvider);
     return CommonPopScope(
       onPop: (context) async {
@@ -388,7 +390,7 @@ class FindPanel extends StatelessWidget implements PreferredSizeWidget {
     final CodeFindValue value = controller.value!;
     final String result;
     if (value.result == null) {
-      result = appLocalizations.none;
+      result = context.appLocalizations.none;
     } else {
       result = '${value.result!.index + 1}/${value.result!.matches.length}';
     }
@@ -573,7 +575,8 @@ class ContextMenuControllerImpl implements SelectionToolbarController {
       builder: (context) => CodeEditorTapRegion(
         child: ValueListenableBuilder(
           valueListenable: controller,
-          builder: (_, _, child) {
+          builder: (context, _, child) {
+            final appLocalizations = context.appLocalizations;
             final isNotEmpty = controller.selectedText.isNotEmpty;
             final isAllSelected = controller.isAllSelected;
             final hasSelected = controller.selectedText.isNotEmpty;
@@ -653,6 +656,7 @@ class _ImportOptionsDialogState extends State<_ImportOptionsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: appLocalizations.import,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),

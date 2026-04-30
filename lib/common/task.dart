@@ -556,7 +556,7 @@ Future<MigrationData> _restoreTask(RootIsolateToken token) async {
   await input.close();
   final restoreConfigFile = File(join(restoreDirPath, configJsonName));
   if (!await restoreConfigFile.exists()) {
-    throw appLocalizations.invalidBackupFile;
+    throw currentAppLocalizations.invalidBackupFile;
   }
   final restoreConfigMap =
       json.decode(await restoreConfigFile.readAsString())

@@ -22,6 +22,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
   final _key = utils.id;
 
   Future<void> _handleDelScript(int id) async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
       message: TextSpan(
         text: appLocalizations.deleteTip(appLocalizations.script),
@@ -50,6 +51,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
   }
 
   Widget _buildContent(List<Script> scripts, int? selectedScriptId) {
+    final appLocalizations = context.appLocalizations;
     if (scripts.isEmpty) {
       return NullStatus(
         illustration: ScriptEmptyIllustration(),
@@ -85,6 +87,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
     String content, {
     Script? script,
   }) async {
+    final appLocalizations = context.appLocalizations;
     Script newScript =
         (script?.copyWith(label: title) ?? Script.create(label: title));
     newScript = await newScript.save(content);
@@ -139,6 +142,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
     String raw, {
     Script? script,
   }) async {
+    final appLocalizations = context.appLocalizations;
     if (content == raw) {
       return true;
     }
@@ -180,6 +184,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final scripts = ref.watch(scriptsProvider).value ?? [];
     final selectedScriptId = ref.watch(itemProvider(_key));
     return CommonPopScope(

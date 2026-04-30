@@ -74,6 +74,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     final hasUpdate = widget.profile.url != profile.url;
     if (_fileData != null) {
       if (profile.type == ProfileType.url && _autoUpdate) {
+        final appLocalizations = context.appLocalizations;
         final res = await globalState.showMessage(
           title: appLocalizations.tip,
           message: TextSpan(text: appLocalizations.profileHasUpdate),
@@ -112,7 +113,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     }, silence: false);
     if (message?.isNotEmpty == true) {
       globalState.showMessage(
-        title: appLocalizations.tip,
+        title: currentAppLocalizations.tip,
         message: TextSpan(text: message),
       );
       return;
@@ -148,7 +149,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         }
         final res = await globalState.showMessage(
           title: title,
-          message: TextSpan(text: appLocalizations.hasCacheChange),
+          message: TextSpan(text: context.appLocalizations.hasCacheChange),
         );
         if (res == true && context.mounted) {
           _handleSaveEdit(context, content);
@@ -184,6 +185,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   }
 
   Future<void> _handleBack() async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
       title: appLocalizations.tip,
       message: TextSpan(text: appLocalizations.fileIsUpdate),
@@ -209,6 +211,7 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final items = [
       ListItem(
         title: TextFormField(
@@ -294,7 +297,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 4),
-                        Text(fileInfo.desc),
+                        Text(fileInfo.getDesc(context)),
                         const SizedBox(height: 8),
                         Wrap(
                           runSpacing: 6,

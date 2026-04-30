@@ -27,7 +27,8 @@ class BackupAndRestore extends ConsumerWidget {
     );
   }
 
-  Future<void> _backupOnWebDAV(DAVClient client) async {
+  Future<void> _backupOnWebDAV(BuildContext context, DAVClient client) async {
+    final appLocalizations = context.appLocalizations;
     final res = await appController.loadingRun<bool>(
       () async {
         final path = await appController.backup();
@@ -51,6 +52,7 @@ class BackupAndRestore extends ConsumerWidget {
     DAVClient client,
     RestoreOption option,
   ) async {
+    final appLocalizations = context.appLocalizations;
     final res = await appController.loadingRun<bool>(
       () async {
         await client.restore();
@@ -79,6 +81,7 @@ class BackupAndRestore extends ConsumerWidget {
   }
 
   Future<void> _backupOnLocal(BuildContext context) async {
+    final appLocalizations = context.appLocalizations;
     final res = await appController.loadingRun<bool>(
       () async {
         final path = await appController.backup();
@@ -102,7 +105,11 @@ class BackupAndRestore extends ConsumerWidget {
     );
   }
 
-  Future<void> _restoreOnLocal(RestoreOption option) async {
+  Future<void> _restoreOnLocal(
+    BuildContext context,
+    RestoreOption option,
+  ) async {
+    final appLocalizations = context.appLocalizations;
     final file = await picker.pickerFile(withData: false);
     final path = file?.path;
     if (path == null) return;
@@ -127,7 +134,7 @@ class BackupAndRestore extends ConsumerWidget {
       child: const RestoreOptionsDialog(),
     );
     if (option == null || !context.mounted) return;
-    _restoreOnLocal(option);
+    _restoreOnLocal(context, option);
   }
 
   void _handleChange(String? value, WidgetRef ref) {
@@ -145,7 +152,7 @@ class BackupAndRestore extends ConsumerWidget {
     );
     final res = await globalState.showCommonDialog(
       child: OptionsDialog<RestoreStrategy>(
-        title: appLocalizations.restoreStrategy,
+        title: currentAppLocalizations.restoreStrategy,
         options: RestoreStrategy.values,
         textBuilder: (mode) => Intl.message('restoreStrategy_${mode.name}'),
         value: restoreStrategy,
@@ -161,6 +168,7 @@ class BackupAndRestore extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final dav = ref.watch(davSettingProvider);
     final isLoading = ref.watch(loadingProvider(LoadingTag.backup_restore));
     final client = dav != null ? DAVClient(dav) : null;
@@ -251,7 +259,7 @@ class BackupAndRestore extends ConsumerWidget {
             ),
             ListItem(
               onTap: () {
-                _backupOnWebDAV(client);
+                _backupOnWebDAV(context, client);
               },
               title: Text(appLocalizations.backup),
               subtitle: Text(appLocalizations.remoteBackupDesc),
@@ -322,6 +330,7 @@ class _RestoreOptionsDialogState extends State<RestoreOptionsDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: appLocalizations.restore,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
@@ -395,6 +404,7 @@ class _WebDAVFormDialogState extends ConsumerState<WebDAVFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: appLocalizations.webDAVConfiguration,
       actions: [

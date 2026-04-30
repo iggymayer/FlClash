@@ -98,7 +98,7 @@ class System {
       final password = await globalState.showCommonDialog<String>(
         child: InputDialog(
           obscureText: true,
-          title: appLocalizations.pleaseInputAdminPassword,
+          title: currentAppLocalizations.pleaseInputAdminPassword,
           value: '',
         ),
       );

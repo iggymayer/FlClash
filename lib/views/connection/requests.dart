@@ -83,6 +83,7 @@ class _RequestsViewState extends ConsumerState<RequestsView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonScaffold(
       title: appLocalizations.requests,
       searchState: AppBarSearchState(onSearch: _onSearch),

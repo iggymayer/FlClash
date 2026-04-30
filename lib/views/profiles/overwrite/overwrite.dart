@@ -38,6 +38,7 @@ class _OverwriteViewState extends ConsumerState<OverwriteView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return ProfileIdProvider(
       profileId: widget.profileId,
       child: CommonScaffold(
@@ -66,11 +67,11 @@ class _OverwriteViewState extends ConsumerState<OverwriteView> {
 class _Title extends ConsumerWidget {
   const _Title();
 
-  String _getTitle(OverwriteType type) {
+  String _getTitle(BuildContext context, OverwriteType type) {
     return switch (type) {
-      OverwriteType.standard => appLocalizations.standard,
-      OverwriteType.script => appLocalizations.script,
-      OverwriteType.custom => appLocalizations.overwriteTypeCustom,
+      OverwriteType.standard => context.appLocalizations.standard,
+      OverwriteType.script => context.appLocalizations.script,
+      OverwriteType.custom => context.appLocalizations.overwriteTypeCustom,
     };
   }
 
@@ -82,11 +83,11 @@ class _Title extends ConsumerWidget {
     };
   }
 
-  String _getDesc(OverwriteType type) {
+  String _getDesc(BuildContext context, OverwriteType type) {
     return switch (type) {
-      OverwriteType.standard => appLocalizations.standardModeDesc,
-      OverwriteType.script => appLocalizations.scriptModeDesc,
-      OverwriteType.custom => appLocalizations.overwriteTypeCustomDesc,
+      OverwriteType.standard => context.appLocalizations.standardModeDesc,
+      OverwriteType.script => context.appLocalizations.scriptModeDesc,
+      OverwriteType.custom => context.appLocalizations.overwriteTypeCustomDesc,
     };
   }
 
@@ -98,6 +99,7 @@ class _Title extends ConsumerWidget {
 
   @override
   Widget build(context, ref) {
+    final appLocalizations = context.appLocalizations;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     final overwriteType = ref.watch(overwriteTypeProvider(profileId));
     return SliverToBoxAdapter(
@@ -125,7 +127,7 @@ class _Title extends ConsumerWidget {
                         children: [
                           Icon(_getIcon(type)),
                           const SizedBox(width: 8),
-                          Flexible(child: Text(_getTitle(type))),
+                          Flexible(child: Text(_getTitle(context, type))),
                         ],
                       ),
                     ),
@@ -137,7 +139,7 @@ class _Title extends ConsumerWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              _getDesc(overwriteType),
+              _getDesc(context, overwriteType),
               style: context.textTheme.bodySmall?.copyWith(
                 color: context.colorScheme.onSurfaceVariant.opacity80,
               ),

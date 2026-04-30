@@ -37,7 +37,7 @@ class ResourcesView extends StatelessWidget {
     ];
 
     return CommonScaffold(
-      title: appLocalizations.resources,
+      title: context.appLocalizations.resources,
       body: ListView.separated(
         itemBuilder: (_, index) {
           final geoItem = geoItems[index];
@@ -104,7 +104,8 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
 
   Widget _buildSubtitle() {
     return Consumer(
-      builder: (_, ref, _) {
+      builder: (context, ref, _) {
+        final appLocalizations = context.appLocalizations;
         final url = ref.watch(
           patchClashConfigProvider.select(
             (state) => state.geoXUrl.toJson()[geoItem.key],
@@ -126,7 +127,7 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
                   child: snapshot.data == null
                       ? SizedBox(width: height, height: height)
                       : Text(
-                          snapshot.data!.desc,
+                          snapshot.data!.getDesc(context),
                           style: context.textTheme.bodyMedium,
                         ),
                 );
@@ -270,6 +271,7 @@ class _UpdateGeoUrlFormDialogState extends State<UpdateGeoUrlFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: widget.title,
       actions: [

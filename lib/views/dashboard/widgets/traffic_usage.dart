@@ -48,6 +48,7 @@ class TrafficUsage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final primaryColor = globalState.theme.darken3PrimaryContainer;
     final secondaryColor = globalState.theme.darken2SecondaryContainer;
     return SizedBox(

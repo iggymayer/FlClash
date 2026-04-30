@@ -51,7 +51,7 @@ class _ProfilesViewState extends State<ProfilesView> {
           body: AddProfileView(
             context: globalState.navigatorKey.currentState!.context,
           ),
-          title: '${appLocalizations.add}${appLocalizations.profile}',
+          title: context.appLocalizations.addProfile,
         );
       },
     );
@@ -117,6 +117,7 @@ class _ProfilesViewState extends State<ProfilesView> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (_, ref, _) {
+        final appLocalizations = context.appLocalizations;
         final isLoading = ref.watch(loadingProvider(LoadingTag.profiles));
         final state = ref.watch(profilesStateProvider);
         final spacing = 14.mAp;
@@ -181,6 +182,7 @@ class ProfileItem extends StatelessWidget {
   });
 
   Future<void> _handleDeleteProfile(BuildContext context) async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
       title: appLocalizations.tip,
       message: TextSpan(
@@ -211,7 +213,7 @@ class ProfileItem extends StatelessWidget {
       builder: (_) {
         return AdaptiveSheetScaffold(
           body: EditProfileView(profile: profile, context: context),
-          title: '${appLocalizations.edit}${appLocalizations.profile}',
+          title: context.appLocalizations.edit,
         );
       },
     );
@@ -224,7 +226,7 @@ class ProfileItem extends StatelessWidget {
       if (subscriptionInfo != null)
         SubscriptionInfoView(subscriptionInfo: subscriptionInfo),
       Text(
-        profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
+        profile.lastUpdateDate?.getLastUpdateTimeDesc(context) ?? '',
         style: context.textTheme.labelMedium?.toLighter,
       ),
     ];
@@ -234,7 +236,7 @@ class ProfileItem extends StatelessWidget {
     return [
       const SizedBox(height: 8),
       Text(
-        profile.lastUpdateDate?.lastUpdateTimeDesc ?? '',
+        profile.lastUpdateDate?.getLastUpdateTimeDesc(context) ?? '',
         style: context.textTheme.labelMedium?.toLight,
       ),
     ];
@@ -243,11 +245,12 @@ class ProfileItem extends StatelessWidget {
   Future<void> _handleCopyLink(BuildContext context) async {
     await Clipboard.setData(ClipboardData(text: profile.url));
     if (context.mounted) {
-      context.showNotifier(appLocalizations.copySuccess);
+      context.showNotifier(context.appLocalizations.copySuccess);
     }
   }
 
   Future<void> _handleExportFile(BuildContext context) async {
+    final appLocalizations = context.appLocalizations;
     final res = await appController.safeRun<bool>(() async {
       final mFile = await profile.file;
       final value = await picker.saveFile(
@@ -268,6 +271,7 @@ class ProfileItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonCard(
       isSelected: profile.id == groupValue,
       onPressed: () {
@@ -461,6 +465,7 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return AdaptiveSheetScaffold(
       sheetTransparentToolBar: true,
       actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],

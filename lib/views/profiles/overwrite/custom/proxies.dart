@@ -114,7 +114,11 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (!isValid)
-                      InfoMessageButton(message: appLocalizations.invalidProxy(proxyName)),
+                      InfoMessageButton(
+                        message: context.appLocalizations.invalidProxy(
+                          proxyName,
+                        ),
+                      ),
                     ReorderableDelayedDragStartListener(
                       index: index,
                       child: Container(
@@ -157,6 +161,7 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     final vm2 = ref.watch(
       proxyGroupProvider.select(
@@ -401,6 +406,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final profileId = ProfileIdProvider.of(context)!.profileId;

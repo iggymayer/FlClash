@@ -198,6 +198,7 @@ class CommonScaffoldState extends State<CommonScaffold> {
   }
 
   Widget _buildTitle(AppBarSearchState? startState) {
+    final appLocalizations = context.appLocalizations;
     return _isSearch
         ? TextField(
             autofocus: true,

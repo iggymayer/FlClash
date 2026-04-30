@@ -32,6 +32,7 @@ class AddProfileView extends StatelessWidget {
   }
 
   Future<void> _toAdd() async {
+    final appLocalizations = context.appLocalizations;
     final url = await globalState.showCommonDialog<String>(
       child: InputDialog(
         autovalidateMode: AutovalidateMode.onUnfocus,
@@ -56,6 +57,7 @@ class AddProfileView extends StatelessWidget {
 
   @override
   Widget build(context) {
+    final appLocalizations = context.appLocalizations;
     return ListView(
       children: [
         ListItem(
@@ -105,6 +107,7 @@ class _URLFormDialogState extends State<URLFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: appLocalizations.importFromURL,
       actions: [

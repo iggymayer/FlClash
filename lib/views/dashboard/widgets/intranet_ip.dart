@@ -10,6 +10,7 @@ class IntranetIP extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return SizedBox(
       height: getWidgetHeight(1),
       child: CommonCard(

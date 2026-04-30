@@ -100,6 +100,7 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final proxyGroups = ref
         .watch(
           customOverwriteDateProvider(
@@ -190,6 +191,7 @@ class _ProxyGroupItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final isValid = ref.watch(
       customOverwriteGroupIsValidProvider(profileId, proxyGroup),
     );
@@ -224,7 +226,10 @@ class _ProxyGroupItem extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  if (!isValid) InfoMessageButton(message: appLocalizations.proxyGroupDetectedAbnormal),
+                  if (!isValid)
+                    InfoMessageButton(
+                      message: appLocalizations.proxyGroupDetectedAbnormal,
+                    ),
                   ReorderableDelayedDragStartListener(
                     index: index,
                     child: Container(
@@ -244,6 +249,7 @@ class _ProxyGroupItem extends ConsumerWidget {
 }
 
 bool _handleSaveProxyGroup(BuildContext context, WidgetRef ref) {
+  final appLocalizations = context.appLocalizations;
   final proxyGroup = ref.read(proxyGroupProvider);
   if (proxyGroup.name.isEmpty) {
     globalState.showMessage(
@@ -298,7 +304,7 @@ class _AddOrEditProxyGroupNestedSheetState
     final state = _nestedNavigatorKey.currentState;
     if (state != null && state.canPop()) {
       final res = await globalState.showMessage(
-        message: TextSpan(text: appLocalizations.confirmExitWindow),
+        message: TextSpan(text: currentAppLocalizations.confirmExitWindow),
       );
       if (res != true) {
         return;
@@ -316,7 +322,7 @@ class _AddOrEditProxyGroupNestedSheetState
       return;
     }
     final res = await globalState.showMessage(
-      message: TextSpan(text: appLocalizations.dataChangedSave),
+      message: TextSpan(text: currentAppLocalizations.dataChangedSave),
     );
     if (!mounted) {
       return;
@@ -408,7 +414,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   Future<void> _showTypeOptions(GroupType type) async {
     final value = await globalState.showCommonDialog<GroupType>(
       child: OptionsDialog<GroupType>(
-        title: appLocalizations.proxyType,
+        title: context.appLocalizations.proxyType,
         options: GroupType.values,
         textBuilder: (item) => item.name,
         value: type,
@@ -480,6 +486,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildProvidersItem(bool includeAllProviders, List<String> use) {
+    final appLocalizations = context.appLocalizations;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     return Consumer(
       builder: (_, ref, _) {
@@ -494,7 +501,9 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
             spacing: 2,
             children: [
               invalid
-                  ? InfoMessageButton(message: appLocalizations.proxyProviderDetectedAbnormal)
+                  ? InfoMessageButton(
+                      message: appLocalizations.proxyProviderDetectedAbnormal,
+                    )
                   : (!includeAllProviders
                         ? _NumberCard(number: use.length)
                         : _CheckIcon()),
@@ -508,6 +517,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildFilterItem(String? filter) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.proxyFilter),
       trailing: TextFormField(
@@ -527,6 +537,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildMaxFailedTimesItem(int? maxFailedTimes) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.maxFailedTimes),
       trailing: TextFormField(
@@ -550,6 +561,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildUrlItem(String? url) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.testUrl),
       trailing: TextFormField(
@@ -570,6 +582,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildIntervalItem(int? interval) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.testInterval),
       trailing: TextFormField(
@@ -591,6 +604,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildExcludeFilterItem(String? excludeFilter) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.excludeProxyFilter),
       trailing: TextFormField(
@@ -610,6 +624,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildExcludeTypeItem(String? type) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.excludeType),
       trailing: TextFormField(
@@ -629,6 +644,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildExpectedStatusItem(String? expectedStatus) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.expectedStatus),
       trailing: TextFormField(
@@ -648,6 +664,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildProxiesItem(bool includeAllProxies, List<String> proxies) {
+    final appLocalizations = context.appLocalizations;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     return Consumer(
       builder: (_, ref, _) {
@@ -662,7 +679,9 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               invalid
-                  ? InfoMessageButton(message: appLocalizations.proxyDetectedAbnormal)
+                  ? InfoMessageButton(
+                      message: appLocalizations.proxyDetectedAbnormal,
+                    )
                   : (!includeAllProxies
                         ? _NumberCard(number: proxies.length)
                         : _CheckIcon()),
@@ -676,6 +695,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildTypeItem(GroupType type) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.proxyType),
       onPressed: () {
@@ -686,6 +706,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildIconItem(String? icon) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.icon),
       onPressed: () {
@@ -705,6 +726,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildNameItem(String name) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.name),
       trailing: TextFormField(
@@ -728,6 +750,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildHiddenItem(bool? hidden) {
+    final appLocalizations = context.appLocalizations;
     void handleChangeHidden() {
       ref
           .read(proxyGroupProvider.notifier)
@@ -747,6 +770,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildLazyItem(bool? lazy) {
+    final appLocalizations = context.appLocalizations;
     void handleChangeLazy() {
       ref
           .read(proxyGroupProvider.notifier)
@@ -766,6 +790,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   }
 
   Widget _buildDisableUDPItem(bool? disableUDP) {
+    final appLocalizations = context.appLocalizations;
     void handleChangeDisableUDP() {
       ref
           .read(proxyGroupProvider.notifier)
@@ -788,7 +813,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
 
   Future<void> _handleDelete(int profileId, String name) async {
     final res = await globalState.showMessage(
-      message: TextSpan(text: appLocalizations.confirmDeleteProxyGroup),
+      message: TextSpan(text: context.appLocalizations.confirmDeleteProxyGroup),
     );
     if (res == true && mounted) {
       ref.read(proxyGroupsProvider(profileId).notifier).del(name);
@@ -804,6 +829,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final profileId = ProfileIdProvider.of(context)!.profileId;

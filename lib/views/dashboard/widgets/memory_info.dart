@@ -47,6 +47,7 @@ class _MemoryInfoState extends State<MemoryInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return SizedBox(
       height: getWidgetHeight(1),
       child: RepaintBoundary(

@@ -16,7 +16,7 @@ class CustomContent extends ConsumerWidget {
 
   void _handleUseDefault(WidgetRef ref, int profileId) async {
     final res = await globalState.showMessage(
-      message: TextSpan(text: appLocalizations.confirmOverwriteTip),
+      message: TextSpan(text: currentAppLocalizations.confirmOverwriteTip),
     );
     if (res != true) {
       return;
@@ -39,6 +39,7 @@ class CustomContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     ref.listen(proxyGroupsProvider(profileId), (_, _) {});
     ref.listen(profileCustomRulesProvider(profileId), (_, _) {});

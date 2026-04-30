@@ -263,6 +263,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: widget.rule != null
           ? appLocalizations.editRule

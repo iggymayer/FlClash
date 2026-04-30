@@ -21,6 +21,7 @@ class ScriptContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     final scriptId = ref.watch(
       profileProvider(profileId).select((state) => state?.scriptId),

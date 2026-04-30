@@ -65,6 +65,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
       });
     }
 
+    final appLocalizations = context.appLocalizations;
     return FadeRotationScaleBox(
       alignment: Alignment.centerRight,
       child: isSelectedAll
@@ -114,7 +115,8 @@ class _AccessViewState extends ConsumerState<AccessView> {
     await showSheet<int>(
       context: context,
       props: SheetProps(isScrollControlled: true),
-      builder: (_) {
+      builder: (context) {
+        final appLocalizations = context.appLocalizations;
         return AdaptiveSheetScaffold(
           body: AccessControlPanel(),
           title: appLocalizations.accessControlSettings,
@@ -142,6 +144,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
   }
 
   Future<void> _handleBack() async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
       title: appLocalizations.tip,
       message: TextSpan(text: appLocalizations.saveChanges),
@@ -243,7 +246,8 @@ class _AccessViewState extends ConsumerState<AccessView> {
     });
   }
 
-  List<Widget> _buildActions({required bool enable}) {
+  List<Widget> _buildActions(BuildContext context, {required bool enable}) {
+    final appLocalizations = context.appLocalizations;
     return [
       _buildConfirm(),
       CommonPopupBox(
@@ -307,7 +311,8 @@ class _AccessViewState extends ConsumerState<AccessView> {
   }) {
     return FutureBuilder(
       future: _completer.future,
-      builder: (_, snapshot) {
+      builder: (context, snapshot) {
+        final appLocalizations = context.appLocalizations;
         if (snapshot.connectionState != ConnectionState.done) {
           return Center(child: CircularProgressIndicator());
         }
@@ -337,6 +342,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
   }
 
   Widget _buildBannerBar(AccessControlMode mode, int count) {
+    final appLocalizations = context.appLocalizations;
     final describe = mode == AccessControlMode.acceptSelected
         ? appLocalizations.accessControlAllowDesc
         : appLocalizations.accessControlNotAllowDesc;
@@ -408,8 +414,8 @@ class _AccessViewState extends ConsumerState<AccessView> {
       key: _scaffoldKey,
       isLoading: isLoading,
       searchState: AppBarSearchState(onSearch: _onSearch, autoAddSearch: false),
-      title: appLocalizations.appAccessControl,
-      actions: _buildActions(enable: accessControl.enable),
+      title: context.appLocalizations.appAccessControl,
+      actions: _buildActions(context, enable: accessControl.enable),
       body: DisabledMask(
         status: !accessControl.enable,
         child: Column(
@@ -499,6 +505,7 @@ class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
   }
 
   String _getTextWithAccessControlMode(AccessControlMode mode) {
+    final appLocalizations = context.appLocalizations;
     return switch (mode) {
       AccessControlMode.acceptSelected => appLocalizations.whitelistMode,
       AccessControlMode.rejectSelected => appLocalizations.blacklistMode,
@@ -506,6 +513,7 @@ class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
   }
 
   String _getTextWithAccessSortType(AccessSortType type) {
+    final appLocalizations = context.appLocalizations;
     return switch (type) {
       AccessSortType.none => appLocalizations.defaultText,
       AccessSortType.name => appLocalizations.name,
@@ -522,6 +530,7 @@ class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
   }
 
   List<Widget> _buildModeSetting() {
+    final appLocalizations = context.appLocalizations;
     return generateSection(
       isFirst: true,
       title: appLocalizations.mode,
@@ -560,6 +569,7 @@ class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
   }
 
   List<Widget> _buildSortSetting() {
+    final appLocalizations = context.appLocalizations;
     return generateSection(
       title: appLocalizations.sort,
       items: [
@@ -597,6 +607,7 @@ class _AccessControlPanelState extends ConsumerState<AccessControlPanel> {
   }
 
   List<Widget> _buildSourceSetting() {
+    final appLocalizations = context.appLocalizations;
     return generateSection(
       title: appLocalizations.source,
       items: [

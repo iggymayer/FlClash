@@ -68,8 +68,8 @@ extension InitControllerExt on AppController {
       return;
     }
     final res = await globalState.showMessage(
-      title: appLocalizations.tip,
-      message: TextSpan(text: appLocalizations.cacheCorrupt),
+      title: currentAppLocalizations.tip,
+      message: TextSpan(text: currentAppLocalizations.cacheCorrupt),
     );
     if (res == true) {
       final file = File(await appPath.sharedPreferencesPath);
@@ -82,22 +82,22 @@ extension InitControllerExt on AppController {
     return await globalState.showCommonDialog<bool>(
           dismissible: false,
           child: CommonDialog(
-            title: appLocalizations.disclaimer,
+            title: currentAppLocalizations.disclaimer,
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.of(_context).pop<bool>(false);
                 },
-                child: Text(appLocalizations.exit),
+                child: Text(currentAppLocalizations.exit),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(_context).pop<bool>(true);
                 },
-                child: Text(appLocalizations.agree),
+                child: Text(currentAppLocalizations.agree),
               ),
             ],
-            child: Text(appLocalizations.disclaimerDesc),
+            child: Text(currentAppLocalizations.disclaimerDesc),
           ),
         ) ??
         false;
@@ -111,9 +111,9 @@ extension InitControllerExt on AppController {
       return;
     }
     await globalState.showMessage(
-      title: appLocalizations.dataCollectionTip,
+      title: currentAppLocalizations.dataCollectionTip,
       cancelable: false,
-      message: TextSpan(text: appLocalizations.dataCollectionContent),
+      message: TextSpan(text: currentAppLocalizations.dataCollectionContent),
     );
     _ref
         .read(appSettingProvider.notifier)
@@ -171,7 +171,7 @@ extension InitControllerExt on AppController {
       final submits = utils.parseReleaseBody(body);
       final textTheme = _context.textTheme;
       final res = await globalState.showMessage(
-        title: appLocalizations.discoverNewVersion,
+        title: currentAppLocalizations.discoverNewVersion,
         message: TextSpan(
           text: '$tagName \n',
           style: textTheme.headlineSmall,
@@ -181,8 +181,8 @@ extension InitControllerExt on AppController {
               TextSpan(text: '- $submit \n', style: textTheme.bodyMedium),
           ],
         ),
-        confirmText: appLocalizations.goDownload,
-        cancelText: isUser ? null : appLocalizations.noLongerRemind,
+        confirmText: currentAppLocalizations.goDownload,
+        cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
       );
       if (res == true) {
         launchUrl(Uri.parse('https://github.com/$repository/releases/latest'));
@@ -193,8 +193,8 @@ extension InitControllerExt on AppController {
       }
     } else if (isUser) {
       globalState.showMessage(
-        title: appLocalizations.checkUpdate,
-        message: TextSpan(text: appLocalizations.checkUpdateError),
+        title: currentAppLocalizations.checkUpdate,
+        message: TextSpan(text: currentAppLocalizations.checkUpdateError),
       );
     }
   }
@@ -340,7 +340,7 @@ extension ProfilesControllerExt on AppController {
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
       return await Profile.normal(url: url).update();
-    }, title: appLocalizations.addProfile);
+    }, title: currentAppLocalizations.addProfile);
     if (profile != null) {
       putProfile(profile);
     }
@@ -364,7 +364,7 @@ extension ProfilesControllerExt on AppController {
     toProfiles();
     final profile = await loadingRun(tag: LoadingTag.profiles, () async {
       return await Profile.normal(label: platformFile?.name).saveFile(bytes);
-    }, title: appLocalizations.addProfile);
+    }, title: currentAppLocalizations.addProfile);
     if (profile != null) {
       putProfile(profile);
     }
@@ -924,10 +924,10 @@ extension SystemControllerExt on AppController {
   void initLink() {
     linkManager.initAppLinksListen((url) async {
       final res = await globalState.showMessage(
-        title: '${appLocalizations.add}${appLocalizations.profile}',
+        title: currentAppLocalizations.addProfile,
         message: TextSpan(
           children: [
-            TextSpan(text: appLocalizations.doYouWantToPass),
+            TextSpan(text: currentAppLocalizations.doYouWantToPass),
             TextSpan(
               text: ' $url ',
               style: TextStyle(
@@ -936,9 +936,7 @@ extension SystemControllerExt on AppController {
                 decorationColor: _context.colorScheme.primary,
               ),
             ),
-            TextSpan(
-              text: '${appLocalizations.create}${appLocalizations.profile}',
-            ),
+            TextSpan(text: '创建配置'),
           ],
         ),
       );
@@ -1036,7 +1034,7 @@ extension BackupControllerExt on AppController {
     try {
       final migrationData = await restoreTask();
       if (!await restoreDir.exists()) {
-        throw appLocalizations.restoreException;
+        throw currentAppLocalizations.restoreException;
       }
       await database.restore(
         migrationData.profiles,
@@ -1198,7 +1196,7 @@ extension CommonControllerExt on AppController {
         globalState.showNotifier(e.toString());
       } else {
         globalState.showMessage(
-          title: title ?? appLocalizations.tip,
+          title: title ?? currentAppLocalizations.tip,
           message: TextSpan(text: e.toString()),
         );
       }

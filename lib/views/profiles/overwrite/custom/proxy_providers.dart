@@ -115,7 +115,9 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                   children: [
                     if (!isValid)
                       InfoMessageButton(
-                        message: appLocalizations.invalidProxyProvider(providerName),
+                        message: context.appLocalizations.invalidProxyProvider(
+                          providerName,
+                        ),
                       ),
                     ReorderableDelayedDragStartListener(
                       index: index,
@@ -159,6 +161,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final vm2 = ref.watch(
       proxyGroupProvider.select(
         (state) => VM2(state.includeAllProviders ?? false, state.use ?? []),
@@ -202,7 +205,10 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                             onPressed: () {
                               globalState.showMessage(
                                 title: appLocalizations.tip,
-                                message: TextSpan(text: appLocalizations.includeAllProxyProvidersTip),
+                                message: TextSpan(
+                                  text: appLocalizations
+                                      .includeAllProxyProvidersTip,
+                                ),
                                 cancelable: false,
                               );
                             },
@@ -284,7 +290,9 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                 },
               )
             else
-              SliverFillRemaining(child: NullStatus(label: appLocalizations.proxyProvidersEmpty)),
+              SliverFillRemaining(
+                child: NullStatus(label: appLocalizations.proxyProvidersEmpty),
+              ),
             SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
@@ -369,20 +377,25 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     final dismissProxyProviders = ref.watch(itemsProvider(key));
-    final allProxyProviders = ref.watch(
-      clashConfigProvider(
-        profileId,
-      ).select((state) => VM(state.value?.proxyProviders ?? [])),
-    ).a;
-    final excludeProxyProviderNames = ref.watch(
-      proxyGroupProvider.select((state) {
-        return VM([...?state.use]);
-      }),
-    ).a;
+    final allProxyProviders = ref
+        .watch(
+          clashConfigProvider(
+            profileId,
+          ).select((state) => VM(state.value?.proxyProviders ?? [])),
+        )
+        .a;
+    final excludeProxyProviderNames = ref
+        .watch(
+          proxyGroupProvider.select((state) {
+            return VM([...?state.use]);
+          }),
+        )
+        .a;
     final providerNames = allProxyProviders
         .where((item) => !excludeProxyProviderNames.contains(item))
         .toList();
@@ -407,7 +420,9 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
                     SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverToBoxAdapter(
-                        child: InfoHeader(info: Info(label: appLocalizations.proxyProviders)),
+                        child: InfoHeader(
+                          info: Info(label: appLocalizations.proxyProviders),
+                        ),
                       ),
                     ),
                     SliverList(

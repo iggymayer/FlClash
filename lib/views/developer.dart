@@ -13,6 +13,7 @@ class DeveloperView extends ConsumerWidget {
   const DeveloperView({super.key});
 
   Widget _getDeveloperList(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
     return generateSectionV2(
       title: appLocalizations.options,
       items: [
@@ -85,6 +86,7 @@ class DeveloperView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final enable = ref.watch(
       appSettingProvider.select((state) => state.developerMode),
     );

@@ -46,6 +46,7 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
   }
 
   Future<void> _handleDelete() async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
       title: appLocalizations.tip,
       message: TextSpan(
@@ -62,6 +63,7 @@ class _AddedRulesViewState extends ConsumerState<AddedRulesView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final rules = ref.watch(globalRulesProvider).value ?? [];
     final selectedRules = ref.watch(itemsProvider(_key));
     return CommonPopScope(

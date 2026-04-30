@@ -42,13 +42,13 @@ class Request {
       commonPrint.log('getFileResponseForUrl error ${e.toString()}');
       if (e is DioException) {
         if (e.type == DioExceptionType.unknown) {
-          throw appLocalizations.unknownNetworkError;
+          throw currentAppLocalizations.unknownNetworkError;
         } else if (e.type == DioExceptionType.badResponse) {
-          throw appLocalizations.networkException;
+          throw currentAppLocalizations.networkException;
         }
         rethrow;
       }
-      throw appLocalizations.unknownNetworkError;
+      throw currentAppLocalizations.unknownNetworkError;
     }
   }
 

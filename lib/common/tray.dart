@@ -70,6 +70,7 @@ class Tray {
       );
     }
     List<MenuItem> menuItems = [];
+    final appLocalizations = currentAppLocalizations;
     final showMenuItem = MenuItem(
       label: appLocalizations.show,
       onClick: (_) {

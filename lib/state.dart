@@ -40,6 +40,7 @@ class GlobalState {
   late Color accentColor;
   bool needInitStatus = true;
 
+  // ignore: deprecated_member_use
   CorePalette? corePalette;
   DateTime? startTime;
   UpdateTasks tasks = [];
@@ -176,6 +177,7 @@ class GlobalState {
       dismissible: dismissible,
       child: Builder(
         builder: (context) {
+          final appLocalizations = context.appLocalizations;
           return CommonDialog(
             title: title ?? appLocalizations.tip,
             actions: [
@@ -218,6 +220,7 @@ class GlobalState {
     return await showCommonDialog<bool>(
       child: Builder(
         builder: (context) {
+          final appLocalizations = currentAppLocalizations;
           return CommonDialog(
             padding: EdgeInsets.zero,
             title: appLocalizations.tip,
@@ -279,8 +282,8 @@ class GlobalState {
   Future<void> openUrl(String url) async {
     final res = await showMessage(
       message: TextSpan(text: url),
-      title: appLocalizations.externalLink,
-      confirmText: appLocalizations.go,
+      title: currentAppLocalizations.externalLink,
+      confirmText: currentAppLocalizations.go,
     );
     if (res != true) {
       return;

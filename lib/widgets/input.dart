@@ -157,6 +157,7 @@ class _InputDialogState extends State<InputDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: title,
       actions: [
@@ -263,6 +264,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
   }
 
   Future<void> _handleAddOrEdit([String? item]) async {
+    final appLocalizations = context.appLocalizations;
     uniqueValidator(String? value) {
       final index = _items.indexWhere((entry) {
         return entry == value;
@@ -311,7 +313,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
 
   Future<void> _handleReset() async {
     final res = await globalState.showMessage(
-      message: TextSpan(text: appLocalizations.resetPageChangesTip),
+      message: TextSpan(text: context.appLocalizations.resetPageChangesTip),
     );
     if (res != true) {
       return;
@@ -356,6 +358,7 @@ class _ListInputPageState extends ConsumerState<ListInputPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final selectedItems = ref.watch(itemsProvider(_key));
     return CommonPopScope(
       onPop: (_) {
@@ -505,6 +508,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
   }
 
   Future<void> _handleAddOrEdit([MapEntry<String, String>? item]) async {
+    final appLocalizations = context.appLocalizations;
     uniqueValidator(String? value) {
       final index = _items.indexWhere((entry) {
         return entry.key == value;
@@ -561,7 +565,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
 
   Future<void> _handleReset() async {
     final res = await globalState.showMessage(
-      message: TextSpan(text: appLocalizations.resetPageChangesTip),
+      message: TextSpan(text: context.appLocalizations.resetPageChangesTip),
     );
     if (res != true) {
       return;
@@ -606,6 +610,7 @@ class _MapInputPageState extends ConsumerState<MapInputPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final selectedItems = ref.watch(itemsProvider(_key));
     return CommonPopScope(
       onPop: (_) {
@@ -750,6 +755,7 @@ class _AddDialogState extends State<AddDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: widget.title,
       actions: [

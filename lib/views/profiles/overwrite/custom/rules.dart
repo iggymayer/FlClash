@@ -59,6 +59,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
   }
 
   Future<void> _handleDelete() async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
       title: appLocalizations.tip,
       message: TextSpan(
@@ -149,6 +150,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
 
   @override
   Widget build(context) {
+    final appLocalizations = context.appLocalizations;
     final rules = ref.watch(profileCustomRulesProvider(_profileId)).value ?? [];
     final selectedRules = ref.watch(itemsProvider(key));
     final vm2 = ref.watch(
@@ -274,7 +276,7 @@ class _AddOrEditRuleNestedSheetState
     final state = _nestedNavigatorKey.currentState;
     if (state != null && state.canPop()) {
       final res = await globalState.showMessage(
-        message: TextSpan(text: appLocalizations.confirmExitWindow),
+        message: TextSpan(text: context.appLocalizations.confirmExitWindow),
       );
       if (res != true) {
         return;
@@ -292,7 +294,7 @@ class _AddOrEditRuleNestedSheetState
       return;
     }
     final res = await globalState.showMessage(
-      message: TextSpan(text: appLocalizations.dataChangedSave),
+      message: TextSpan(text: context.appLocalizations.dataChangedSave),
     );
     if (!mounted) {
       return;
@@ -428,7 +430,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
 
   Widget _buildTypeItem(RuleAction action) {
     return _buildItem(
-      title: Text(appLocalizations.proxyType),
+      title: Text(context.appLocalizations.proxyType),
       onPressed: () {
         _handleSelectedType();
       },
@@ -449,6 +451,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   }
 
   Widget _buildContentItem(String? content) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.content),
       trailing: TextFormField(
@@ -481,6 +484,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   }
 
   Widget _buildRuleProviderItem(String? ruleProvider) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.ruleSet),
       onPressed: _handleSelectedRuleProvider,
@@ -517,6 +521,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   }
 
   Widget _buildTargetItem(int profileId, String? target) {
+    final appLocalizations = context.appLocalizations;
     return Consumer(
       builder: (_, ref, _) {
         final invalid = !ref.watch(
@@ -580,6 +585,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   }
 
   Widget _buildSubRuleItem(int profileId, String? subRule) {
+    final appLocalizations = context.appLocalizations;
     return Consumer(
       builder: (_, ref, _) {
         return _buildItem(
@@ -611,6 +617,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   }
 
   Widget _buildNoResolveItem(bool? noResolve) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.noResolveHostname),
       trailing: Switch(value: noResolve ?? false, onChanged: (_) {}),
@@ -618,6 +625,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   }
 
   Widget _buildSrcItem(bool? src) {
+    final appLocalizations = context.appLocalizations;
     return _buildItem(
       title: Text(appLocalizations.matchSourceIp),
       trailing: Switch(value: src ?? false, onChanged: (_) {}),
@@ -634,6 +642,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final profileId = ProfileIdProvider.of(context)!.profileId;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
@@ -707,6 +716,7 @@ class _RuleTypeSelectedView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final height = ref.watch(
@@ -736,7 +746,7 @@ class _RuleTypeSelectedView extends ConsumerWidget {
                   Navigator.of(context).pop(ruleAction);
                 },
                 isSelected: ruleAction == currentRuleAction,
-                subtitle: Text(ruleAction.desc),
+                subtitle: Text(ruleAction.getDesc(context)),
                 title: Text(ruleAction.name),
                 trailing: ruleAction == currentRuleAction
                     ? Icon(Icons.check)
@@ -781,6 +791,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final profileId = ProfileIdProvider.of(context)!.profileId;
@@ -916,6 +927,7 @@ class _RuleProviderSelectedView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final profileId = ProfileIdProvider.of(context)!.profileId;
@@ -987,6 +999,7 @@ class _SubRuleSelectedView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final appLocalizations = context.appLocalizations;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;
     final profileId = ProfileIdProvider.of(context)!.profileId;
@@ -1039,6 +1052,7 @@ class _SubRuleSelectedView extends ConsumerWidget {
 
 bool _handleSaveRule(BuildContext context, WidgetRef ref) {
   final rule = ref.read(ruleProvider);
+  final appLocalizations = context.appLocalizations;
   if (rule.realContent?.isNotEmpty != true) {
     globalState.showMessage(
       cancelable: false,

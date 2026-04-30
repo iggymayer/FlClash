@@ -10,6 +10,7 @@ class TUNButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return SizedBox(
       height: getWidgetHeight(1),
       child: CommonCard(
@@ -89,6 +90,7 @@ class SystemProxyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return SizedBox(
       height: getWidgetHeight(1),
       child: CommonCard(
@@ -161,6 +163,7 @@ class VpnButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return SizedBox(
       height: getWidgetHeight(1),
       child: CommonCard(

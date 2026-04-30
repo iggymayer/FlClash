@@ -28,7 +28,10 @@ class _LogsViewState extends ConsumerState<LogsView> {
     _logs = ref.read(logsProvider).list;
     _scrollController = ScrollController(initialScrollOffset: double.maxFinite);
     _logsStateNotifier.value = _logsStateNotifier.value.copyWith(logs: _logs);
-    ref.listenManual(logsProvider.select((state) => VM(state.list)), (prev, next) {
+    ref.listenManual(logsProvider.select((state) => VM(state.list)), (
+      prev,
+      next,
+    ) {
       if (prev != next) {
         final isEquality = logListEquality.equals(prev?.a, next.a);
         if (!isEquality) {
@@ -68,6 +71,7 @@ class _LogsViewState extends ConsumerState<LogsView> {
   }
 
   Future<void> _handleExport() async {
+    final appLocalizations = context.appLocalizations;
     final res = await appController.safeRun<bool>(() async {
       return await appController.exportLogs();
     }, title: appLocalizations.exportLogs);
@@ -102,6 +106,7 @@ class _LogsViewState extends ConsumerState<LogsView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonScaffold(
       actions: _buildActions(),
       onKeywordsUpdate: _onKeywordsUpdate,
@@ -193,7 +198,9 @@ class LogItem extends StatelessWidget {
       onTap: () {},
       title: SelectableText(
         log.payload,
-        style: context.textTheme.bodyLarge?.copyWith(color: log.logLevel.color(context)),
+        style: context.textTheme.bodyLarge?.copyWith(
+          color: log.logLevel.color(context),
+        ),
       ),
       subtitle: Column(
         children: [

@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:fl_clash/common/app_localizations.dart';
+import 'package:fl_clash/common/context.dart';
 import 'package:fl_clash/common/system.dart';
 import 'package:fl_clash/views/dashboard/widgets/widgets.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -404,7 +404,8 @@ extension RuleActionExt on RuleAction {
     RuleAction.RULE_SET,
   ].contains(this);
 
-  String get desc {
+  String getDesc(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return switch (this) {
       RuleAction.DOMAIN => appLocalizations.ruleActionDomainDesc,
       RuleAction.DOMAIN_SUFFIX => appLocalizations.ruleActionDomainSuffixDesc,

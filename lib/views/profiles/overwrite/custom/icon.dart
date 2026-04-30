@@ -171,6 +171,7 @@ class _IconEditViewState extends ConsumerState<IconEditView>
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final dimension = globalState.measure.bodyLargeHeight + 28;
     final isBottomSheet =
         SheetProvider.of(context)?.type == SheetType.bottomSheet;

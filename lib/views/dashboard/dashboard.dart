@@ -49,8 +49,8 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
       return;
     }
     final tip = coreStatus == CoreStatus.connected
-        ? appLocalizations.forceRestartCoreTip
-        : appLocalizations.restartCoreTip;
+        ? context.appLocalizations.forceRestartCoreTip
+        : context.appLocalizations.restartCoreTip;
     final res = await globalState.showMessage(message: TextSpan(text: tip));
     if (res != true) {
       return;
@@ -59,6 +59,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   }
 
   List<Widget> _buildActions(bool isEdit) {
+    final appLocalizations = context.appLocalizations;
     return [
       if (!isEdit)
         Consumer(
@@ -192,7 +193,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
                   key.currentState?.handleAdd(gridItem);
                 },
               ),
-              title: appLocalizations.add,
+              title: context.appLocalizations.add,
             );
           },
         );
@@ -250,7 +251,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     });
     return _buildIsEdit(
       (isEdit) => CommonScaffold(
-        title: appLocalizations.dashboard,
+        title: context.appLocalizations.dashboard,
         actions: _buildActions(isEdit),
         floatingActionButton: const StartButton(),
         body: Align(

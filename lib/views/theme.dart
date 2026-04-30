@@ -37,6 +37,7 @@ class ThemeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return BaseScaffold(
       title: appLocalizations.theme,
       body: CustomScrollView(
@@ -84,6 +85,7 @@ class _ThemeModeItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
     final themeMode = ref.watch(
       themeSettingProvider.select((state) => state.themeMode),
     );
@@ -168,7 +170,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
 
   Future<void> _handleReset() async {
     final res = await globalState.showMessage(
-      message: TextSpan(text: appLocalizations.resetTip),
+      message: TextSpan(text: context.appLocalizations.resetTip),
     );
     if (res != true) {
       return;
@@ -183,6 +185,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
   }
 
   Future<void> _handleDel() async {
+    final appLocalizations = context.appLocalizations;
     if (_removablePrimaryColor == null) {
       return;
     }
@@ -216,6 +219,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
   }
 
   Future<void> _handleAdd() async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showCommonDialog<int>(
       child: _PaletteDialog(),
     );
@@ -244,7 +248,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
     );
     final value = await globalState.showCommonDialog<DynamicSchemeVariant>(
       child: OptionsDialog<DynamicSchemeVariant>(
-        title: appLocalizations.colorSchemes,
+        title: context.appLocalizations.colorSchemes,
         options: DynamicSchemeVariant.values,
         textBuilder: (item) => Intl.message('${item.name}Scheme'),
         value: schemeVariant,
@@ -260,6 +264,7 @@ class _PrimaryColorItemState extends ConsumerState<_PrimaryColorItem> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     final vm4 = ref.watch(
       themeSettingProvider.select(
         (state) => VM4(
@@ -418,6 +423,7 @@ class _PrueBlackItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
     final prueBlack = ref.watch(
       themeSettingProvider.select((state) => state.pureBlack),
     );
@@ -449,6 +455,7 @@ class _TextScaleFactorItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
     final textScale = ref.watch(
       themeSettingProvider.select((state) => state.textScale),
     );
@@ -537,6 +544,7 @@ class _PaletteDialogState extends State<_PaletteDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonDialog(
       title: appLocalizations.palette,
       actions: [

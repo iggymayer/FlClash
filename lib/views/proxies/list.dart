@@ -284,6 +284,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return Consumer(
       builder: (_, ref, _) {
         final state = ref.watch(proxiesListStateProvider);

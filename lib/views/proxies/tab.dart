@@ -119,7 +119,7 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
               },
             ),
           ),
-          title: appLocalizations.proxyGroup,
+          title: context.appLocalizations.proxyGroup,
         );
       },
     );
@@ -167,6 +167,7 @@ class ProxiesTabViewState extends ConsumerState<ProxiesTabView>
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     ref.watch(themeSettingProvider.select((state) => state.textScale));
     final state = ref.watch(proxiesTabStateProvider.select((state) => state));
     final groups = state.groups;
@@ -407,6 +408,7 @@ class _DelayTestButtonState extends State<DelayTestButton>
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return AnimatedBuilder(
       animation: _controller.view,
       builder: (_, child) {

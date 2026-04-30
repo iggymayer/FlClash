@@ -121,8 +121,8 @@ class _ToolViewState extends ConsumerState<ToolsView> {
 class _LocaleItem extends ConsumerWidget {
   const _LocaleItem();
 
-  String _getLocaleString(Locale? locale) {
-    if (locale == null) return appLocalizations.defaultText;
+  String _getLocaleString(BuildContext context, Locale? locale) {
+    if (locale == null) return context.appLocalizations.defaultText;
     return Intl.message(locale.toString());
   }
 
@@ -145,7 +145,7 @@ class _LocaleItem extends ConsumerWidget {
               .read(appSettingProvider.notifier)
               .update((state) => state.copyWith(locale: locale?.toString()));
         },
-        textBuilder: (locale) => _getLocaleString(locale),
+        textBuilder: (locale) => _getLocaleString(context, locale),
         value: currentLocale,
       ),
     );

@@ -25,7 +25,8 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
   bool _hasProviders = false;
   bool _isTab = false;
 
-  List<Widget> _buildActions() {
+  List<Widget> _buildActions(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return [
       if (_isTab)
         IconButton(
@@ -142,8 +143,8 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
       isLoading: isLoading,
       resizeToAvoidBottomInset: false,
       floatingActionButton: _buildFAB(),
-      actions: _buildActions(),
-      title: appLocalizations.proxies,
+      actions: _buildActions(context),
+      title: context.appLocalizations.proxies,
       searchState: AppBarSearchState(onSearch: _onSearch),
       body: switch (proxiesType) {
         ProxiesType.tab => ProxiesTabView(key: _proxiesTabKey),

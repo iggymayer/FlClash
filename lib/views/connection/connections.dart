@@ -88,6 +88,7 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     return CommonScaffold(
       title: appLocalizations.connections,
       onKeywordsUpdate: _onKeywordsUpdate,

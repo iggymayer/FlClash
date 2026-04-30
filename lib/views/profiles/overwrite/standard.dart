@@ -51,6 +51,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
   }
 
   Future<void> _handleDelete() async {
+    final appLocalizations = context.appLocalizations;
     final res = await globalState.showMessage(
       title: appLocalizations.tip,
       message: TextSpan(
@@ -79,6 +80,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = context.appLocalizations;
     _profileId = ProfileIdProvider.of(context)!.profileId;
     final addedRules =
         ref.watch(profileAddedRulesProvider(_profileId)).value ?? [];
@@ -198,6 +200,7 @@ class _EditGlobalAddedRules extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = context.appLocalizations;
     final disabledRuleIds =
         ref.watch(profileDisabledRuleIdsProvider(profileId)).value ?? [];
     final rules = ref.watch(globalRulesProvider).value ?? [];
