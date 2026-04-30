@@ -289,6 +289,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "При включении автоматически загружает журналы сбоев без конфиденциальной информации, когда приложение выходит из строя",
     ),
     "create": MessageLookupByLibrary.simpleMessage("Создать"),
+    "createProfile": MessageLookupByLibrary.simpleMessage("Create Profile"),
     "creationTime": MessageLookupByLibrary.simpleMessage("Время создания"),
     "custom": MessageLookupByLibrary.simpleMessage("Пользовательский"),
     "cut": MessageLookupByLibrary.simpleMessage("Вырезать"),

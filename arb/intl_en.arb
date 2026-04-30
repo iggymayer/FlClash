@@ -572,5 +572,6 @@
   "invalidProxy": "{proxyName} is an invalid proxy",
   "proxyGroupDetectedAbnormal": "Detected current proxy group is abnormal",
   "proxyProviderDetectedAbnormal": "Detected selected proxy providers are abnormal",
-  "proxyDetectedAbnormal": "Detected selected proxies are abnormal"
+  "proxyDetectedAbnormal": "Detected selected proxies are abnormal",
+  "createProfile": "Create Profile"
 }

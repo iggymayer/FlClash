@@ -936,7 +936,7 @@ extension SystemControllerExt on AppController {
                 decorationColor: _context.colorScheme.primary,
               ),
             ),
-            TextSpan(text: '创建配置'),
+            TextSpan(text: currentAppLocalizations.createProfile),
           ],
         ),
       );

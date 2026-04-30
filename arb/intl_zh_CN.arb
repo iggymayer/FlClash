@@ -573,5 +573,6 @@
   "invalidProxy": "{proxyName} 是一个无效的代理",
   "proxyGroupDetectedAbnormal": "检测到当前策略组异常",
   "proxyProviderDetectedAbnormal": "检测到选中的代理集存在异常",
-  "proxyDetectedAbnormal": "检测到选中的代理存在异常"
+  "proxyDetectedAbnormal": "检测到选中的代理存在异常",
+  "createProfile": "创建配置"
 }

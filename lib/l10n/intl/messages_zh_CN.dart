@@ -190,6 +190,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "开启后，应用崩溃时自动上传不包含敏感信息的崩溃日志",
     ),
     "create": MessageLookupByLibrary.simpleMessage("创建"),
+    "createProfile": MessageLookupByLibrary.simpleMessage("创建配置"),
     "creationTime": MessageLookupByLibrary.simpleMessage("创建时间"),
     "custom": MessageLookupByLibrary.simpleMessage("自定义"),
     "cut": MessageLookupByLibrary.simpleMessage("剪切"),
