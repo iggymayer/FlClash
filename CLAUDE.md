@@ -4,7 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-FlClash is a multi-platform proxy client based on ClashMeta (mihomo), built with Flutter. Supports Android, Windows, macOS, and Linux. Material You design with Surfboard-like UI.
+FlClash is a multi-platform proxy client based on ClashMeta (mihomo), built with Flutter. Supports Android, Windows,
+macOS, and Linux. Material You design with Surfboard-like UI.
 
 ## Common Development Commands
 
@@ -45,7 +46,8 @@ dart run build_runner build --delete-conflicting-outputs
 dart run build_runner watch  # Continuous regeneration
 ```
 
-Code generation covers: Riverpod providers (`riverpod_generator`), models (`freezed`, `json_serializable`), and database tables (`drift_dev`).
+Code generation covers: Riverpod providers (`riverpod_generator`), models (`freezed`, `json_serializable`), and database
+tables (`drift_dev`).
 
 ### Build Dependencies
 
@@ -61,27 +63,36 @@ Code generation covers: Riverpod providers (`riverpod_generator`), models (`free
 
 This is the most important architectural concept. The Go proxy core (`core/`) operates in two modes:
 
-- **Android (lib mode):** Go core compiled as C shared library (`libclash.so`) via `go build -buildmode=c-shared` with CGO. Flutter calls it via FFI through the `service` plugin. Dart-side: `lib/core/lib.dart` (`CoreLib` class).
+- **Android (lib mode):** Go core compiled as C shared library (`libclash.so`) via `go build -buildmode=c-shared` with
+  CGO. Flutter calls it via FFI through the `service` plugin. Dart-side: `lib/core/lib.dart` (`CoreLib` class).
 
-- **Desktop (core mode):** Go core runs as a separate process with `CGO_ENABLED=0`. Flutter communicates via JSON-over-socket (Unix socket on macOS/Linux, TCP on Windows). Dart-side: `lib/core/service.dart` (`CoreService` class).
+- **Desktop (core mode):** Go core runs as a separate process with `CGO_ENABLED=0`. Flutter communicates via
+  JSON-over-socket (Unix socket on macOS/Linux, TCP on Windows). Dart-side: `lib/core/service.dart` (`CoreService`
+  class).
 
-`lib/core/controller.dart` (`CoreController`) selects the implementation based on platform. `lib/core/interface.dart` defines the shared `CoreHandlerInterface`.
+`lib/core/controller.dart` (`CoreController`) selects the implementation based on platform. `lib/core/interface.dart`
+defines the shared `CoreHandlerInterface`.
 
-Go core key files: `core/hub.go` (handler functions), `core/action.go` (dispatch), `core/lib.go` (CGO exports), `core/server.go` (socket server).
+Go core key files: `core/hub.go` (handler functions), `core/action.go` (dispatch), `core/lib.go` (CGO exports),
+`core/server.go` (socket server).
 
 ### State Management (Riverpod)
 
 Three provider files in `lib/providers/`:
+
 - `app.dart` - Runtime/UI state (logs, traffic, delays, loading, navigation)
 - `config.dart` - Persistent config providers (app settings, theme, VPN, proxy style)
 - `state.dart` - Derived/computed providers (navigation, proxy, tray, color scheme)
 - `database.dart` - Drift database provider wrappers
 
-`globalState` (`lib/state.dart`) is a singleton holding app lifecycle, timers, theme, and the start/stop state. Providers are generated into `lib/providers/generated/`.
+`globalState` (`lib/state.dart`) is a singleton holding app lifecycle, timers, theme, and the start/stop state.
+Providers are generated into `lib/providers/generated/`.
 
 ### Database (Drift/SQLite)
 
-Type-safe SQLite via Drift in `lib/database/`. Tables: `Profiles`, `Scripts`, `ProxyGroups`, `GlobalRules`, `ProfileAddedRules`, `ProfileCustomRules`, `ProfileDisabledRuleIds`, `Icons`, `Links`. Uses fractional indexing for ordering.
+Type-safe SQLite via Drift in `lib/database/`. Tables: `Profiles`, `Scripts`, `ProxyGroups`, `GlobalRules`,
+`ProfileAddedRules`, `ProfileCustomRules`, `ProfileDisabledRuleIds`, `Icons`, `Links`. Uses fractional indexing for
+ordering.
 
 ### Manager Stack (Widget Tree)
 
@@ -99,6 +110,7 @@ Each manager in `lib/manager/` handles a specific platform concern. Desktop-only
 ### Controller (`lib/controller.dart`)
 
 Monolithic `AppController` singleton with extension methods:
+
 - `InitControllerExt` - initialization flow
 - `ProfilesControllerExt` - profile CRUD, auto-update, import
 - `ProxiesControllerExt` - group management, proxy selection
@@ -122,7 +134,8 @@ Shared: `ConnectivityManager`, `CoreManager`, `AppStateManager`, `StatusManager`
 
 ### Rust Helper Service (`services/helper/`)
 
-Windows-only privileged helper for starting the core as admin and managing TUN. Built with `cargo build --release --features windows-service`. Token-based auth with Flutter app.
+Windows-only privileged helper for starting the core as admin and managing TUN. Built with
+`cargo build --release --features windows-service`. Token-based auth with Flutter app.
 
 ### Localization
 
@@ -131,6 +144,7 @@ ARB files in `arb/`. Generated via `flutter_intl` into `lib/l10n/`. Use `AppLoca
 **Supported locales:** `en`, `zh_CN`, `ja`, `ru`
 
 **Access patterns:**
+
 - In widgets with BuildContext: `context.appLocalizations.key` (import `common.dart`)
 - In controllers/providers/non-widget code: `currentAppLocalizations.key` (import `app_localizations.dart`)
 
@@ -141,13 +155,15 @@ When writing or reviewing Dart code in `lib/`, follow this process to extract ha
 **1. Scan for hardcoded Chinese characters**
 
 Search `lib/**/*.dart` for Chinese characters (Unicode range `\x{4e00}-\x{9fff}`), excluding:
+
 - `lib/l10n/` (generated files)
 - Lines already using `appLocalizations` or `currentAppLocalizations`
 - False positives: arrow symbols (`↑↓←→`), middle dot (`·`), command symbol (`⌘`)
 
 **2. For each hardcoded string, determine:**
 
-- **ARB key**: camelCase, concise, semantic. Use `Desc` suffix for descriptive text. Check existing keys in `arb/intl_en.arb` for naming patterns.
+- **ARB key**: camelCase, concise, semantic. Use `Desc` suffix for descriptive text. Check existing keys in
+  `arb/intl_en.arb` for naming patterns.
 - **English translation**: The meaning of the Chinese string (for `intl_en.arb`)
 - **Chinese translation**: The original string (for `intl_zh_CN.arb`)
 - **ja/ru**: Use English as placeholder (translators fill in later)
@@ -155,6 +171,7 @@ Search `lib/**/*.dart` for Chinese characters (Unicode range `\x{4e00}-\x{9fff}`
 **3. Add to all 4 ARB files**
 
 Insert before the closing `}` in each file:
+
 ```
 "keyName": "value",
 ```
