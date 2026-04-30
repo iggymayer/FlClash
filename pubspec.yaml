@@ -14,7 +14,11 @@ dependencies:
   path_provider: ^2.1.5
   path: ^1.9.0
   shared_preferences: ^2.5.3
-  window_manager: ^0.5.1
+  window_manager:
+    git:
+      url: https://github.com/chen08209/window_manager
+      ref: main
+      path: packages/window_manager
   dynamic_color: ^1.8.1
   proxy:
     path: plugins/proxy
@@ -64,7 +68,6 @@ dependencies:
       url: https://github.com/chen08209/yaml_writer
       ref: master
   super_sliver_list: ^0.4.1
-
   drift: ^2.31.0
   drift_flutter: ^0.2.8
   fractional_indexing: ^1.0.0
