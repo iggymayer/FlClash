@@ -176,6 +176,9 @@ class _WindowHeaderState extends State<WindowHeader> {
         await windowManager.unmaximize();
       }
       isMaximizedNotifier.value = false;
+      if (system.isWindows) {
+        windowExtManager.setWindowCornerPreference(round: true);
+      }
     } else {
       if (system.isWindows) {
         _previousBounds = await windowManager.getBounds();
@@ -195,6 +198,7 @@ class _WindowHeaderState extends State<WindowHeader> {
         await windowManager.setBounds(
           Rect.fromLTWH(pos.dx, pos.dy, size.width, size.height),
         );
+        windowExtManager.setWindowCornerPreference(round: false);
       } else {
         await windowManager.maximize();
       }
