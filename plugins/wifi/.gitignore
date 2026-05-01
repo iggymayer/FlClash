@@ -1,0 +1,9 @@
+flutter/
+
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+build/
+.dart_tool/
