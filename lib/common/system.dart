@@ -65,16 +65,16 @@ class System {
   }
 
   static String _shellEscape(String value) {
-    return value.replaceAll(r'\', r'\\').replaceAll('"', r'\"').replaceAll(
-      r'$', r'\$',
-    );
+    return value
+        .replaceAll(r'\', r'\\')
+        .replaceAll('"', r'\"')
+        .replaceAll(r'$', r'\$');
   }
 
   Future<AuthorizeCode> authorizeCore() async {
     if (system.isAndroid) {
       return AuthorizeCode.error;
     }
-    final corePath = appPath.corePath.replaceAll(' ', '\\\\ ');
     final isAdmin = await checkIsAdmin();
     if (isAdmin) {
       return AuthorizeCode.none;
@@ -90,7 +90,8 @@ class System {
 
     if (system.isMacOS) {
       final escapedPath = _shellEscape(appPath.corePath);
-      final shell = 'chown root:admin "$escapedPath" && chmod +sx "$escapedPath"';
+      final shell =
+          'chown root:admin "$escapedPath" && chmod +sx "$escapedPath"';
       final arguments = [
         '-e',
         'do shell script "$shell" with administrator privileges',
