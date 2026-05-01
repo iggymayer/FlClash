@@ -3,6 +3,7 @@ analyzer:
   exclude:
     - lib/l10n/intl/**
     - lib/**/generated/**
+    - plugins/**
   errors:
     invalid_annotation_target: ignore
 
