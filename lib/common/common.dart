@@ -13,6 +13,7 @@ export 'http.dart';
 export 'icons.dart';
 export 'indexing.dart';
 export 'iterable.dart';
+export 'javascript.dart';
 export 'keyboard.dart';
 export 'launch.dart';
 export 'link.dart';

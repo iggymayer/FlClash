@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
-import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
@@ -30,7 +30,9 @@ class AboutView extends StatelessWidget {
       request.checkForUpdate,
       title: context.appLocalizations.checkUpdate,
     );
-    globalState.checkUpdateResultHandle(data: data, isUser: true);
+    globalState.container
+        .read(commonActionProvider.notifier)
+        .checkUpdateResultHandle(data: data, isUser: true);
   }
 
   List<Widget> _buildMoreSection(BuildContext context) {

@@ -1,18 +1,13 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi' as ffi;
 import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/theme.dart';
-import 'package:fl_clash/core/core.dart';
-import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/widgets/dialog.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_js/flutter_js.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_color_utilities/palettes/core_palette.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -26,12 +21,9 @@ import 'l10n/l10n.dart';
 import 'models/models.dart';
 import 'providers/providers.dart';
 
-typedef UpdateTasks = List<FutureOr Function()>;
-
 class GlobalState {
   static GlobalState? _instance;
   final navigatorKey = GlobalKey<NavigatorState>();
-  Timer? timer;
   bool isPre = true;
   late final String coreSHA256;
   late final PackageInfo packageInfo;
@@ -44,13 +36,9 @@ class GlobalState {
 
   // ignore: deprecated_member_use
   CorePalette? corePalette;
-  DateTime? startTime;
-  UpdateTasks tasks = [];
   String? lastConfigMd5;
   VpnState? lastVpnState;
   bool isAttach = false;
-
-  bool get isStart => startTime != null && startTime!.isBeforeNow;
 
   GlobalState._internal();
 
@@ -151,51 +139,6 @@ class GlobalState {
     } finally {
       onEnd?.call();
     }
-  }
-
-  Future<void> startUpdateTasks([UpdateTasks? tasks]) async {
-    if (timer != null && timer!.isActive == true) return;
-    if (tasks != null) {
-      this.tasks = tasks;
-    }
-    if (this.tasks.isEmpty) {
-      return;
-    }
-    await executorUpdateTask();
-    timer = Timer(const Duration(seconds: 1), () async {
-      startUpdateTasks();
-    });
-  }
-
-  Future<void> executorUpdateTask() async {
-    for (final task in tasks) {
-      await task();
-    }
-    timer = null;
-  }
-
-  void stopUpdateTasks() {
-    if (timer == null || timer?.isActive == false) return;
-    timer?.cancel();
-    timer = null;
-  }
-
-  Future<void> handleStart([UpdateTasks? tasks]) async {
-    startTime ??= DateTime.now();
-    await coreController.startListener();
-    await service?.start();
-    startUpdateTasks(tasks);
-  }
-
-  Future updateStartTime() async {
-    startTime = await service?.getRunTime();
-  }
-
-  Future handleStop() async {
-    startTime = null;
-    await coreController.stopListener();
-    await service?.stop();
-    stopUpdateTasks();
   }
 
   Future<bool?> showMessage({
@@ -326,29 +269,6 @@ class GlobalState {
     launchUrl(Uri.parse(url));
   }
 
-  Future<Map<String, dynamic>> handleEvaluate(
-    String scriptContent,
-    Map<String, dynamic> config,
-  ) async {
-    if (config['proxy-providers'] == null) {
-      config['proxy-providers'] = {};
-    }
-    final configJs = json.encode(config);
-    final runtime = getJavascriptRuntime();
-    final res = await runtime.evaluateAsync('''
-      $scriptContent
-      main($configJs)
-    ''');
-    if (res.isError) {
-      throw res.stringResult;
-    }
-    final value = switch (res.rawResult is ffi.Pointer) {
-      true => runtime.convertValue<Map<String, dynamic>>(res),
-      false => Map<String, dynamic>.from(res.rawResult),
-    };
-    return value ?? config;
-  }
-
   Future<void> attach(BuildContext context, WidgetRef ref) async {
     await _initApp();
     isAttach = true;
@@ -363,7 +283,7 @@ class GlobalState {
     };
     container.read(systemActionProvider.notifier).updateTray();
     container.read(profilesActionProvider.notifier).autoUpdateProfiles();
-    _autoCheckUpdate();
+    container.read(commonActionProvider.notifier).autoCheckUpdate();
     autoLaunch?.updateStatus(container.read(appSettingProvider).autoLaunch);
     if (!container.read(appSettingProvider).silentLaunch) {
       window?.show();
@@ -375,7 +295,7 @@ class GlobalState {
     await _showCrashlyticsTip();
     await container.read(coreActionProvider.notifier).connectCore();
     await container.read(coreActionProvider.notifier).initCore();
-    await _initStatus();
+    await container.read(setupActionProvider.notifier).initStatus();
     container.read(initProvider.notifier).value = true;
   }
 
@@ -390,30 +310,6 @@ class GlobalState {
       await file.safeDelete();
     }
     await container.read(systemActionProvider.notifier).handleExit();
-  }
-
-  void initLink() {
-    linkManager.initAppLinksListen((url) async {
-      final res = await showMessage(
-        title: currentAppLocalizations.addProfile,
-        message: TextSpan(
-          children: [
-            TextSpan(text: currentAppLocalizations.doYouWantToPass),
-            TextSpan(
-              text: ' $url ',
-              style: TextStyle(
-                color: _context.colorScheme.primary,
-                decoration: TextDecoration.underline,
-                decorationColor: _context.colorScheme.primary,
-              ),
-            ),
-            TextSpan(text: currentAppLocalizations.createProfile),
-          ],
-        ),
-      );
-      if (res != true) return;
-      container.read(profilesActionProvider.notifier).addProfileFormURL(url);
-    });
   }
 
   Future<bool> showDisclaimer() async {
@@ -473,72 +369,6 @@ class GlobalState {
         .update((state) => state.copyWith(disclaimerAccepted: true));
   }
 
-  Future<void> _initStatus() async {
-    if (!needInitStatus) {
-      commonPrint.log('init status cancel');
-      return;
-    }
-    commonPrint.log('init status');
-    if (system.isAndroid) {
-      await updateStartTime();
-    }
-    final status = isStart == true
-        ? true
-        : container.read(appSettingProvider).autoRun;
-    if (status == true) {
-      await container
-          .read(setupActionProvider.notifier)
-          .updateStatus(true, isInit: true);
-    } else {
-      await container
-          .read(setupActionProvider.notifier)
-          .applyProfile(force: true);
-    }
-  }
-
-  Future<void> _autoCheckUpdate() async {
-    if (!container.read(appSettingProvider).autoCheckUpdate) return;
-    final res = await request.checkForUpdate();
-    checkUpdateResultHandle(data: res);
-  }
-
-  Future<void> checkUpdateResultHandle({
-    Map<String, dynamic>? data,
-    bool isUser = false,
-  }) async {
-    if (data != null) {
-      final tagName = data['tag_name'];
-      final body = data['body'];
-      final submits = utils.parseReleaseBody(body);
-      final textTheme = _context.textTheme;
-      final res = await showMessage(
-        title: currentAppLocalizations.discoverNewVersion,
-        message: TextSpan(
-          text: '$tagName \n',
-          style: textTheme.headlineSmall,
-          children: [
-            TextSpan(text: '\n', style: textTheme.bodyMedium),
-            for (final submit in submits)
-              TextSpan(text: '- $submit \n', style: textTheme.bodyMedium),
-          ],
-        ),
-        confirmText: currentAppLocalizations.goDownload,
-        cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
-      );
-      if (res == true) {
-        launchUrl(Uri.parse('https://github.com/$repository/releases/latest'));
-      } else if (!isUser && res == false) {
-        container
-            .read(appSettingProvider.notifier)
-            .update((state) => state.copyWith(autoCheckUpdate: false));
-      }
-    } else if (isUser) {
-      showMessage(
-        title: currentAppLocalizations.checkUpdate,
-        message: TextSpan(text: currentAppLocalizations.checkUpdateError),
-      );
-    }
-  }
 }
 
 final globalState = GlobalState();

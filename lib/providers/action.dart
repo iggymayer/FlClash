@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
@@ -6,11 +7,13 @@ import 'package:fl_clash/database/database.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/plugins/app.dart';
+import 'package:fl_clash/plugins/service.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 part 'generated/action.g.dart';
 
@@ -64,7 +67,7 @@ class CommonAction extends _$CommonAction {
   }
 
   void updateRunTime() {
-    final startTime = globalState.startTime;
+    final startTime = ref.read(setupActionProvider.notifier).startTime;
     if (startTime != null) {
       final startTimeStamp = startTime.millisecondsSinceEpoch;
       final nowTimeStamp = DateTime.now().millisecondsSinceEpoch;
@@ -83,10 +86,60 @@ class CommonAction extends _$CommonAction {
     ref.read(totalTrafficProvider.notifier).value = await coreController
         .getTotalTraffic(onlyStatisticsProxy);
   }
+
+  Future<void> autoCheckUpdate() async {
+    if (!ref.read(appSettingProvider).autoCheckUpdate) return;
+    final res = await request.checkForUpdate();
+    checkUpdateResultHandle(data: res);
+  }
+
+  Future<void> checkUpdateResultHandle({
+    Map<String, dynamic>? data,
+    bool isUser = false,
+  }) async {
+    if (data != null) {
+      final tagName = data['tag_name'];
+      final body = data['body'];
+      final submits = utils.parseReleaseBody(body);
+      final context = globalState.navigatorKey.currentContext!;
+      final textTheme = context.textTheme;
+      final res = await globalState.showMessage(
+        title: currentAppLocalizations.discoverNewVersion,
+        message: TextSpan(
+          text: '$tagName \n',
+          style: textTheme.headlineSmall,
+          children: [
+            TextSpan(text: '\n', style: textTheme.bodyMedium),
+            for (final submit in submits)
+              TextSpan(text: '- $submit \n', style: textTheme.bodyMedium),
+          ],
+        ),
+        confirmText: currentAppLocalizations.goDownload,
+        cancelText: isUser ? null : currentAppLocalizations.noLongerRemind,
+      );
+      if (res == true) {
+        launchUrl(Uri.parse('https://github.com/$repository/releases/latest'));
+      } else if (!isUser && res == false) {
+        ref
+            .read(appSettingProvider.notifier)
+            .update((state) => state.copyWith(autoCheckUpdate: false));
+      }
+    } else if (isUser) {
+      globalState.showMessage(
+        title: currentAppLocalizations.checkUpdate,
+        message: TextSpan(text: currentAppLocalizations.checkUpdateError),
+      );
+    }
+  }
 }
 
 @Riverpod(keepAlive: true)
 class SetupAction extends _$SetupAction {
+  Timer? _updateTimer;
+  DateTime? startTime;
+
+  bool get isStart => startTime != null && startTime!.isBeforeNow;
+
   @override
   void build() {}
 
@@ -106,6 +159,47 @@ class SetupAction extends _$SetupAction {
     ref.read(requestsProvider.notifier).value = FixedList(500);
   }
 
+  Future<void> _handleStart() async {
+    startTime ??= DateTime.now();
+    await coreController.startListener();
+    await service?.start();
+    _updateTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      ref.read(commonActionProvider.notifier).updateRunTime();
+      ref.read(commonActionProvider.notifier).updateTraffic();
+    });
+  }
+
+  Future _updateStartTime() async {
+    startTime = await service?.getRunTime();
+  }
+
+  Future handleStop() async {
+    startTime = null;
+    _updateTimer?.cancel();
+    _updateTimer = null;
+    await coreController.stopListener();
+    await service?.stop();
+  }
+
+  Future<void> initStatus() async {
+    if (!globalState.needInitStatus) {
+      commonPrint.log('init status cancel');
+      return;
+    }
+    commonPrint.log('init status');
+    if (system.isAndroid) {
+      await _updateStartTime();
+    }
+    final status = isStart == true
+        ? true
+        : ref.read(appSettingProvider).autoRun;
+    if (status == true) {
+      await updateStatus(true, isInit: true);
+    } else {
+      await applyProfile(force: true);
+    }
+  }
+
   Future<void> updateStatus(bool isStart, {bool isInit = false}) async {
     if (isStart) {
       if (!isInit) {
@@ -114,25 +208,19 @@ class SetupAction extends _$SetupAction {
             .tryStartCore(true);
         if (res) return;
         if (!ref.read(initProvider)) return;
-        await globalState.handleStart([
-          ref.read(commonActionProvider.notifier).updateRunTime,
-          ref.read(commonActionProvider.notifier).updateTraffic,
-        ]);
+        await _handleStart();
         applyProfileDebounce(force: true, silence: true);
       } else {
         globalState.needInitStatus = false;
         await applyProfile(
           force: true,
           preloadInvoke: () async {
-            await globalState.handleStart([
-              ref.read(commonActionProvider.notifier).updateRunTime,
-              ref.read(commonActionProvider.notifier).updateTraffic,
-            ]);
+            await _handleStart();
           },
         );
       }
     } else {
-      await globalState.handleStop();
+      await handleStop();
       coreController.resetTraffic();
       ref.read(trafficsProvider.notifier).clear();
       ref.read(totalTrafficProvider.notifier).value = Traffic();
@@ -243,7 +331,7 @@ class SetupAction extends _$SetupAction {
     );
     Map<String, dynamic> rawConfig = configMap;
     if (scriptContent?.isNotEmpty == true) {
-      rawConfig = await globalState.handleEvaluate(scriptContent!, rawConfig);
+      rawConfig = await handleEvaluate(scriptContent!, rawConfig);
     }
     final directory = await appPath.profilesPath;
     final res = makeRealProfileTask(

@@ -54,8 +54,32 @@ class ApplicationState extends ConsumerState<Application> {
         exit(0);
       }
       _autoUpdateProfilesTask();
-      globalState.initLink();
+      _initLink();
       app?.initShortcuts();
+    });
+  }
+
+  void _initLink() {
+    linkManager.initAppLinksListen((url) async {
+      final res = await globalState.showMessage(
+        title: currentAppLocalizations.addProfile,
+        message: TextSpan(
+          children: [
+            TextSpan(text: currentAppLocalizations.doYouWantToPass),
+            TextSpan(
+              text: ' $url ',
+              style: TextStyle(
+                color: context.colorScheme.primary,
+                decoration: TextDecoration.underline,
+                decorationColor: context.colorScheme.primary,
+              ),
+            ),
+            TextSpan(text: currentAppLocalizations.createProfile),
+          ],
+        ),
+      );
+      if (res != true) return;
+      ref.read(profilesActionProvider.notifier).addProfileFormURL(url);
     });
   }
 
