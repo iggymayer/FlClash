@@ -46,8 +46,6 @@ class CoreService extends CoreHandlerInterface {
   Future<void> _initServer() async {
     await _transport.init();
 
-    // When the underlying connection drops (Go core exits / crashes),
-    // complete the shutdown completer and fire crash event.
     _transport.onDisconnect = () {
       _handleInvokeCrashEvent();
       if (!_shutdownCompleter.isCompleted) {

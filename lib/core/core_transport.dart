@@ -5,27 +5,18 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 
 abstract class CoreTransport {
-  /// The identifier passed to the Go core process (pipe name or socket path).
   String get address;
 
-  /// A [Completer] that completes each time a client connects. Resets
-  /// automatically on disconnect so callers can await reconnection.
   Completer get connectionCompleter;
 
-  /// Continuous stream of raw bytes from the connected client. Survives
-  /// across reconnections — new client data flows through the same stream.
   Stream<List<int>> get dataStream;
 
-  /// Called when the current client disconnects (before reconnection).
   void Function()? onDisconnect;
 
-  /// Create the server and start listening for client connections.
   Future<void> init();
 
-  /// Send a newline-terminated message to the connected client.
   void send(String message);
 
-  /// Tear down the server and all client connections.
   Future<void> close();
 }
 
