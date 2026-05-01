@@ -184,7 +184,7 @@ class CurrentPageLabel extends _$CurrentPageLabel
   }
 
   void toPage(PageLabel pageLabel) {
-    ref.read(currentPageLabelProvider.notifier).value = pageLabel;
+    value = pageLabel;
   }
 
   void toProfiles() {

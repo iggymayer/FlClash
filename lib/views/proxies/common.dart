@@ -23,7 +23,7 @@ double getItemHeight(ProxyCardType proxyCardType) {
 }
 
 List<Group> getCurrentGroups() {
-  return globalState.container.read(groupsProvider);
+  return globalState.container.read(currentGroupsStateProvider).value;
 }
 
 String? getCurrentGroupName() {
@@ -47,7 +47,9 @@ void updateCurrentUnfoldSet(Set<String> value) {
 Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
   final ref = globalState.container;
   final groups = getCurrentGroups();
-  final selectedMap = ref.read(currentProfileProvider)?.selectedMap ?? {};
+  final selectedMap = ref.read(
+    currentProfileProvider.select((state) => state?.selectedMap ?? {}),
+  );
   final state = computeRealSelectedProxyState(
     proxy.name,
     groups: groups,
