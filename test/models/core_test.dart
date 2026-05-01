@@ -17,7 +17,10 @@ void main() {
     });
 
     test('toJson uses snake-case keys', () {
-      final params = SetupParams(selectedMap: {'G1': 'P1'}, testUrl: 'http://t.com');
+      const params = SetupParams(
+        selectedMap: {'G1': 'P1'},
+        testUrl: 'http://t.com',
+      );
       final json = params.toJson();
       expect(json['selected-map'], {'G1': 'P1'});
       expect(json['test-url'], 'http://t.com');
@@ -168,21 +171,32 @@ void main() {
 
   group('InvokeMessage', () {
     test('fromJson', () {
-      final msg = InvokeMessage.fromJson({'type': 'protect', 'data': {'method': 'test'}});
+      final msg = InvokeMessage.fromJson({
+        'type': 'protect',
+        'data': {'method': 'test'},
+      });
       expect(msg.type, InvokeMessageType.protect);
     });
   });
 
   group('ActionResult', () {
     test('toResult returns success Result for success code', () {
-      final ar = ActionResult(method: ActionMethod.getConfig, data: {'key': 'value'}, code: ResultType.success);
+      const ar = ActionResult(
+        method: ActionMethod.getConfig,
+        data: {'key': 'value'},
+        code: ResultType.success,
+      );
       final result = ar.toResult;
       expect(result.isSuccess, true);
       expect(result.data, {'key': 'value'});
     });
 
     test('toResult returns error Result for error code', () {
-      final ar = ActionResult(method: ActionMethod.getConfig, data: 'something went wrong', code: ResultType.error);
+      const ar = ActionResult(
+        method: ActionMethod.getConfig,
+        data: 'something went wrong',
+        code: ResultType.error,
+      );
       final result = ar.toResult;
       expect(result.isSuccess, false);
       expect(result.message, 'something went wrong');

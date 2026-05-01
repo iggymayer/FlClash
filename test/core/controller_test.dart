@@ -21,12 +21,12 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(
-      SetupParams(selectedMap: {}, testUrl: 'http://x.com'),
+      const SetupParams(selectedMap: {}, testUrl: 'http://x.com'),
     );
-    registerFallbackValue(InitParams(homeDir: '.', version: 1));
+    registerFallbackValue(const InitParams(homeDir: '.', version: 1));
     registerFallbackValue(
-      UpdateParams(
-        tun: const Tun(),
+      const UpdateParams(
+        tun: Tun(),
         mixedPort: 7890,
         allowLan: true,
         findProcessMode: FindProcessMode.off,
@@ -38,8 +38,12 @@ void main() {
         unifiedDelay: false,
       ),
     );
-    registerFallbackValue(ChangeProxyParams(groupName: 'G', proxyName: 'P'));
-    registerFallbackValue(UpdateGeoDataParams(geoType: 't', geoName: 'n'));
+    registerFallbackValue(
+      const ChangeProxyParams(groupName: 'G', proxyName: 'P'),
+    );
+    registerFallbackValue(
+      const UpdateGeoDataParams(geoType: 't', geoName: 'n'),
+    );
   });
 
   setUp(() {
@@ -94,8 +98,8 @@ void main() {
     });
 
     test('updateConfig delegates to interface', () async {
-      final params = UpdateParams(
-        tun: const Tun(enable: false),
+      const params = UpdateParams(
+        tun: Tun(enable: false),
         mixedPort: 7890,
         allowLan: true,
         findProcessMode: FindProcessMode.off,
@@ -114,7 +118,7 @@ void main() {
 
   group('proxy methods', () {
     test('changeProxy delegates to interface', () async {
-      final params = ChangeProxyParams(groupName: 'G1', proxyName: 'P1');
+      const params = ChangeProxyParams(groupName: 'G1', proxyName: 'P1');
       when(() => mock.changeProxy(params)).thenAnswer((_) async => 'ok');
       final result = await controller.changeProxy(params);
       expect(result, 'ok');
@@ -254,7 +258,7 @@ void main() {
     });
 
     test('updateGeoData delegates', () async {
-      final params = UpdateGeoDataParams(geoType: 'mmdb', geoName: 'Country');
+      const params = UpdateGeoDataParams(geoType: 'mmdb', geoName: 'Country');
       when(() => mock.updateGeoData(params)).thenAnswer((_) async => 'ok');
       final result = await controller.updateGeoData(params);
       expect(result, 'ok');

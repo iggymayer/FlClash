@@ -33,7 +33,7 @@ void main() {
     });
 
     test('can update state', () {
-      final pkg = Package(
+      const pkg = Package(
         packageName: 'test.app',
         label: 'Test App',
         system: false,
@@ -87,7 +87,9 @@ void main() {
     });
 
     test('can update size', () {
-      container.read(viewSizeProvider.notifier).update((_) => const Size(800, 600));
+      container
+          .read(viewSizeProvider.notifier)
+          .update((_) => const Size(800, 600));
       final value = container.read(viewSizeProvider);
       expect(value.width, 800);
       expect(value.height, 600);
@@ -107,14 +109,18 @@ void main() {
 
   group('viewWidth provider (derived)', () {
     test('derives from viewSize width', () {
-      container.read(viewSizeProvider.notifier).update((_) => const Size(800, 600));
+      container
+          .read(viewSizeProvider.notifier)
+          .update((_) => const Size(800, 600));
       expect(container.read(viewWidthProvider), 800);
     });
   });
 
   group('viewHeight provider (derived)', () {
     test('derives from viewSize height', () {
-      container.read(viewSizeProvider.notifier).update((_) => const Size(800, 600));
+      container
+          .read(viewSizeProvider.notifier)
+          .update((_) => const Size(800, 600));
       expect(container.read(viewHeightProvider), 600);
     });
   });
@@ -136,7 +142,9 @@ void main() {
     });
 
     test('toPage changes page', () {
-      container.read(currentPageLabelProvider.notifier).toPage(PageLabel.proxies);
+      container
+          .read(currentPageLabelProvider.notifier)
+          .toPage(PageLabel.proxies);
       expect(container.read(currentPageLabelProvider), PageLabel.proxies);
     });
 
@@ -186,7 +194,7 @@ void main() {
 
     test('can set groups', () {
       final groups = [
-        Group(name: 'G1', type: GroupType.Selector, now: 'auto'),
+        const Group(name: 'G1', type: GroupType.Selector, now: 'auto'),
       ];
       container.read(groupsProvider.notifier).update((_) => groups);
       expect(container.read(groupsProvider).length, 1);

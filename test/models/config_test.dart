@@ -204,7 +204,7 @@ void main() {
         primaryColor: 0xFF123456,
         themeMode: ThemeMode.light,
         pureBlack: true,
-        textScale: const TextScale(enable: true, scale: 1.5),
+        textScale: TextScale(enable: true, scale: 1.5),
       );
       final restored = roundTrip(() => props.toJson(), ThemeProps.fromJson);
       expect(restored.primaryColor, 0xFF123456);
