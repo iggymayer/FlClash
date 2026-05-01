@@ -11,22 +11,22 @@ void main() {
     });
 
     test('generates key after a when b is null', () {
-      final a = 'a0V';
+      const a = 'a0V';
       final key = indexing.generateKeyBetween(a, null);
       expect(key, isNotNull);
       expect(key!.compareTo(a), greaterThan(0));
     });
 
     test('generates key before b when a is null', () {
-      final b = 'a0V';
+      const b = 'a0V';
       final key = indexing.generateKeyBetween(null, b);
       expect(key, isNotNull);
       expect(key!.compareTo(b), lessThan(0));
     });
 
     test('generates key between two keys', () {
-      final a = 'a0V';
-      final b = 'a0W';
+      const a = 'a0V';
+      const b = 'a0W';
       final key = indexing.generateKeyBetween(a, b);
       expect(key, isNotNull);
       expect(key!.compareTo(a), greaterThan(0));
@@ -82,10 +82,7 @@ void main() {
       final keys = indexing.generateNKeysBetween(null, null, 10);
       final nonNullKeys = keys.whereType<String>().toList();
       for (int i = 1; i < nonNullKeys.length; i++) {
-        expect(
-          nonNullKeys[i].compareTo(nonNullKeys[i - 1]),
-          greaterThan(0),
-        );
+        expect(nonNullKeys[i].compareTo(nonNullKeys[i - 1]), greaterThan(0));
       }
     });
   });
@@ -103,10 +100,7 @@ void main() {
       final keys = indexing.generateNKeys(8);
       final nonNullKeys = keys.whereType<String>().toList();
       for (int i = 1; i < nonNullKeys.length; i++) {
-        expect(
-          nonNullKeys[i].compareTo(nonNullKeys[i - 1]),
-          greaterThan(0),
-        );
+        expect(nonNullKeys[i].compareTo(nonNullKeys[i - 1]), greaterThan(0));
       }
     });
   });

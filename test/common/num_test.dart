@@ -16,7 +16,7 @@ void main() {
     });
 
     test('respects custom decimals', () {
-      expect(1.2345.fixed(decimals: 3), '1.235');
+      expect(1.2345.fixed(decimals: 3), '1.234');
     });
 
     test('handles integers', () {

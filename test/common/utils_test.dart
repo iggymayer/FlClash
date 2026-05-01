@@ -178,7 +178,7 @@ void main() {
 
   group('parseReleaseBody', () {
     test('extracts bullet points', () {
-      final body = '- Feature 1\n- Feature 2\n- Bug fix';
+      const body = '- Feature 1\n- Feature 2\n- Bug fix';
       final result = utils.parseReleaseBody(body);
       expect(result, ['Feature 1', 'Feature 2', 'Bug fix']);
     });
@@ -188,7 +188,7 @@ void main() {
     });
 
     test('ignores non-bullet lines', () {
-      final body = 'Header\n- Item 1\nFooter\n- Item 2';
+      const body = 'Header\n- Item 1\nFooter\n- Item 2';
       final result = utils.parseReleaseBody(body);
       expect(result, ['Item 1', 'Item 2']);
     });
