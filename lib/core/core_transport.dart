@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -9,7 +10,7 @@ abstract class CoreTransport {
 
   Completer get connectionCompleter;
 
-  Stream<List<int>> get dataStream;
+  Stream<Uint8List> get dataStream;
 
   void Function()? onDisconnect;
 
@@ -24,7 +25,7 @@ class SocketTransport extends CoreTransport {
   ServerSocket? _server;
   Socket? _currentSocket;
   Completer _completer = Completer();
-  final _dataController = StreamController<List<int>>();
+  final _dataController = StreamController<Uint8List>();
 
   @override
   String get address => unixSocketPath;
@@ -33,7 +34,7 @@ class SocketTransport extends CoreTransport {
   Completer get connectionCompleter => _completer;
 
   @override
-  Stream<List<int>> get dataStream => _dataController.stream;
+  Stream<Uint8List> get dataStream => _dataController.stream;
 
   @override
   Future<void> init() async {
@@ -120,7 +121,7 @@ Future<void> _deleteSocketFile() async {
 class PipeTransport extends CoreTransport {
   NamedPipeServer? _pipeServer;
   Completer _completer = Completer();
-  StreamController<List<int>>? _dataController;
+  StreamController<Uint8List>? _dataController;
 
   @override
   String get address => windowsPipeName;
@@ -129,11 +130,11 @@ class PipeTransport extends CoreTransport {
   Completer get connectionCompleter => _completer;
 
   @override
-  Stream<List<int>> get dataStream => _dataController!.stream;
+  Stream<Uint8List> get dataStream => _dataController!.stream;
 
   @override
   Future<void> init() async {
-    _dataController = StreamController<List<int>>();
+    _dataController = StreamController<Uint8List>();
     _pipeServer = NamedPipeServer(windowsPipeName);
     await _pipeServer!.start();
 

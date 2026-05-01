@@ -28,9 +28,9 @@ mixin AutoDisposeNotifierMixin<T> on AnyNotifier<T, T> {
 
   void onUpdate(T value) {}
 
-  void update(T? Function(T) builder) {
+  void update(T Function(T) builder) {
     final res = builder(value);
-    if (res == null) {
+    if (res == value) {
       return;
     }
     value = res;

@@ -37,7 +37,7 @@ class CommonAction extends _$CommonAction {
   void updateMode() {
     ref.read(patchClashConfigProvider.notifier).update((state) {
       final index = Mode.values.indexWhere((item) => item == state.mode);
-      if (index == -1) return null;
+      if (index == -1) return state;
       final nextIndex = index + 1 > Mode.values.length - 1 ? 0 : index + 1;
       return state.copyWith(mode: Mode.values[nextIndex]);
     });
@@ -779,11 +779,11 @@ class ProxiesAction extends _$ProxiesAction {
     await coreController.changeProxy(
       ChangeProxyParams(groupName: groupName, proxyName: proxyName),
     );
-    // if (ref.read(appSettingProvider).closeConnections) {
-    //   coreController.closeConnections();
-    // } else {
-    //   coreController.resetConnections();
-    // }
+    if (ref.read(appSettingProvider).closeConnections) {
+      await coreController.closeConnections();
+    } else {
+      await coreController.resetConnections();
+    }
     ref.read(checkIpNumProvider.notifier).add();
   }
 
