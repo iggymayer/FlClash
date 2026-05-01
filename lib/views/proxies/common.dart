@@ -26,6 +26,10 @@ List<Group> getCurrentGroups() {
   return globalState.container.read(currentGroupsStateProvider).value;
 }
 
+List<Group> getGroups() {
+  return globalState.container.read(groupsProvider);
+}
+
 String? getCurrentGroupName() {
   return globalState.container.read(
     currentProfileProvider.select((state) => state?.currentGroupName),
@@ -46,7 +50,7 @@ void updateCurrentUnfoldSet(Set<String> value) {
 
 Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
   final ref = globalState.container;
-  final groups = getCurrentGroups();
+  final groups = getGroups();
   final selectedMap = ref.read(
     currentProfileProvider.select((state) => state?.selectedMap ?? {}),
   );
