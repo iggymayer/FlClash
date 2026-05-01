@@ -393,6 +393,7 @@ class NetworkDetection extends _$NetworkDetection
     }
     final ipInfo = res.data;
     if (ipInfo == null) {
+      state = state.copyWith(isLoading: false, ipInfo: null);
       return;
     }
     state = state.copyWith(isLoading: false, ipInfo: ipInfo);

@@ -53,7 +53,10 @@ class CoreController {
         await geoFile.writeAsBytes(bytes, flush: true);
       }
     } catch (e) {
-      commonPrint.log('Failed to initialize geo data: $e', logLevel: LogLevel.error);
+      commonPrint.log(
+        'Failed to initialize geo data: $e',
+        logLevel: LogLevel.error,
+      );
       rethrow;
     }
   }
@@ -61,9 +64,7 @@ class CoreController {
   Future<bool> init(int version) async {
     await initGeo();
     final homeDirPath = await appPath.homeDirPath;
-    return _interface.init(
-      InitParams(homeDir: homeDirPath, version: version),
-    );
+    return _interface.init(InitParams(homeDir: homeDirPath, version: version));
   }
 
   Future<void> shutdown(bool isUser) async {
@@ -131,16 +132,16 @@ class CoreController {
     return connectionsRaw.map((e) => TrackerInfo.fromJson(e)).toList();
   }
 
-  void closeConnection(String id) {
-    _interface.closeConnection(id);
+  Future<void> closeConnection(String id) async {
+    await _interface.closeConnection(id);
   }
 
-  void closeConnections() {
-    _interface.closeConnections();
+  Future<void> closeConnections() async {
+    await _interface.closeConnections();
   }
 
-  void resetConnections() {
-    _interface.resetConnections();
+  Future<void> resetConnections() async {
+    await _interface.resetConnections();
   }
 
   Future<List<ExternalProvider>> getExternalProviders() async {

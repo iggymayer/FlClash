@@ -62,15 +62,10 @@ void main() {
           name: 'group-b',
           type: GroupType.URLTest,
           testUrl: 'http://test-b.com',
-          all: [
-            Proxy(name: 'proxy-leaf', type: 'ss'),
-          ],
+          all: [Proxy(name: 'proxy-leaf', type: 'ss')],
         ),
       ];
-      final selectedMap = {
-        'group-a': 'group-b',
-        'group-b': 'proxy-leaf',
-      };
+      final selectedMap = {'group-a': 'group-b', 'group-b': 'proxy-leaf'};
       final state = computeRealSelectedProxyState(
         'group-a',
         groups: groups,
@@ -234,11 +229,7 @@ void main() {
         ),
       ];
       delayMap = <String, Map<String, int?>>{
-        'http://test.com': {
-          'proxy-a': 100,
-          'proxy-b': 50,
-          'proxy-c': 0,
-        },
+        'http://test.com': {'proxy-a': 100, 'proxy-b': 50, 'proxy-c': 0},
       };
     });
 

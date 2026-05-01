@@ -124,6 +124,7 @@ class Request {
               completer.complete(Result.success(source.value(res.data!)));
               return;
             }
+            commonPrint.log('checkIp data empty', logLevel: LogLevel.info);
             failureCount++;
             handleFailRes();
           })
@@ -131,7 +132,9 @@ class Request {
             failureCount++;
             if (e is DioException && e.type == DioExceptionType.cancel) {
               completer.complete(Result.error('cancelled'));
+              return;
             }
+            commonPrint.log('checkIp error $e', logLevel: LogLevel.warning);
             handleFailRes();
           });
       return completer.future;

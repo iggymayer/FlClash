@@ -11,13 +11,13 @@ class FlClashHttpOverrides extends HttpOverrides {
       return 'DIRECT';
     }
     final ref = globalState.container;
-    final port = ref.read(
-      patchClashConfigProvider.select((state) => state.port),
+    final mixedPort = ref.read(
+      patchClashConfigProvider.select((state) => state.mixedPort),
     );
     final isStart = ref.read(isStartProvider);
-    commonPrint.log('find $url proxy:$isStart');
+    commonPrint.log('find $url proxy:$isStart, port: $mixedPort');
     if (!isStart) return 'DIRECT';
-    return 'PROXY localhost:$port';
+    return 'PROXY localhost:$mixedPort';
   }
 
   @override

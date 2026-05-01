@@ -110,7 +110,7 @@ class ApplicationState extends ConsumerState<Application> {
             ref.read(systemActionProvider.notifier).updateLocalIp();
             final hasVpn = results.contains(ConnectivityResult.vpn);
             if (_preHasVpn == hasVpn) {
-              ref.read(setupActionProvider.notifier).addCheckIp();
+              ref.read(checkIpNumProvider.notifier).add();
             }
             _preHasVpn = hasVpn;
           },

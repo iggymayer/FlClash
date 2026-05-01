@@ -221,10 +221,6 @@ class SetupAction extends _$SetupAction {
     });
   }
 
-  void addCheckIp() {
-    ref.read(checkIpNumProvider.notifier).add();
-  }
-
   void tryCheckIp() {
     final isTimeout = ref.read(
       networkDetectionProvider.select(
@@ -428,10 +424,7 @@ class BackupAction extends _$BackupAction {
     final scriptFileNames = res[1];
     final configMap = ref.read(configProvider).toJson();
     configMap['version'] = await preferences.getVersion();
-    return backupTask(configMap, [
-      ...profileFileNames,
-      ...scriptFileNames,
-    ]);
+    return backupTask(configMap, [...profileFileNames, ...scriptFileNames]);
   }
 
   Future<void> restore(RestoreOption option) async {
@@ -629,7 +622,9 @@ class SystemAction extends _$SystemAction {
     tray?.update(
       trayState: ref.read(trayStateProvider),
       traffic: ref.read(
-        trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
+        trafficsProvider.select(
+          (state) => state.list.safeLast(const Traffic()),
+        ),
       ),
     );
   }
@@ -784,11 +779,11 @@ class ProxiesAction extends _$ProxiesAction {
     await coreController.changeProxy(
       ChangeProxyParams(groupName: groupName, proxyName: proxyName),
     );
-    if (ref.read(appSettingProvider).closeConnections) {
-      coreController.closeConnections();
-    } else {
-      coreController.resetConnections();
-    }
+    // if (ref.read(appSettingProvider).closeConnections) {
+    //   coreController.closeConnections();
+    // } else {
+    //   coreController.resetConnections();
+    // }
     ref.read(checkIpNumProvider.notifier).add();
   }
 
