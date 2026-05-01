@@ -6,11 +6,13 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net"
+	"runtime"
 	"strconv"
 )
 
-var conn net.Conn
+var conn io.ReadWriteCloser
 
 func (result ActionResult) send() {
 	data, err := result.Json()
@@ -36,19 +38,24 @@ func send(data []byte) {
 }
 
 func startServer(arg string) {
+	var err error
 
-	_, err := strconv.Atoi(arg)
-
-	if err != nil {
-		conn, err = net.Dial("unix", arg)
+	if runtime.GOOS == "windows" {
+		conn, err = dialPipe(arg)
 	} else {
-		conn, err = net.Dial("tcp", fmt.Sprintf("127.0.0.1:%s", arg))
+		_, err = strconv.Atoi(arg)
+
+		if err != nil {
+			conn, err = net.Dial("unix", arg)
+		} else {
+			conn, err = net.Dial("tcp", fmt.Sprintf("127.0.0.1:%s", arg))
+		}
 	}
 	if err != nil {
 		panic(err.Error())
 	}
 
-	defer func(conn net.Conn) {
+	defer func(conn io.Closer) {
 		_ = conn.Close()
 	}(conn)
 

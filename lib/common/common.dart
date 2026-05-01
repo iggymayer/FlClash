@@ -28,6 +28,7 @@ export 'num.dart';
 export 'package.dart';
 export 'path.dart';
 export 'picker.dart';
+export 'pipe_server.dart';
 export 'preferences.dart';
 export 'print.dart';
 export 'protocol.dart';

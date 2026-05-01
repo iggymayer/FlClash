@@ -1,0 +1,191 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
+
+abstract class CoreTransport {
+  /// The identifier passed to the Go core process (pipe name or socket path).
+  String get address;
+
+  /// A [Completer] that completes each time a client connects. Resets
+  /// automatically on disconnect so callers can await reconnection.
+  Completer get connectionCompleter;
+
+  /// Continuous stream of raw bytes from the connected client. Survives
+  /// across reconnections — new client data flows through the same stream.
+  Stream<List<int>> get dataStream;
+
+  /// Called when the current client disconnects (before reconnection).
+  void Function()? onDisconnect;
+
+  /// Create the server and start listening for client connections.
+  Future<void> init();
+
+  /// Send a newline-terminated message to the connected client.
+  void send(String message);
+
+  /// Tear down the server and all client connections.
+  Future<void> close();
+}
+
+class SocketTransport extends CoreTransport {
+  ServerSocket? _server;
+  Socket? _currentSocket;
+  Completer _completer = Completer();
+  final _dataController = StreamController<List<int>>();
+
+  @override
+  String get address => unixSocketPath;
+
+  @override
+  Completer get connectionCompleter => _completer;
+
+  @override
+  Stream<List<int>> get dataStream => _dataController.stream;
+
+  @override
+  Future<void> init() async {
+    await _deleteSocketFile();
+    final server = await retry(
+      task: () async {
+        try {
+          final address = InternetAddress(
+            unixSocketPath,
+            type: InternetAddressType.unix,
+          );
+          final server = await ServerSocket.bind(address, 0, shared: true);
+          server.listen(_onConnection);
+          return server;
+        } catch (_) {
+          return null;
+        }
+      },
+      retryIf: (server) => server == null,
+    );
+    if (server == null) {
+      commonPrint.log(
+        'Failed to bind server socket after retries',
+        logLevel: LogLevel.error,
+      );
+      throw StateError(
+        'Failed to initialize core service: unable to bind server socket',
+      );
+    }
+    _server = server;
+  }
+
+  void _onConnection(Socket socket) {
+    _currentSocket?.destroy();
+
+    // Reset the completer for reconnection
+    if (_completer.isCompleted) {
+      _completer = Completer();
+    }
+
+    _currentSocket = socket;
+    _completer.complete();
+
+    // Proxy raw bytes through to the shared stream
+    socket.listen(
+      _dataController.add,
+      onDone: () {
+        // Reset for potential reconnection
+        if (!_completer.isCompleted) {
+          _completer.complete();
+        }
+        _completer = Completer();
+        onDisconnect?.call();
+      },
+      onError: (_) {},
+      cancelOnError: false,
+    );
+  }
+
+  @override
+  void send(String message) {
+    _currentSocket?.writeln(message);
+  }
+
+  @override
+  Future<void> close() async {
+    _currentSocket?.destroy();
+    _currentSocket = null;
+    if (!_completer.isCompleted) {
+      _completer.complete();
+    }
+    _completer = Completer();
+    await _server?.close();
+    _server = null;
+    await _deleteSocketFile();
+    await _dataController.close();
+  }
+}
+
+Future<void> _deleteSocketFile() async {
+  if (!system.isWindows) {
+    final file = File(unixSocketPath);
+    await file.safeDelete();
+  }
+}
+
+class PipeTransport extends CoreTransport {
+  NamedPipeServer? _pipeServer;
+  Completer _completer = Completer();
+  StreamController<List<int>>? _dataController;
+
+  @override
+  String get address => windowsPipeName;
+
+  @override
+  Completer get connectionCompleter => _completer;
+
+  @override
+  Stream<List<int>> get dataStream => _dataController!.stream;
+
+  @override
+  Future<void> init() async {
+    _dataController = StreamController<List<int>>();
+    _pipeServer = NamedPipeServer(windowsPipeName);
+    await _pipeServer!.start();
+
+    _pipeServer!.onStatusChange = (status) {
+      if (status == 'connected') {
+        if (_completer.isCompleted) {
+          _completer = Completer();
+        }
+        _completer.complete();
+      } else if (status == 'closed') {
+        if (!_completer.isCompleted) {
+          _completer.complete();
+        }
+        _completer = Completer();
+        onDisconnect?.call();
+      }
+    };
+
+    _pipeServer!.dataStream.listen(
+      _dataController!.add,
+      onDone: () {},
+      onError: (_) {},
+      cancelOnError: false,
+    );
+  }
+
+  @override
+  void send(String message) {
+    _pipeServer?.write(message.codeUnits);
+  }
+
+  @override
+  Future<void> close() async {
+    await _pipeServer?.close();
+    _pipeServer = null;
+    if (!_completer.isCompleted) {
+      _completer.complete();
+    }
+    _completer = Completer();
+    await _dataController?.close();
+    _dataController = null;
+  }
+}
