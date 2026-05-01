@@ -64,6 +64,12 @@ class System {
     return true;
   }
 
+  static String _shellEscape(String value) {
+    return value.replaceAll(r'\', r'\\').replaceAll('"', r'\"').replaceAll(
+      r'$', r'\$',
+    );
+  }
+
   Future<AuthorizeCode> authorizeCore() async {
     if (system.isAndroid) {
       return AuthorizeCode.error;
@@ -83,7 +89,8 @@ class System {
     }
 
     if (system.isMacOS) {
-      final shell = 'chown root:admin $corePath; chmod +sx $corePath';
+      final escapedPath = _shellEscape(appPath.corePath);
+      final shell = 'chown root:admin "$escapedPath" && chmod +sx "$escapedPath"';
       final arguments = [
         '-e',
         'do shell script "$shell" with administrator privileges',
@@ -102,9 +109,14 @@ class System {
           value: '',
         ),
       );
+      if (password == null || password.isEmpty) {
+        return AuthorizeCode.error;
+      }
+      final escapedPassword = _shellEscape(password);
+      final escapedCorePath = _shellEscape(appPath.corePath);
       final arguments = [
         '-c',
-        'echo "$password" | sudo -S chown root:root "$corePath" && echo "$password" | sudo -S chmod +sx "$corePath"',
+        'echo "$escapedPassword" | sudo -S chown root:root "$escapedCorePath" && echo "$escapedPassword" | sudo -S chmod +sx "$escapedCorePath"',
       ];
       final result = await Process.run(shell, arguments);
       if (result.exitCode != 0) {

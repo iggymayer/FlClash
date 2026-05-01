@@ -63,7 +63,8 @@ class CoreService extends CoreHandlerInterface {
       retryIf: (server) => server == null,
     );
     if (server == null) {
-      exit(0);
+      commonPrint.log('Failed to bind server socket after retries', logLevel: LogLevel.error);
+      throw StateError('Failed to initialize core service: unable to bind server socket');
     }
     _serverCompleter.complete(server);
   }

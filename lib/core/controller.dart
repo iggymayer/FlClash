@@ -53,7 +53,8 @@ class CoreController {
         await geoFile.writeAsBytes(bytes, flush: true);
       }
     } catch (e) {
-      exit(0);
+      commonPrint.log('Failed to initialize geo data: $e', logLevel: LogLevel.error);
+      rethrow;
     }
   }
 
