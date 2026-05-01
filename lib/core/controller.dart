@@ -7,6 +7,7 @@ import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/core/interface.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 
@@ -20,6 +21,14 @@ class CoreController {
     } else {
       _interface = coreService!;
     }
+  }
+
+  @visibleForTesting
+  CoreController.test(this._interface);
+
+  @visibleForTesting
+  static void resetInstance() {
+    _instance = null;
   }
 
   factory CoreController() {

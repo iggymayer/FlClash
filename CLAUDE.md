@@ -34,7 +34,7 @@ dart ./setup.dart macos --arch arm64 --out core
 ```bash
 flutter pub get
 flutter run        # Run on connected device/desktop
-flutter test        # Run tests (no test files currently exist)
+flutter test        # Run all tests (use flutter test, not dart test — models pull in Flutter types)
 ```
 
 ### Code Generation
@@ -48,6 +48,30 @@ dart run build_runner watch  # Continuous regeneration
 
 Code generation covers: Riverpod providers (`riverpod_generator`), models (`freezed`, `json_serializable`), and database
 tables (`drift_dev`).
+
+### Testing
+
+Tests use `package:test/test.dart` for pure Dart logic (common utils, models) and `flutter_test` for provider/widget tests.
+`mocktail` is the mocking framework.
+
+```bash
+flutter test test/models/      # Model serialization & extension round-trip tests
+flutter test test/core/        # CoreController tests (mocked CoreHandlerInterface)
+flutter test test/providers/   # Riverpod provider tests (config & app state notifiers)
+flutter test test/common/      # Utility function tests (utils, string, iterable, fixed, etc.)
+flutter test test/database/    # Database type converter tests
+```
+
+**Mocking `CoreHandlerInterface`:** Use `CoreController.test(mock)` to inject a mock interface. Call
+`CoreController.resetInstance()` in `tearDown` to clean up the singleton between tests. Remember to
+`registerFallbackValue()` for freezed params used with `any()` matchers.
+
+**Provider tests:** Use `ProviderContainer` directly (no widget tree needed for simple notifiers). The Riverpod
+generated `update()` method takes a callback: `notifier.update((state) => newValue)`.
+
+**Model round-trip tests:** Always go through `jsonEncode`/`jsonDecode` when testing freezed models with
+nested objects — `toJson()` stores child objects directly (not as maps), so direct `fromJson(toJson())`
+fails for nested freezed types.
 
 ### Build Dependencies
 
@@ -78,11 +102,12 @@ Go core key files: `core/hub.go` (handler functions), `core/action.go` (dispatch
 
 ### State Management (Riverpod)
 
-Three provider files in `lib/providers/`:
+Provider files in `lib/providers/`:
 
 - `app.dart` - Runtime/UI state (logs, traffic, delays, loading, navigation)
 - `config.dart` - Persistent config providers (app settings, theme, VPN, proxy style)
 - `state.dart` - Derived/computed providers (navigation, proxy, tray, color scheme)
+- `action.dart` - Business logic notifiers (setup, backup, core lifecycle, proxy selection)
 - `database.dart` - Drift database provider wrappers
 
 `globalState` (`lib/state.dart`) is a singleton holding app lifecycle, timers, theme, and the start/stop state.
@@ -107,17 +132,23 @@ AppEnvManager > StatusManager > ThemeManager
 
 Each manager in `lib/manager/` handles a specific platform concern. Desktop-only managers are conditionally inserted.
 
-### Controller (`lib/controller.dart`)
+### Core Controller + Actions
 
-Monolithic `AppController` singleton with extension methods:
+`lib/core/controller.dart` (`CoreController`) is a singleton facade over `CoreHandlerInterface`. All 25+ public methods
+delegate to the platform-specific interface (Android FFI or desktop socket). Has `@visibleForTesting` constructor and
+`resetInstance()` for test injection.
 
-- `InitControllerExt` - initialization flow
-- `ProfilesControllerExt` - profile CRUD, auto-update, import
-- `ProxiesControllerExt` - group management, proxy selection
-- `SetupControllerExt` - config setup, TUN management
-- `CoreControllerExt` - core lifecycle (init, connect, restart, shutdown)
-- `SystemControllerExt` - system integration (tray, exit, brightness)
-- `BackupControllerExt` - backup/restore with WebDAV sync
+Business logic lives in Riverpod notifier classes in `lib/providers/action.dart` (~960 lines, should be split):
+
+- `CommonAction` — update check, common UI operations
+- `SetupAction` — config setup, TUN management
+- `BackupAction` — backup/restore with WebDAV sync
+- `CoreAction` — core lifecycle (init, connect, restart, shutdown)
+- `SystemAction` — system integration (tray, exit, brightness)
+- `StoreAction` — profile storage operations
+- `ThemeAction` — theme state updates
+- `ProxiesAction` — group management, proxy selection
+- `ProfilesAction` — profile CRUD, auto-update, import
 
 ### Platform Managers (`lib/manager/`)
 
