@@ -69,7 +69,6 @@ class SocketTransport extends CoreTransport {
   void _onConnection(Socket socket) {
     _currentSocket?.destroy();
 
-    // Reset the completer for reconnection
     if (_completer.isCompleted) {
       _completer = Completer();
     }
@@ -77,11 +76,9 @@ class SocketTransport extends CoreTransport {
     _currentSocket = socket;
     _completer.complete();
 
-    // Proxy raw bytes through to the shared stream
     socket.listen(
       _dataController.add,
       onDone: () {
-        // Reset for potential reconnection
         if (!_completer.isCompleted) {
           _completer.complete();
         }
