@@ -92,12 +92,9 @@ class _AccessViewState extends ConsumerState<AccessView> {
       return;
     }
     final selectedPackageNames =
-        (await ref.read(commonActionProvider.notifier).loadingRun<List<String>>(
-          () async {
-            return await app?.getChinaPackageNames() ?? [];
-          },
-          tag: LoadingTag.access,
-        ))?.toSet() ??
+        (await globalState.loadingRun<List<String>>(() async {
+          return await app?.getChinaPackageNames() ?? [];
+        }, tag: LoadingTag.access))?.toSet() ??
         {};
     final acceptList = packageNames
         .where((item) => !selectedPackageNames.contains(item))

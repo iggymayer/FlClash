@@ -22,29 +22,6 @@ class CommonAction extends _$CommonAction {
   @override
   void build() {}
 
-  Future<T?> loadingRun<T>(
-    FutureOr<T> Function() futureFunction, {
-    String? title,
-    required LoadingTag? tag,
-    bool silence = false,
-  }) async {
-    return globalState.safeRun(
-      futureFunction,
-      silence: silence,
-      title: title,
-      onStart: () {
-        if (tag != null) {
-          ref.read(loadingProvider(tag).notifier).start();
-        }
-      },
-      onEnd: () {
-        if (tag != null) {
-          ref.read(loadingProvider(tag).notifier).stop();
-        }
-      },
-    );
-  }
-
   void updateStart() {
     ref
         .read(setupActionProvider.notifier)
@@ -417,25 +394,23 @@ class SetupAction extends _$SetupAction {
     if (yamlString.isEmpty) return;
     final yamlMd5 = vm2.b;
     if (yamlMd5 == globalState.lastConfigMd5 && force == false) return;
-    await ref
-        .read(commonActionProvider.notifier)
-        .loadingRun(
-          () async {
-            final configFilePath = await appPath.configFilePath;
-            await File(configFilePath).safeWriteAsString(yamlString);
-            globalState.lastConfigMd5 = yamlMd5;
-            final message = await coreController.setupConfig(
-              setupState: setupState,
-              params: _setupParams,
-              preloadInvoke: preloadInvoke,
-            );
-            if (message.isNotEmpty) throw message;
-            ref.read(checkIpNumProvider.notifier).add();
-            await onUpdated?.call();
-          },
-          silence: true,
-          tag: !silence ? LoadingTag.proxies : null,
+    await globalState.loadingRun(
+      () async {
+        final configFilePath = await appPath.configFilePath;
+        await File(configFilePath).safeWriteAsString(yamlString);
+        globalState.lastConfigMd5 = yamlMd5;
+        final message = await coreController.setupConfig(
+          setupState: setupState,
+          params: _setupParams,
+          preloadInvoke: preloadInvoke,
         );
+        if (message.isNotEmpty) throw message;
+        ref.read(checkIpNumProvider.notifier).add();
+        await onUpdated?.call();
+      },
+      silence: true,
+      tag: !silence ? LoadingTag.proxies : null,
+    );
   }
 }
 
@@ -929,7 +904,7 @@ class ProfilesAction extends _$ProfilesAction {
     if (bytes == null) return;
     globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     ref.read(currentPageLabelProvider.notifier).toProfiles();
-    final profile = await ref.read(commonActionProvider.notifier).loadingRun(
+    final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () async {
         return await Profile.normal(label: platformFile?.name).saveFile(bytes);
@@ -946,7 +921,7 @@ class ProfilesAction extends _$ProfilesAction {
       globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
     ref.read(currentPageLabelProvider.notifier).value = PageLabel.profiles;
-    final profile = await ref.read(commonActionProvider.notifier).loadingRun(
+    final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () async {
         return await Profile.normal(url: url).update();

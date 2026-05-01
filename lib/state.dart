@@ -115,6 +115,29 @@ class GlobalState {
     return container;
   }
 
+  Future<T?> loadingRun<T>(
+    FutureOr<T> Function() futureFunction, {
+    String? title,
+    required LoadingTag? tag,
+    bool silence = false,
+  }) async {
+    return globalState.safeRun(
+      futureFunction,
+      silence: silence,
+      title: title,
+      onStart: () {
+        if (tag != null) {
+          container.read(loadingProvider(tag).notifier).start();
+        }
+      },
+      onEnd: () {
+        if (tag != null) {
+          container.read(loadingProvider(tag).notifier).stop();
+        }
+      },
+    );
+  }
+
   Future<T?> safeRun<T>(
     FutureOr<T> Function() futureFunction, {
     String? title,
@@ -368,7 +391,6 @@ class GlobalState {
         .read(appSettingProvider.notifier)
         .update((state) => state.copyWith(disclaimerAccepted: true));
   }
-
 }
 
 final globalState = GlobalState();

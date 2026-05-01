@@ -204,10 +204,8 @@ class ProfileItem extends StatelessWidget {
 
   Future updateProfile() async {
     if (profile.type == ProfileType.file) return;
-    try {} finally {}
-    final ref = globalState.container;
-    await ref.read(commonActionProvider.notifier).loadingRun(() async {
-      await ref
+    await globalState.loadingRun(() async {
+      await globalState.container
           .read(profilesActionProvider.notifier)
           .updateProfile(profile, showLoading: true);
     }, tag: LoadingTag.profiles);
