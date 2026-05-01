@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'controller.dart';
 import 'pages/pages.dart';
 
 class Application extends ConsumerStatefulWidget {
@@ -50,12 +49,12 @@ class ApplicationState extends ConsumerState<Application> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       final currentContext = globalState.navigatorKey.currentContext;
       if (currentContext != null) {
-        await appController.attach(currentContext, ref);
+        await globalState.attach(currentContext, ref);
       } else {
         exit(0);
       }
       _autoUpdateProfilesTask();
-      appController.initLink();
+      globalState.initLink();
       app?.initShortcuts();
     });
   }

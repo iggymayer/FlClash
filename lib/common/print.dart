@@ -1,4 +1,3 @@
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/app.dart';
@@ -18,7 +17,7 @@ class CommonPrint {
   void log(String? text, {LogLevel logLevel = LogLevel.info}) {
     final payload = '[APP] $text';
     debugPrint(payload);
-    if (!appController.isAttach) {
+    if (!globalState.isAttach) {
       return;
     }
     globalState.container
