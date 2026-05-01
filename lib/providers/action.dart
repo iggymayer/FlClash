@@ -189,12 +189,17 @@ class SetupAction extends _$SetupAction {
         applyProfileDebounce(force: true, silence: true);
       } else {
         globalState.needInitStatus = false;
-        await applyProfile(
-          force: true,
-          preloadInvoke: () async {
-            await _handleStart();
-          },
-        );
+        ref.read(runTimeProvider.notifier).value = 0;
+        try {
+          await applyProfile(
+            force: true,
+            preloadInvoke: () async {
+              await _handleStart();
+            },
+          );
+        } catch (_) {
+          ref.read(runTimeProvider.notifier).value = null;
+        }
       }
     } else {
       await handleStop();
@@ -780,9 +785,9 @@ class ProxiesAction extends _$ProxiesAction {
       ChangeProxyParams(groupName: groupName, proxyName: proxyName),
     );
     if (ref.read(appSettingProvider).closeConnections) {
-      await coreController.closeConnections();
+      coreController.closeConnections();
     } else {
-      await coreController.resetConnections();
+      coreController.resetConnections();
     }
     ref.read(checkIpNumProvider.notifier).add();
   }

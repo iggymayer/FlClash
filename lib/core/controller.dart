@@ -145,12 +145,12 @@ class CoreController {
     await _interface.closeConnection(id);
   }
 
-  Future<void> closeConnections() async {
-    await _interface.closeConnections();
+  void closeConnections() async {
+    _interface.closeConnections();
   }
 
-  Future<void> resetConnections() async {
-    await _interface.resetConnections();
+  void resetConnections() async {
+    _interface.resetConnections();
   }
 
   Future<List<ExternalProvider>> getExternalProviders() async {

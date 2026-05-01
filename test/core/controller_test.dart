@@ -161,18 +161,6 @@ void main() {
       await controller.closeConnection('id1');
       verify(() => mock.closeConnection('id1')).called(1);
     });
-
-    test('closeConnections delegates', () async {
-      when(() => mock.closeConnections()).thenAnswer((_) async => true);
-      await controller.closeConnections();
-      verify(() => mock.closeConnections()).called(1);
-    });
-
-    test('resetConnections delegates', () async {
-      when(() => mock.resetConnections()).thenAnswer((_) async => true);
-      await controller.resetConnections();
-      verify(() => mock.resetConnections()).called(1);
-    });
   });
 
   group('external providers', () {

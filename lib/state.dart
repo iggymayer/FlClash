@@ -292,7 +292,7 @@ class GlobalState {
     launchUrl(Uri.parse(url));
   }
 
-  Future<void> attach(BuildContext context, WidgetRef ref) async {
+  Future<void> attach() async {
     await _initApp();
     isAttach = true;
   }
@@ -320,6 +320,8 @@ class GlobalState {
     await container.read(coreActionProvider.notifier).initCore();
     await container.read(setupActionProvider.notifier).initStatus();
     container.read(initProvider.notifier).value = true;
+    print('init ===> success isStart ${container.read(isStartProvider)}');
+    // print('init ===> success');
   }
 
   Future<void> _handleFailedPreference() async {
