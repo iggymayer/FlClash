@@ -575,7 +575,7 @@ extension DelayStateExt on DelayState {
       return delay.compareTo(other.delay);
     }
     if (group && !other.group) return -1;
-    if (!other.group && group) return 1;
+    if (!group && other.group) return 1;
     return 0;
   }
 }
