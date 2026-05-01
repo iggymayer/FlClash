@@ -92,7 +92,7 @@ void main() {
 
   group('StringExtension.getBase64', () {
     test('extracts base64 from data URI', () {
-      const data = 'data:image/png;base64,iVBORw0KGgo';
+      const data = 'data:image/png;base64,aGVsbG8=';
       final result = data.getBase64;
       expect(result, isNotNull);
       expect(result!.isNotEmpty, isTrue);

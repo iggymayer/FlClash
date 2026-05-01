@@ -45,11 +45,8 @@ void main() {
     });
 
     test('generates multiple distinct keys between same bounds', () {
-      final keys = <String?>[];
-      for (int i = 0; i < 10; i++) {
-        keys.add(indexing.generateKeyBetween('a0V', 'a0W'));
-      }
-      final uniqueKeys = keys.toSet();
+      final keys = indexing.generateNKeysBetween('a0V', 'a0W', 10);
+      final uniqueKeys = keys.whereType<String>().toSet();
       expect(uniqueKeys.length, greaterThan(1));
     });
   });
