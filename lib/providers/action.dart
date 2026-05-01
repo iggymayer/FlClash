@@ -200,7 +200,7 @@ class SetupAction extends _$SetupAction {
       await handleStop();
       coreController.resetTraffic();
       ref.read(trafficsProvider.notifier).clear();
-      ref.read(totalTrafficProvider.notifier).value = Traffic();
+      ref.read(totalTrafficProvider.notifier).value = const Traffic();
       ref.read(runTimeProvider.notifier).value = null;
       ref.read(checkIpNumProvider.notifier).add();
     }
@@ -280,7 +280,7 @@ class SetupAction extends _$SetupAction {
     required PatchClashConfig patchConfig,
   }) async {
     final profileId = setupState.profileId;
-    if (profileId == null) return VM2('', '');
+    if (profileId == null) return const VM2('', '');
     final defaultUA = globalState.packageInfo.ua;
     final networkVM2 = ref.read(
       networkSettingProvider.select(
@@ -428,7 +428,7 @@ class BackupAction extends _$BackupAction {
     final scriptFileNames = res[1];
     final configMap = ref.read(configProvider).toJson();
     configMap['version'] = await preferences.getVersion();
-    return await backupTask(configMap, [
+    return backupTask(configMap, [
       ...profileFileNames,
       ...scriptFileNames,
     ]);
@@ -497,7 +497,7 @@ class CoreAction extends _$CoreAction {
     ref.read(coreStatusProvider.notifier).value = CoreStatus.connecting;
     final result = await Future.wait([
       coreController.preload(),
-      Future.delayed(Duration(milliseconds: 300)),
+      Future.delayed(const Duration(milliseconds: 300)),
     ]);
     final String message = result[0];
     if (message.isNotEmpty) {
@@ -569,7 +569,7 @@ class SystemAction extends _$SystemAction {
   }
 
   Future<void> handleExit([bool needSave = false]) async {
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       system.exit();
     });
     try {
@@ -629,7 +629,7 @@ class SystemAction extends _$SystemAction {
     tray?.update(
       trayState: ref.read(trayStateProvider),
       traffic: ref.read(
-        trafficsProvider.select((state) => state.list.safeLast(Traffic())),
+        trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
       ),
     );
   }
@@ -742,7 +742,7 @@ class ProxiesAction extends _$ProxiesAction {
           final selectedMap = ref.read(
             currentProfileProvider.select((state) => state?.selectedMap ?? {}),
           );
-          return await coreController.getProxiesGroups(
+          return coreController.getProxiesGroups(
             selectedMap: selectedMap,
             sortType: sortType,
             delayMap: delayMap,
@@ -907,7 +907,7 @@ class ProfilesAction extends _$ProfilesAction {
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () async {
-        return await Profile.normal(label: platformFile?.name).saveFile(bytes);
+        return Profile.normal(label: platformFile?.name).saveFile(bytes);
       },
       title: currentAppLocalizations.addProfile,
     );
@@ -924,7 +924,7 @@ class ProfilesAction extends _$ProfilesAction {
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () async {
-        return await Profile.normal(url: url).update();
+        return Profile.normal(url: url).update();
       },
       title: currentAppLocalizations.addProfile,
     );

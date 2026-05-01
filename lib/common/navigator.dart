@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 class BaseNavigator {
   static Future<T?> push<T>(BuildContext context, Widget child) async {
     if (!globalState.container.read(isMobileViewProvider)) {
-      return await Navigator.of(
+      return Navigator.of(
         context,
       ).push<T>(CommonDesktopRoute(builder: (context) => child));
     }
-    return await Navigator.of(
+    return Navigator.of(
       context,
     ).push<T>(CommonRoute(builder: (context) => child));
   }
@@ -66,10 +66,10 @@ class CommonDesktopRoute<T> extends PageRoute<T> {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 200);
+  Duration get transitionDuration => const Duration(milliseconds: 200);
 
   @override
-  Duration get reverseTransitionDuration => Duration(milliseconds: 200);
+  Duration get reverseTransitionDuration => const Duration(milliseconds: 200);
 }
 
 class CommonRoute<T> extends PageRoute<T> {
@@ -107,10 +107,10 @@ class CommonRoute<T> extends PageRoute<T> {
   }
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 300);
+  Duration get transitionDuration => const Duration(milliseconds: 300);
 
   @override
-  Duration get reverseTransitionDuration => Duration(milliseconds: 300);
+  Duration get reverseTransitionDuration => const Duration(milliseconds: 300);
 }
 
 final Animatable<Offset> _kRightMiddleTween = Tween<Offset>(
@@ -263,7 +263,7 @@ class _CommonPageTransitionState extends State<CommonPageTransition> {
         (_primaryShadowCurve ?? widget.primaryRouteAnimation).drive(
           DecorationTween(
             begin: const _CommonEdgeShadowDecoration(),
-            end: _CommonEdgeShadowDecoration(<Color>[
+            end: const _CommonEdgeShadowDecoration(<Color>[
               Color(0x04000000),
               Colors.transparent,
             ]),

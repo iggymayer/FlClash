@@ -442,7 +442,7 @@ class ProfileDisabledRuleIds extends _$ProfileDisabledRuleIds
   }
 
   void _put(int ruleId) {
-    var newList = List<int>.from(value);
+    final newList = List<int>.from(value);
     final index = newList.indexWhere((item) => item == ruleId);
     if (index != -1) {
       newList[index] = ruleId;

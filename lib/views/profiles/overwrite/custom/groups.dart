@@ -48,7 +48,7 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
   ) {
     showSheet(
       context: context,
-      props: SheetProps(
+      props: const SheetProps(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         maxWidth: double.maxFinite,
@@ -60,7 +60,7 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
             overrides: [
               proxyGroupProvider.overrideWithBuild((_, _) => proxyGroup),
             ],
-            child: AddOrEditProxyGroupNestedSheet(),
+            child: const AddOrEditProxyGroupNestedSheet(),
           ),
         );
       },
@@ -70,7 +70,7 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
   void _handleAdd() {
     showSheet(
       context: context,
-      props: SheetProps(
+      props: const SheetProps(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         maxWidth: double.maxFinite,
@@ -82,10 +82,10 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
             overrides: [
               proxyGroupProvider.overrideWithBuild(
                 (_, _) =>
-                    ProxyGroup(id: -1, name: '', type: GroupType.Selector),
+                    const ProxyGroup(id: -1, name: '', type: GroupType.Selector),
               ),
             ],
-            child: AddOrEditProxyGroupNestedSheet(),
+            child: const AddOrEditProxyGroupNestedSheet(),
           ),
         );
       },
@@ -117,7 +117,7 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
             child: Text(appLocalizations.add),
           ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
       ],
       body: proxyGroups.isEmpty
           ? NullStatus(label: appLocalizations.proxyGroupEmpty)
@@ -126,7 +126,7 @@ class _CustomProxyGroupsViewState extends ConsumerState<CustomProxyGroupsView> {
               child: ReorderableListView.builder(
                 scrollController: _scrollController,
                 buildDefaultDragHandles: false,
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   vertical: 12,
                 ).copyWith(bottom: 24),
                 itemBuilder: (context, index) {
@@ -199,18 +199,18 @@ class _ProxyGroupItem extends ConsumerWidget {
     return ItemPositionProvider(
       position: position,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Consumer(
           builder: (_, ref, _) {
             return DecorationListItem(
               invalid: !isValid,
               onPressed: onPressed,
-              contentPadding: EdgeInsets.only(left: 16, right: 0),
+              contentPadding: const EdgeInsets.only(left: 16, right: 0),
               minVerticalPadding: 8,
               leading: SizedBox.square(
                 dimension: 32,
                 child: IconTheme.merge(
-                  data: IconThemeData(size: 32),
+                  data: const IconThemeData(size: 32),
                   child: CommonTargetIcon(src: proxyGroup.icon ?? ''),
                 ),
               ),
@@ -233,9 +233,9 @@ class _ProxyGroupItem extends ConsumerWidget {
                   ReorderableDelayedDragStartListener(
                     index: index,
                     child: Container(
-                      padding: EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(12),
                       color: Colors.transparent,
-                      child: Icon(Icons.drag_handle),
+                      child: const Icon(Icons.drag_handle),
                     ),
                   ),
                 ],
@@ -353,7 +353,7 @@ class _AddOrEditProxyGroupNestedSheetState
         return [
           PagedSheetRoute(
             builder: (context) {
-              return _EditProxyGroupView();
+              return const _EditProxyGroupView();
             },
           ),
         ];
@@ -388,7 +388,7 @@ class _AddOrEditProxyGroupNestedSheetState
                         ? context.colorScheme.surfaceContainerLow
                         : context.colorScheme.surface,
                     borderRadius: sheetProvider.type == SheetType.bottomSheet
-                        ? BorderRadius.vertical(top: Radius.circular(28))
+                        ? const BorderRadius.vertical(top: Radius.circular(28))
                         : BorderRadius.zero,
                     clipBehavior: Clip.antiAlias,
                   ),
@@ -476,13 +476,13 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
   void _handleToProxiesView() {
     Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => EditProxiesView()));
+    ).push(PagedSheetRoute(builder: (context) => const EditProxiesView()));
   }
 
   void _handleToProvidersView() {
     Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => EditProxyProvidersView()));
+    ).push(PagedSheetRoute(builder: (context) => const EditProxyProvidersView()));
   }
 
   Widget _buildProvidersItem(bool includeAllProviders, List<String> use) {
@@ -506,8 +506,8 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
                     )
                   : (!includeAllProviders
                         ? _NumberCard(number: use.length)
-                        : _CheckIcon()),
-              Icon(Icons.arrow_forward_ios),
+                        : const _CheckIcon()),
+              const Icon(Icons.arrow_forward_ios),
             ],
           ),
           onPressed: _handleToProvidersView,
@@ -529,7 +529,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               .update((state) => state.copyWith(filter: value));
         },
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.optional,
         ),
       ),
@@ -553,7 +553,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               );
         },
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.optional,
         ),
       ),
@@ -574,7 +574,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               .update((state) => state.copyWith(url: value));
         },
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.optional,
         ),
       ),
@@ -596,7 +596,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               .update((state) => state.copyWith(interval: int.tryParse(value)));
         },
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.optional,
         ),
       ),
@@ -616,7 +616,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               .update((state) => state.copyWith(excludeFilter: value));
         },
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.optional,
         ),
       ),
@@ -636,7 +636,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               .update((state) => state.copyWith(excludeType: value));
         },
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.optional,
         ),
       ),
@@ -656,7 +656,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
               .update((state) => state.copyWith(expectedStatus: value));
         },
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.optional,
         ),
       ),
@@ -684,8 +684,8 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
                     )
                   : (!includeAllProxies
                         ? _NumberCard(number: proxies.length)
-                        : _CheckIcon()),
-              Icon(Icons.arrow_forward_ios),
+                        : const _CheckIcon()),
+              const Icon(Icons.arrow_forward_ios),
             ],
           ),
           onPressed: _handleToProxiesView,
@@ -742,7 +742,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
         },
         textAlign: TextAlign.end,
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.inputProxyGroupName,
         ),
       ),
@@ -845,7 +845,7 @@ class _EditProxyGroupViewState extends ConsumerState<_EditProxyGroupView> {
       body: SizedBox(
         height: height,
         child: ListView(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ).copyWith(bottom: 20, top: context.sheetTopPadding),
           children: [
@@ -918,7 +918,7 @@ class _CheckIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(6),
+      padding: const EdgeInsets.all(6),
       child: Icon(
         Icons.check_circle_outline,
         size: 20.ap,
@@ -939,10 +939,10 @@ class _NumberCard extends StatelessWidget {
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: Container(
-        constraints: BoxConstraints(minWidth: 32),
+        constraints: const BoxConstraints(minWidth: 32),
         alignment: Alignment.center,
         height: globalState.measure.bodySmallHeight + 6,
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
         child: Text(
           textAlign: TextAlign.center,
           '$number',

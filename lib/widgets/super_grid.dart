@@ -127,7 +127,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
 
     _shakeController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 120),
+      duration: const Duration(milliseconds: 120),
     );
 
     _shakeAnimation = Tween<double>(begin: -0.012, end: 0.012).animate(
@@ -165,7 +165,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
   }
 
   Future _transform() async {
-    List<Offset> layoutOffsets = [Offset(_containerSize.width, 0)];
+    final List<Offset> layoutOffsets = [Offset(_containerSize.width, 0)];
     final List<Offset> nextOffsets = [];
 
     for (final index in _tempIndexList) {
@@ -352,7 +352,7 @@ class SuperGridState extends State<SuperGrid> with TickerProviderStateMixin {
 
   Offset _getNextOffset(List<Offset> offsets, Size size) {
     final length = offsets.length;
-    Offset nextOffset = Offset(0, double.infinity);
+    Offset nextOffset = const Offset(0, double.infinity);
     for (int i = 0; i < length; i++) {
       final offset = offsets[i];
       if (offset.dy.moreOrEqual(nextOffset.dy)) {
@@ -685,9 +685,9 @@ class _DeletableContainerState extends State<_DeletableContainer>
                 height: 24,
                 child: IconButton.filled(
                   iconSize: 20,
-                  padding: EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(2),
                   onPressed: _handleDel,
-                  icon: Icon(Icons.close),
+                  icon: const Icon(Icons.close),
                 ),
               ),
             ),

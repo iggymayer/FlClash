@@ -111,7 +111,7 @@ class Traffics extends _$Traffics with AutoDisposeNotifierMixin {
 class TotalTraffic extends _$TotalTraffic with AutoDisposeNotifierMixin {
   @override
   Traffic build() {
-    return Traffic();
+    return const Traffic();
   }
 }
 
@@ -268,7 +268,7 @@ class SystemUiOverlayStyleState extends _$SystemUiOverlayStyleState
     with AutoDisposeNotifierMixin {
   @override
   SystemUiOverlayStyle build() {
-    return SystemUiOverlayStyle();
+    return const SystemUiOverlayStyle();
   }
 }
 
@@ -359,7 +359,7 @@ class NetworkDetection extends _$NetworkDetection
 
   @override
   NetworkDetectionState build() {
-    return NetworkDetectionState(isLoading: true, ipInfo: null);
+    return const NetworkDetectionState(isLoading: true, ipInfo: null);
   }
 
   void startCheck() {

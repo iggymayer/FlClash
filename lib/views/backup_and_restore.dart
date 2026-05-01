@@ -37,7 +37,7 @@ class BackupAndRestore extends ConsumerWidget {
         if (path.isEmpty) {
           return false;
         }
-        return await client.backup(path);
+        return client.backup(path);
       },
       tag: LoadingTag.backup_restore,
       title: appLocalizations.backup,

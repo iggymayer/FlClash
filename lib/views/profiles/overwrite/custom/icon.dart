@@ -157,7 +157,7 @@ class _IconEditViewState extends ConsumerState<IconEditView>
         leading: SizedBox.square(
           dimension: 28,
           child: IconTheme.merge(
-            data: IconThemeData(size: 28),
+            data: const IconThemeData(size: 28),
             child: CommonTargetIcon(src: record.url),
           ),
         ),
@@ -193,9 +193,9 @@ class _IconEditViewState extends ConsumerState<IconEditView>
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SizedBox(
                     height: dimension,
                     child: Row(
@@ -220,7 +220,7 @@ class _IconEditViewState extends ConsumerState<IconEditView>
                                             ? CommonCard(
                                                 type: CommonCardType.filled,
                                                 radius: 20,
-                                                padding: EdgeInsets.all(8),
+                                                padding: const EdgeInsets.all(8),
                                                 child: CommonImage(
                                                   isSvg:
                                                       _srcController.text.isSvg,
@@ -250,7 +250,7 @@ class _IconEditViewState extends ConsumerState<IconEditView>
                                   _handleInputChange();
                                 },
                                 decoration: InputDecoration.collapsed(
-                                  border: NoInputBorder(),
+                                  border: const NoInputBorder(),
                                   hintText: appLocalizations.iconUrl,
                                 ),
                               ),
@@ -263,7 +263,7 @@ class _IconEditViewState extends ConsumerState<IconEditView>
                 ),
                 if (records.isNotEmpty) ...[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: InfoHeader(
                       info: Info(label: appLocalizations.iconRecords),
                     ),
@@ -271,7 +271,7 @@ class _IconEditViewState extends ConsumerState<IconEditView>
                   Expanded(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       itemBuilder: (context, index) {
                         final record = records[index];
                         return _buildItem(
@@ -293,7 +293,7 @@ class _IconEditViewState extends ConsumerState<IconEditView>
                   Expanded(
                     child: NullStatus(label: appLocalizations.noRecords),
                   ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             );
           },

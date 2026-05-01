@@ -54,12 +54,12 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
     final appLocalizations = context.appLocalizations;
     if (scripts.isEmpty) {
       return NullStatus(
-        illustration: ScriptEmptyIllustration(),
+        illustration: const ScriptEmptyIllustration(),
         label: appLocalizations.nullTip(appLocalizations.script),
       );
     }
     return ListView.builder(
-      padding: EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: 16),
       itemCount: scripts.length,
       itemBuilder: (_, index) {
         final script = scripts[index];
@@ -204,10 +204,10 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
                 onPressed: () {
                   _handleDelScript(selectedScriptId);
                 },
-                icon: Icon(Icons.delete),
+                icon: const Icon(Icons.delete),
               ),
             ),
-            SizedBox(width: 2),
+            const SizedBox(width: 2),
           ],
           CommonMinFilledButtonTheme(
             child: selectedScriptId != null
@@ -224,7 +224,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
                     child: Text(appLocalizations.add),
                   ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
         body: _buildContent(scripts, selectedScriptId),
         title: appLocalizations.script,

@@ -16,7 +16,7 @@ class LogsView extends ConsumerStatefulWidget {
 }
 
 class _LogsViewState extends ConsumerState<LogsView> {
-  final _logsStateNotifier = ValueNotifier<LogsState>(LogsState());
+  final _logsStateNotifier = ValueNotifier<LogsState>(const LogsState());
   late ScrollController _scrollController;
 
   List<Log> _logs = [];
@@ -72,7 +72,7 @@ class _LogsViewState extends ConsumerState<LogsView> {
   Future<void> _handleExport() async {
     final appLocalizations = context.appLocalizations;
     final res = await globalState.safeRun<bool>(() async {
-      return await globalState.container
+      return globalState.container
           .read(logsProvider.notifier)
           .exportLogs();
     }, title: appLocalizations.exportLogs);
@@ -138,7 +138,7 @@ class _LogsViewState extends ConsumerState<LogsView> {
           final logs = state.list;
           if (logs.isEmpty) {
             return NullStatus(
-              illustration: LogEmptyIllustration(),
+              illustration: const LogEmptyIllustration(),
               label: appLocalizations.nullTip(appLocalizations.logs),
             );
           }
@@ -168,7 +168,7 @@ class _LogsViewState extends ConsumerState<LogsView> {
               child: CommonScrollBar(
                 controller: _scrollController,
                 child: SuperListView.builder(
-                  physics: NextClampingScrollPhysics(),
+                  physics: const NextClampingScrollPhysics(),
                   reverse: true,
                   shrinkWrap: true,
                   controller: _scrollController,
@@ -205,7 +205,7 @@ class LogItem extends StatelessWidget {
       ),
       subtitle: Column(
         children: [
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

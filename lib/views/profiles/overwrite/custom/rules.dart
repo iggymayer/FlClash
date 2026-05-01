@@ -79,7 +79,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
   void _handleAddOrUpdate({Rule? rule}) {
     showSheet(
       context: context,
-      props: SheetProps(
+      props: const SheetProps(
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         maxWidth: double.maxFinite,
@@ -91,7 +91,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
             overrides: [
               ruleProvider.overrideWithBuild((_, _) => rule ?? Rule.init()),
             ],
-            child: _AddOrEditRuleNestedSheet(),
+            child: const _AddOrEditRuleNestedSheet(),
           ),
         );
       },
@@ -167,10 +167,10 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
           CommonMinIconButtonTheme(
             child: IconButton.filledTonal(
               onPressed: _handleDelete,
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
             ),
           ),
-          SizedBox(width: 2),
+          const SizedBox(width: 2),
         ],
         CommonMinFilledButtonTheme(
           child: selectedRules.isNotEmpty
@@ -183,7 +183,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
                   child: Text(appLocalizations.add),
                 ),
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
       ],
       body: rules.isEmpty
           ? NullStatus(label: appLocalizations.ruleEmpty)
@@ -192,7 +192,7 @@ class _CustomRulesViewState extends ConsumerState<CustomRulesView>
               child: ReorderableListView.builder(
                 scrollController: _scrollController,
                 buildDefaultDragHandles: false,
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ).copyWith(bottom: 24),
@@ -325,7 +325,7 @@ class _AddOrEditRuleNestedSheetState
         return [
           PagedSheetRoute(
             builder: (context) {
-              return _AddOrEditRuleView();
+              return const _AddOrEditRuleView();
             },
           ),
         ];
@@ -360,7 +360,7 @@ class _AddOrEditRuleNestedSheetState
                         ? context.colorScheme.surfaceContainerLow
                         : context.colorScheme.surface,
                     borderRadius: sheetProvider.type == SheetType.bottomSheet
-                        ? BorderRadius.vertical(top: Radius.circular(28))
+                        ? const BorderRadius.vertical(top: Radius.circular(28))
                         : BorderRadius.zero,
                     clipBehavior: Clip.antiAlias,
                   ),
@@ -419,7 +419,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   Future<void> _handleSelectedType() async {
     final res = await Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => _RuleTypeSelectedView()));
+    ).push(PagedSheetRoute(builder: (context) => const _RuleTypeSelectedView()));
     if (res == null) {
       return;
     }
@@ -444,7 +444,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
               color: context.colorScheme.onSurfaceVariant,
             ),
           ),
-          Icon(Icons.arrow_forward_ios),
+          const Icon(Icons.arrow_forward_ios),
         ],
       ),
     );
@@ -464,7 +464,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
         },
         textAlign: TextAlign.end,
         decoration: InputDecoration.collapsed(
-          border: NoInputBorder(),
+          border: const NoInputBorder(),
           hintText: appLocalizations.inputRuleContent,
         ),
       ),
@@ -474,7 +474,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   Future<void> _handleSelectedRuleProvider() async {
     final res = await Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => _RuleProviderSelectedView()));
+    ).push(PagedSheetRoute(builder: (context) => const _RuleProviderSelectedView()));
     if (res == null) {
       return;
     }
@@ -502,7 +502,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
               ),
             ),
           ),
-          Icon(Icons.arrow_forward_ios),
+          const Icon(Icons.arrow_forward_ios),
         ],
       ),
     );
@@ -511,7 +511,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   Future<void> _handleSelectedTarget() async {
     final res = await Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => _RuleTargetSelectedView()));
+    ).push(PagedSheetRoute(builder: (context) => const _RuleTargetSelectedView()));
     if (res == null) {
       return;
     }
@@ -563,7 +563,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
                   ),
                 ),
               ),
-              SizedBox(width: 4),
+              const SizedBox(width: 4),
               Icon(Icons.arrow_forward_ios, color: foregroundColor),
             ],
           ),
@@ -575,7 +575,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
   Future<void> _handleSelectedSubRule() async {
     final res = await Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => _SubRuleSelectedView()));
+    ).push(PagedSheetRoute(builder: (context) => const _SubRuleSelectedView()));
     if (res == null) {
       return;
     }
@@ -608,7 +608,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
                   ),
                 ),
               ),
-              Icon(Icons.arrow_forward_ios),
+              const Icon(Icons.arrow_forward_ios),
             ],
           ),
         );
@@ -659,7 +659,7 @@ class _AddOrEditRuleViewState extends ConsumerState<_AddOrEditRuleView> {
         constraints: BoxConstraints(maxHeight: height),
         child: ListView(
           shrinkWrap: true,
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ).copyWith(bottom: 20, top: context.sheetTopPadding),
           children: [
@@ -732,7 +732,7 @@ class _RuleTypeSelectedView extends ConsumerWidget {
       body: SizedBox(
         height: height,
         child: ListView.builder(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             horizontal: 16,
           ).copyWith(bottom: 20, top: context.sheetTopPadding),
           itemCount: RuleAction.values.length,
@@ -749,7 +749,7 @@ class _RuleTypeSelectedView extends ConsumerWidget {
                 subtitle: Text(ruleAction.getDesc(context)),
                 title: Text(ruleAction.name),
                 trailing: ruleAction == currentRuleAction
-                    ? Icon(Icons.check)
+                    ? const Icon(Icons.check)
                     : null,
               ),
             );
@@ -780,7 +780,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
           text: Text(title, maxLines: 1, overflow: TextOverflow.ellipsis),
         ),
         isSelected: isSelected,
-        trailing: isSelected ? Icon(Icons.check) : null,
+        trailing: isSelected ? const Icon(Icons.check) : null,
       ),
     );
   }
@@ -820,7 +820,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
               child: SizedBox(height: context.sheetTopPadding),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: InfoHeader(
                   info: Info(label: appLocalizations.basicStrategy),
@@ -828,7 +828,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList.builder(
                 itemBuilder: (_, index) {
                   final target = RuleTarget.values[index];
@@ -849,7 +849,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: InfoHeader(
                   info: Info(label: appLocalizations.ruleTarget),
@@ -857,7 +857,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList.builder(
                 itemBuilder: (_, index) {
                   final proxyGroup = proxyGroups[index];
@@ -876,13 +876,13 @@ class _RuleTargetSelectedView extends ConsumerWidget {
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: InfoHeader(info: Info(label: appLocalizations.proxies)),
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList.builder(
                 itemBuilder: (_, index) {
                   final proxy = proxies[index];
@@ -900,7 +900,7 @@ class _RuleTargetSelectedView extends ConsumerWidget {
                 itemCount: proxies.length,
               ),
             ),
-            SliverToBoxAdapter(child: SizedBox(height: 16)),
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
       ),
@@ -920,7 +920,7 @@ class _RuleProviderSelectedView extends ConsumerWidget {
     return DecorationListItem(
       onPressed: onPressed,
       isSelected: isSelected,
-      trailing: isSelected ? Icon(Icons.check) : null,
+      trailing: isSelected ? const Icon(Icons.check) : null,
       title: title,
     );
   }
@@ -953,7 +953,7 @@ class _RuleProviderSelectedView extends ConsumerWidget {
         child: ruleProviders.isEmpty
             ? NullStatus(label: appLocalizations.proxyProvidersEmpty)
             : ListView.builder(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                 ).copyWith(bottom: 20, top: context.sheetTopPadding),
                 itemCount: ruleProviders.length,
@@ -993,7 +993,7 @@ class _SubRuleSelectedView extends ConsumerWidget {
       isSelected: isSelected,
       onPressed: onPressed,
       title: title,
-      trailing: isSelected ? Icon(Icons.check) : null,
+      trailing: isSelected ? const Icon(Icons.check) : null,
     );
   }
 
@@ -1025,7 +1025,7 @@ class _SubRuleSelectedView extends ConsumerWidget {
         child: subRules.isEmpty
             ? NullStatus(label: appLocalizations.subRuleEmpty)
             : ListView.builder(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                 ).copyWith(bottom: 20, top: context.sheetTopPadding),
                 itemCount: subRules.length,

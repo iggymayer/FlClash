@@ -151,7 +151,7 @@ class PortItem extends ConsumerWidget {
   const PortItem({super.key});
 
   Future<void> handleShowPortDialog() async {
-    await globalState.showCommonDialog(child: _PortDialog());
+    await globalState.showCommonDialog(child: const _PortDialog());
     // inputDelegate.onChanged(value);
   }
 
@@ -459,20 +459,20 @@ class ExternalControllerItem extends ConsumerWidget {
 }
 
 final generalItems = <Widget>[
-  LogLevelItem(),
-  UaItem(),
-  if (system.isDesktop) KeepAliveIntervalItem(),
-  TestUrlItem(),
-  PortItem(),
-  HostsItem(),
-  Ipv6Item(),
-  AllowLanItem(),
-  UnifiedDelayItem(),
-  AppendSystemDNSItem(),
-  FindProcessItem(),
-  TcpConcurrentItem(),
-  GeodataLoaderItem(),
-  ExternalControllerItem(),
+  const LogLevelItem(),
+  const UaItem(),
+  if (system.isDesktop) const KeepAliveIntervalItem(),
+  const TestUrlItem(),
+  const PortItem(),
+  const HostsItem(),
+  const Ipv6Item(),
+  const AllowLanItem(),
+  const UnifiedDelayItem(),
+  const AppendSystemDNSItem(),
+  const FindProcessItem(),
+  const TcpConcurrentItem(),
+  const GeodataLoaderItem(),
+  const ExternalControllerItem(),
 ].separated(const Divider(height: 0)).toList();
 
 class _PortDialog extends ConsumerStatefulWidget {
@@ -601,7 +601,7 @@ class _PortDialogState extends ConsumerState<_PortDialog> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         key: _formKey,
         child: Padding(
-          padding: EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.only(top: 8),
           child: AnimatedSize(
             duration: midDuration,
             curve: Curves.easeOutQuad,

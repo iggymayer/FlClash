@@ -74,7 +74,7 @@ class CoreService extends CoreHandlerInterface {
     socket
         .transform(uint8ListToListIntConverter)
         .transform(utf8.decoder)
-        .transform(LineSplitter())
+        .transform(const LineSplitter())
         .listen((data) async {
           final dataJson = await data.trim().commonToJSON<dynamic>();
           handleResult(ActionResult.fromJson(dataJson));
@@ -89,7 +89,7 @@ class CoreService extends CoreHandlerInterface {
 
   void _handleInvokeCrashEvent() {
     coreEventManager.sendEvent(
-      CoreEvent(type: CoreEventType.crash, data: 'socket done'),
+      const CoreEvent(type: CoreEventType.crash, data: 'socket done'),
     );
   }
 
@@ -119,7 +119,7 @@ class CoreService extends CoreHandlerInterface {
   }
 
   @override
-  destroy() async {
+  FutureOr<bool> destroy() async {
     final server = await _serverCompleter.future;
     await shutdown(false);
     await server.close();
@@ -148,7 +148,7 @@ class CoreService extends CoreHandlerInterface {
   }
 
   @override
-  shutdown(bool isUser) async {
+  Future<bool> shutdown(bool isUser) async {
     if (!_socketCompleter.isCompleted && _process == null) {
       return false;
     }

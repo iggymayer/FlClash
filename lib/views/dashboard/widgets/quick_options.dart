@@ -101,7 +101,7 @@ class SystemProxyButton extends StatelessWidget {
               return AdaptiveSheetScaffold(
                 body: generateListView(
                   generateSection(
-                    items: [SystemProxyItem(), BypassDomainItem()],
+                    items: [const SystemProxyItem(), const BypassDomainItem()],
                   ),
                 ),
                 title: appLocalizations.systemProxy,
@@ -186,7 +186,7 @@ class VpnButton extends StatelessWidget {
             },
           );
         },
-        info: Info(label: 'VPN', iconData: Icons.stacked_line_chart),
+        info: const Info(label: 'VPN', iconData: Icons.stacked_line_chart),
         child: Container(
           padding: baseInfoEdgeInsets.copyWith(top: 4, bottom: 8, right: 8),
           child: Row(

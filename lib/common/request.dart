@@ -105,7 +105,7 @@ class Request {
     final token = cancelToken ?? CancelToken();
     final futures = _ipInfoSources.entries.map((source) async {
       final Completer<Result<IpInfo?>> completer = Completer();
-      handleFailRes() {
+      void handleFailRes() {
         if (!completer.isCompleted && failureCount == _ipInfoSources.length) {
           completer.complete(Result.success(null));
         }

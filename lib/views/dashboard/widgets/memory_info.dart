@@ -39,7 +39,7 @@ class _MemoryInfoState extends State<MemoryInfo> {
       } else {
         _memoryStateNotifier.value = rss;
       }
-      timer = Timer(Duration(seconds: 2), () async {
+      timer = Timer(const Duration(seconds: 2), () async {
         _updateMemory();
       });
     });
@@ -80,7 +80,7 @@ class _MemoryInfoState extends State<MemoryInfo> {
                             style: context.textTheme.bodyMedium?.toLight
                                 .adjustSize(1),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
                             traffic.unit,
                             style: context.textTheme.bodyMedium?.toLight

@@ -234,12 +234,12 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
       actions: !suffixPop ? genActions(actions) : genActions([?popButton]),
     );
     if (type == SheetType.bottomSheet) {
-      final handleSize = Size(28, 4);
+      const handleSize = Size(28, 4);
       final sheetAppBar = Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 6),
+            padding: const EdgeInsets.only(top: 6),
             child: Container(
               alignment: Alignment.center,
               height: handleSize.height,
@@ -252,12 +252,12 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
               ),
             ),
           ),
-          Padding(padding: EdgeInsets.symmetric(horizontal: 4), child: appBar),
-          SizedBox(height: 6),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 4), child: appBar),
+          const SizedBox(height: 6),
         ],
       );
       return ClipRRect(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -286,7 +286,7 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
                         valueListenable: _isScrolledController,
                         builder: (_, isScrolled, child) {
                           return ClipRRect(
-                            borderRadius: BorderRadius.vertical(
+                            borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(28),
                             ),
                             child: BackdropFilter(

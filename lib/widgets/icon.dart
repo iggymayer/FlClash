@@ -14,7 +14,7 @@ class CommonTargetIcon extends StatelessWidget {
   const CommonTargetIcon({super.key, required this.src});
 
   Widget _defaultIcon() {
-    return Icon(IconsExt.target);
+    return const Icon(IconsExt.target);
   }
 
   Widget _buildIcon() {

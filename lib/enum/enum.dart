@@ -320,7 +320,7 @@ enum DashboardWidget {
   const DashboardWidget(this.widget, {this.platforms = SupportPlatform.values});
 
   static DashboardWidget getDashboardWidget(GridItem gridItem) {
-    final dashboardWidgets = DashboardWidget.values;
+    const dashboardWidgets = DashboardWidget.values;
     final index = dashboardWidgets.indexWhere(
       (item) => item.widget == gridItem,
     );

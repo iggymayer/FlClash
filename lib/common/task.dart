@@ -14,7 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 
 Future<T> decodeJSONTask<T>(String data) async {
-  return await compute<String, T>(_decodeJSON, data);
+  return compute<String, T>(_decodeJSON, data);
 }
 
 Future<T> _decodeJSON<T>(String content) async {
@@ -22,7 +22,7 @@ Future<T> _decodeJSON<T>(String content) async {
 }
 
 Future<String> encodeJSONTask<T>(T data) async {
-  return await compute<T, String>(_encodeJSON, data);
+  return compute<T, String>(_encodeJSON, data);
 }
 
 Future<String> _encodeJSON<T>(T content) async {
@@ -30,7 +30,7 @@ Future<String> _encodeJSON<T>(T content) async {
 }
 
 Future<String> encodeYamlTask<T>(T data) async {
-  return await compute<T, String>(_encodeYaml, data);
+  return compute<T, String>(_encodeYaml, data);
 }
 
 Future<String> _encodeYaml<T>(T content) async {
@@ -38,7 +38,7 @@ Future<String> _encodeYaml<T>(T content) async {
 }
 
 Future<String> encodeMD5Task(String data) async {
-  return await compute<String, String>(_encodeMD5, data);
+  return compute<String, String>(_encodeMD5, data);
 }
 
 Future<String> _encodeMD5<T>(String content) async {
@@ -46,7 +46,7 @@ Future<String> _encodeMD5<T>(String content) async {
 }
 
 Future<List<Group>> toGroupsTask(ComputeGroupsState data) async {
-  return await compute<ComputeGroupsState, List<Group>>(_toGroupsTask, data);
+  return compute<ComputeGroupsState, List<Group>>(_toGroupsTask, data);
 }
 
 Future<List<Group>> _toGroupsTask(ComputeGroupsState state) async {
@@ -85,7 +85,7 @@ Future<List<Group>> _toGroupsTask(ComputeGroupsState state) async {
 Future<VM2<String, String>> makeRealProfileTask(
   MakeRealProfileState data,
 ) async {
-  return await compute<MakeRealProfileState, VM2<String, String>>(
+  return compute<MakeRealProfileState, VM2<String, String>>(
     _makeRealProfileTask,
     data,
   );
@@ -195,7 +195,7 @@ Future<VM2<String, String>> _makeRealProfileTask(
     rawConfig['dns'] = {};
   }
   final isEnableDns = rawConfig['dns']['enable'] == true;
-  final systemDns = 'system://';
+  const systemDns = 'system://';
   if (overrideDns || !isEnableDns) {
     final dns = switch (!isEnableDns) {
       true => realPatchConfig.dns.copyWith(
@@ -274,7 +274,7 @@ Future<VM2<String, String>> _makeRealProfileTask(
 Future<List<String>> shakingProfileTask(
   VM2<Iterable<int>, Iterable<int>> data,
 ) async {
-  return await compute<
+  return compute<
     VM3<Iterable<int>, Iterable<int>, RootIsolateToken>,
     List<String>
   >(_shakingProfileTask, VM3(data.a, data.b, RootIsolateToken.instance!));
@@ -320,7 +320,7 @@ Future<List<String>> _shakingProfileTask(
 }
 
 Future<String> encodeLogsTask(List<Log> data) async {
-  return await compute<List<Log>, String>(_encodeLogsTask, data);
+  return compute<List<Log>, String>(_encodeLogsTask, data);
 }
 
 Future<String> _encodeLogsTask(List<Log> data) async {
@@ -331,7 +331,7 @@ Future<String> _encodeLogsTask(List<Log> data) async {
 
 Future<MigrationData> oldToNowTask(Map<String, Object?> data) async {
   final homeDir = await appPath.homeDirPath;
-  return await compute<
+  return compute<
     VM3<Map<String, Object?>, String, String>,
     MigrationData
   >(_oldToNowTask, VM3(data, homeDir, homeDir));
@@ -391,7 +391,7 @@ Future<MigrationData> _oldToNowTask(
       Script(id: newId, label: label, lastUpdateTime: DateTime.now()),
     );
   }
-  List rawRules = configMap['rules'] as List<dynamic>? ?? [];
+  final List rawRules = configMap['rules'] as List<dynamic>? ?? [];
   final List<Rule> rules = [];
   final List<ProfileRuleLink> links = [];
   for (final rawRule in rawRules) {
@@ -401,7 +401,7 @@ Future<MigrationData> _oldToNowTask(
     rules.add(Rule.parse(value, id: id));
     links.add(ProfileRuleLink(ruleId: id));
   }
-  List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
+  final List rawProfiles = configMap['profiles'] as List<dynamic>? ?? [];
   final List<Profile> profiles = [];
   for (final rawProfile in rawProfiles) {
     final rawId = rawProfile['id'] as String?;
@@ -473,7 +473,7 @@ Future<String> backupTask(
   Map<String, dynamic> configMap,
   Iterable<String> fileNames,
 ) async {
-  return await compute<
+  return compute<
     VM3<Map<String, dynamic>, Iterable<String>, RootIsolateToken>,
     String
   >(_backupTask, VM3(configMap, fileNames, RootIsolateToken.instance!));
@@ -531,7 +531,7 @@ Future<String> _backupTask<T>(
 }
 
 Future<MigrationData> restoreTask() async {
-  return await compute<RootIsolateToken, MigrationData>(
+  return compute<RootIsolateToken, MigrationData>(
     _restoreTask,
     RootIsolateToken.instance!,
   );
@@ -629,7 +629,7 @@ String _getProfilePath(String root, String fileName) {
 }
 
 Future<List<T>> mapListTask<T, S>(List<S> results, T Function(S) mapper) async {
-  return await compute<VM2<List<S>, T Function(S)>, List<T>>(
+  return compute<VM2<List<S>, T Function(S)>, List<T>>(
     _mapListTask,
     VM2(results, mapper),
   );

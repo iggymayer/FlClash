@@ -26,7 +26,7 @@ abstract class SubscriptionInfo with _$SubscriptionInfo {
   factory SubscriptionInfo.formHString(String? info) {
     if (info == null) return const SubscriptionInfo();
     final list = info.split(';');
-    Map<String, int?> map = {};
+    final Map<String, int?> map = {};
     for (final i in list) {
       final keyValue = i.trim().split('=');
       map[keyValue[0]] = int.tryParse(keyValue[1]);
@@ -175,7 +175,7 @@ extension ProfileExtension on Profile {
     final file = File(path);
     final isExists = await file.exists();
     if (!isExists && autoCreate) {
-      return await file.create(recursive: true);
+      return file.create(recursive: true);
     }
     return file;
     // final oldPath = await appPath.getProfilePath(id);
@@ -201,7 +201,7 @@ extension ProfileExtension on Profile {
     final response = await request.getFileResponseForUrl(url);
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
-    return await copyWith(
+    return copyWith(
       label: label.takeFirstValid([
         utils.getFileNameForDisposition(disposition),
         id.toString(),

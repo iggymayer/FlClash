@@ -230,7 +230,7 @@ class _DeveloperModeDetectorState extends State<_DeveloperModeDetector> {
       _resetCounter();
     } else {
       _timer?.cancel();
-      _timer = Timer(Duration(seconds: 1), _resetCounter);
+      _timer = Timer(const Duration(seconds: 1), _resetCounter);
     }
   }
 

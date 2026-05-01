@@ -341,7 +341,7 @@ extension ColorSchemesExt on ColorSchemes {
               dynamicSchemeVariant: schemeVariant,
             )
           : ColorScheme.fromSeed(
-              seedColor: Color(defaultPrimaryColor),
+              seedColor: const Color(defaultPrimaryColor),
               brightness: Brightness.dark,
               dynamicSchemeVariant: schemeVariant,
             );
@@ -352,7 +352,7 @@ extension ColorSchemesExt on ColorSchemes {
             dynamicSchemeVariant: schemeVariant,
           )
         : ColorScheme.fromSeed(
-            seedColor: Color(defaultPrimaryColor),
+            seedColor: const Color(defaultPrimaryColor),
             dynamicSchemeVariant: schemeVariant,
           );
   }
@@ -525,7 +525,7 @@ extension ScriptsExt on List<Script> {
 extension ScriptExt on Script {
   String get fileName => '$id.js';
 
-  Future<String> get path async => await appPath.getScriptPath(id.toString());
+  Future<String> get path async => appPath.getScriptPath(id.toString());
 
   Future<String?> get content async {
     final file = File(await path);

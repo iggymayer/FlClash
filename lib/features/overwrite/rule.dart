@@ -220,7 +220,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
       ...RuleTarget.values.map(
         (item) => DropdownMenuEntry(value: item.name, label: item.name),
       ),
-      DropdownMenuEntry(value: 'MATCH', label: 'MATCH'),
+      const DropdownMenuEntry(value: 'MATCH', label: 'MATCH'),
     ];
     final rule = widget.rule;
     if (rule != null) {
@@ -277,7 +277,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
       child: DropdownMenuTheme(
         data: DropdownMenuThemeData(
           inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             labelStyle: context.textTheme.bodyLarge?.copyWith(
               overflow: TextOverflow.ellipsis,
             ),
@@ -307,7 +307,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                     },
                     child: Text(_ruleAction.value),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   TextFormField(
                     keyboardType: TextInputType.text,
                     onFieldSubmitted: (_) {
@@ -327,7 +327,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   FormField<String>(
                     validator: (_) {
                       if (_ruleTargetController.text.isEmpty) {
@@ -351,7 +351,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                     },
                   ),
                   if (_ruleAction.hasParams) ...[
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Wrap(
                       spacing: 8,
                       children: [
@@ -359,7 +359,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                           radius: 8,
                           isSelected: _src,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 8,
                             ),
@@ -378,7 +378,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                           radius: 8,
                           isSelected: _noResolve,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 8,
                             ),
@@ -396,7 +396,7 @@ class _AddOrEditRuleDialogState extends State<AddOrEditRuleDialog> {
                       ],
                     ),
                   ],
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                 ],
               );
             },

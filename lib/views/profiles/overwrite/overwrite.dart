@@ -50,9 +50,9 @@ class _OverwriteViewState extends ConsumerState<OverwriteView> {
               child: Text(appLocalizations.preview),
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
-        body: CustomScrollView(slivers: [_Title(), _Content()]),
+        body: const CustomScrollView(slivers: [_Title(), _Content()]),
       ),
     );
   }
@@ -109,7 +109,7 @@ class _Title extends ConsumerWidget {
           InfoHeader(info: Info(label: appLocalizations.overrideMode)),
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Wrap(
               spacing: 16,
               children: [
@@ -135,9 +135,9 @@ class _Title extends ConsumerWidget {
               ],
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               _getDesc(context, overwriteType),
               style: context.textTheme.bodySmall?.copyWith(
@@ -160,9 +160,9 @@ class _Content extends ConsumerWidget {
     final overwriteType = ref.watch(overwriteTypeProvider(profileId));
     ref.listen(clashConfigProvider(profileId), (_, _) {});
     return switch (overwriteType) {
-      OverwriteType.standard => StandardContent(),
-      OverwriteType.script => ScriptContent(),
-      OverwriteType.custom => CustomContent(),
+      OverwriteType.standard => const StandardContent(),
+      OverwriteType.script => const ScriptContent(),
+      OverwriteType.custom => const CustomContent(),
     };
   }
 }

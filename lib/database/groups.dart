@@ -90,7 +90,7 @@ class ProxyGroupsDao extends DatabaseAccessor<Database>
     required ProxyGroup proxyGroup,
     required String order,
   }) async {
-    return await proxyGroups.insertOnConflictUpdate(
+    return proxyGroups.insertOnConflictUpdate(
       proxyGroup.toCompanion(profileId, order),
     );
   }

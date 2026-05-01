@@ -111,7 +111,7 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
           ),
         );
         if (url == null) {
-          return SizedBox();
+          return const SizedBox();
         }
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,10 +155,10 @@ class _GeoDataListItemState extends State<GeoDataListItem> {
                         valueListenable: isUpdating,
                         builder: (_, isUpdating, _) {
                           return isUpdating
-                              ? SizedBox(
+                              ? const SizedBox(
                                   height: 30,
                                   width: 30,
-                                  child: const Padding(
+                                  child: Padding(
                                     padding: EdgeInsets.all(2),
                                     child: CircularProgressIndicator(),
                                   ),

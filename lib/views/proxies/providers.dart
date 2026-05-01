@@ -92,7 +92,7 @@ class ProviderItem extends StatelessWidget {
       if (bytes == null || provider.path == null) return;
       await File(provider.path!).safeWriteAsBytes(bytes);
       final providerName = provider.name;
-      var message = await coreController.sideLoadExternalProvider(
+      final message = await coreController.sideLoadExternalProvider(
         providerName: providerName,
         data: utf8.decode(bytes),
       );
@@ -146,10 +146,10 @@ class ProviderItem extends StatelessWidget {
                       isUpdatingProvider(provider.updatingKey),
                     );
                     return isUpdating
-                        ? SizedBox(
+                        ? const SizedBox(
                             height: 30,
                             width: 30,
-                            child: const Padding(
+                            child: Padding(
                               padding: EdgeInsets.all(2),
                               child: CircularProgressIndicator(),
                             ),

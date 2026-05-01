@@ -130,7 +130,7 @@ class _ProfilesViewState extends State<ProfilesView> {
           body: state.profiles.isEmpty
               ? NullStatus(
                   label: appLocalizations.nullProfileDesc,
-                  illustration: ProfileEmptyIllustration(),
+                  illustration: const ProfileEmptyIllustration(),
                 )
               : Align(
                   alignment: Alignment.topCenter,
@@ -301,7 +301,7 @@ class ProfileItem extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       )
                     : CommonPopupBox(
-                        key: ValueKey('menu'),
+                        key: const ValueKey('menu'),
                         popup: CommonPopupMenu(
                           items: [
                             PopupMenuItemData(
@@ -387,7 +387,7 @@ class ProfileItem extends StatelessWidget {
                             onPressed: () {
                               open();
                             },
-                            icon: Icon(Icons.more_vert),
+                            icon: const Icon(Icons.more_vert),
                           );
                         },
                       ),
@@ -474,7 +474,7 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
       sheetTransparentToolBar: true,
       actions: [IconButtonData(icon: Icons.check, onPressed: _handleSave)],
       body: Padding(
-        padding: EdgeInsets.only(bottom: 32),
+        padding: const EdgeInsets.only(bottom: 32),
         child: ReorderableListView.builder(
           buildDefaultDragHandles: false,
           padding: const EdgeInsets.symmetric(

@@ -73,7 +73,7 @@ extension BuildContextExtension on BuildContext {
   T? findLastStateOfType<T extends State>() {
     T? state;
 
-    visitor(Element element) {
+    void visitor(Element element) {
       if (!element.mounted) {
         return;
       }

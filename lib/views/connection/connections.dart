@@ -53,7 +53,7 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
         await _updateConnections();
-        timer = Timer(Duration(seconds: 1), () async {
+        timer = Timer(const Duration(seconds: 1), () async {
           _updateConnectionsTask();
         });
       }
@@ -101,7 +101,7 @@ class _ConnectionsViewState extends ConsumerState<ConnectionsView> {
           if (connections.isEmpty) {
             return NullStatus(
               label: appLocalizations.nullTip(appLocalizations.connections),
-              illustration: ConnectionEmptyIllustration(),
+              illustration: const ConnectionEmptyIllustration(),
             );
           }
           final items = connections

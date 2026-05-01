@@ -96,7 +96,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
       },
       child: SliverMainAxisGroup(
         slivers: [
-          SliverToBoxAdapter(child: SizedBox(height: 24)),
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
           SliverToBoxAdapter(
             child: Column(
               children: [
@@ -109,10 +109,10 @@ class _StandardContentState extends ConsumerState<StandardContent> {
                           onPressed: () {
                             _handleDelete();
                           },
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                         ),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                     ],
                     CommonMinFilledButtonTheme(
                       child: selectedRules.isNotEmpty
@@ -134,7 +134,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
               ],
             ),
           ),
-          SliverToBoxAdapter(child: SizedBox(height: 8)),
+          const SliverToBoxAdapter(child: SizedBox(height: 8)),
           Consumer(
             builder: (_, ref, _) {
               return SliverReorderableList(
@@ -148,7 +148,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
                     child: ItemPositionProvider(
                       position: position,
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
                         child: RuleItem(
                           hasMatch: true,
                           isEditing: selectedRules.isNotEmpty,
@@ -172,7 +172,7 @@ class _StandardContentState extends ConsumerState<StandardContent> {
               );
             },
           ),
-          SliverToBoxAdapter(child: SizedBox(height: 16)),
+          const SliverToBoxAdapter(child: SizedBox(height: 16)),
           SliverToBoxAdapter(
             child: MoreActionButton(
               label: appLocalizations.controlGlobalAddedRules,
@@ -209,10 +209,10 @@ class _EditGlobalAddedRules extends ConsumerWidget {
       body: rules.isEmpty
           ? NullStatus(
               label: appLocalizations.nullTip(appLocalizations.rule),
-              illustration: RuleEmptyIllustration(),
+              illustration: const RuleEmptyIllustration(),
             )
           : ListView.builder(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               itemExtent: ruleItemHeight,
               itemBuilder: (context, index) {
                 final rule = rules[index];

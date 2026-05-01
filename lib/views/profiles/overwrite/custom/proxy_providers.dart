@@ -25,7 +25,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
   void initState() {
     super.initState();
     ref.listenManual(itemsProvider(key), (prev, next) {
-      if (!SetEquality().equals(prev, next)) {
+      if (!const SetEquality().equals(prev, next)) {
         _handleRealRemove();
       }
     });
@@ -34,7 +34,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
   void _handleToAddProxyProvidersView() {
     Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => _AddProxyProvidersView()));
+    ).push(PagedSheetRoute(builder: (context) => const _AddProxyProvidersView()));
   }
 
   void _handleRemove(String providerName) {
@@ -62,7 +62,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
         });
         ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
       },
-      duration: Duration(milliseconds: 450),
+      duration: const Duration(milliseconds: 450),
     );
   }
 
@@ -78,7 +78,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
       key: ValueKey(providerName),
       onDismissed: _handleRealRemove,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ItemPositionProvider(
           position: position,
           child: Consumer(
@@ -100,13 +100,13 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                contentPadding: EdgeInsets.only(left: 16, right: 0),
+                contentPadding: const EdgeInsets.only(left: 16, right: 0),
                 leading: CommonMinIconButtonTheme(
                   child: IconButton.filledTonal(
                     onPressed: () {
                       _handleRemove(providerName);
                     },
-                    icon: Icon(Icons.remove, size: 18),
+                    icon: const Icon(Icons.remove, size: 18),
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -123,8 +123,8 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                       index: index,
                       child: Container(
                         color: Colors.transparent,
-                        padding: EdgeInsets.all(16),
-                        child: Icon(Icons.drag_handle),
+                        padding: const EdgeInsets.all(16),
+                        child: const Icon(Icons.drag_handle),
                       ),
                     ),
                   ],
@@ -188,7 +188,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
               child: SizedBox(height: context.sheetTopPadding + 8),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: CommonCard(
                   radius: 20,
@@ -231,9 +231,9 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
                 ),
               ),
             ),
-            SliverToBoxAdapter(child: SizedBox(height: 8)),
+            const SliverToBoxAdapter(child: SizedBox(height: 8)),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: InfoHeader(
                   info: Info(label: appLocalizations.proxyProviders),
@@ -293,7 +293,7 @@ class _EditProxyProvidersViewState extends ConsumerState<EditProxyProvidersView>
               SliverFillRemaining(
                 child: NullStatus(label: appLocalizations.proxyProvidersEmpty),
               ),
-            SliverToBoxAdapter(child: SizedBox(height: 16)),
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
       ),
@@ -315,7 +315,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
   void initState() {
     super.initState();
     ref.listenManual(itemsProvider(key), (prev, next) {
-      if (!SetEquality().equals(prev, next)) {
+      if (!const SetEquality().equals(prev, next)) {
         _handleRealAdd();
       }
     });
@@ -342,7 +342,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
         });
         ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
       },
-      duration: Duration(milliseconds: 350),
+      duration: const Duration(milliseconds: 350),
     );
   }
 
@@ -357,7 +357,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
       key: ValueKey(title),
       dismiss: dismiss,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ItemPositionProvider(
           position: position,
           child: DecorationListItem(
@@ -366,7 +366,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
             trailing: CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: onAdd,
-                icon: Icon(Icons.add, size: 18),
+                icon: const Icon(Icons.add, size: 18),
               ),
             ),
           ),
@@ -418,7 +418,7 @@ class _AddProxyProvidersViewState extends ConsumerState<_AddProxyProvidersView>
                   ),
                   if (providerNames.isNotEmpty) ...[
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverToBoxAdapter(
                         child: InfoHeader(
                           info: Info(label: appLocalizations.proxyProviders),

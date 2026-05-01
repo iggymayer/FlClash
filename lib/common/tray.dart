@@ -70,7 +70,7 @@ class Tray {
         tunEnable: trayState.tunEnable,
       );
     }
-    List<MenuItem> menuItems = [];
+    final List<MenuItem> menuItems = [];
     final ref = globalState.container;
     final commonAction = ref.read(commonActionProvider.notifier);
     final systemAction = ref.read(systemActionProvider.notifier);
@@ -116,7 +116,7 @@ class Tray {
     menuItems.add(MenuItem.separator());
     if (system.isMacOS) {
       for (final group in trayState.groups) {
-        List<MenuItem> subMenuItems = [];
+        final List<MenuItem> subMenuItems = [];
         for (final proxy in group.all) {
           subMenuItems.add(
             MenuItem.checkbox(

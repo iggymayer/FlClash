@@ -23,7 +23,7 @@ class CommonFloatingActionButton extends StatelessWidget {
         floatingActionButtonTheme: Theme.of(context).floatingActionButtonTheme
             .copyWith(
               extendedIconLabelSpacing: 0,
-              extendedPadding: EdgeInsets.all(16),
+              extendedPadding: const EdgeInsets.all(16),
             ),
       ),
       child: FloatingActionButtonExtendedBuilder(
@@ -71,7 +71,7 @@ class MoreActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: CommonCard(
         radius: 18,
         onPressed: onPressed,
@@ -84,7 +84,7 @@ class MoreActionButton extends StatelessWidget {
             vertical: 16,
           ),
           title: Text(label, style: context.textTheme.bodyLarge),
-          trailing: trailing ?? Icon(Icons.arrow_forward_ios, size: 18),
+          trailing: trailing ?? const Icon(Icons.arrow_forward_ios, size: 18),
         ),
       ),
     );

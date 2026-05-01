@@ -68,7 +68,7 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 2),
+                  const SizedBox(width: 2),
                   AspectRatio(
                     aspectRatio: 1,
                     child: IconButton(

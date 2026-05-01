@@ -192,11 +192,11 @@ class AppSidebarContainer extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (system.isMacOS) SizedBox(height: 22),
-                SizedBox(height: 10),
+                if (system.isMacOS) const SizedBox(height: 22),
+                const SizedBox(height: 10),
                 if (!system.isMacOS) ...[
-                  ClipRect(child: AppIcon()),
-                  SizedBox(height: 12),
+                  const ClipRect(child: AppIcon()),
+                  const SizedBox(height: 12),
                 ],
                 Expanded(
                   child: ScrollConfiguration(

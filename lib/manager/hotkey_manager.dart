@@ -63,7 +63,7 @@ class _HotKeyManagerState extends ConsumerState<HotKeyManager> {
             key: PhysicalKeyboardKey(hotKeyAction.key!),
             modifiers: modifiers,
           );
-          return await hotKeyManager.register(
+          return hotKeyManager.register(
             hotKey,
             keyDownHandler: (_) {
               _handleHotKeyAction(hotKeyAction.action);
@@ -77,7 +77,7 @@ class _HotKeyManagerState extends ConsumerState<HotKeyManager> {
     return Shortcuts(
       shortcuts: {
         utils.controlSingleActivator(LogicalKeyboardKey.keyW):
-            CloseWindowIntent(),
+            const CloseWindowIntent(),
       },
       child: Actions(
         actions: {

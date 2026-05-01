@@ -59,13 +59,13 @@ class CustomContent extends ConsumerWidget {
     final hasDefaultRules = vm2.b;
     return SliverMainAxisGroup(
       slivers: [
-        SliverToBoxAdapter(child: SizedBox(height: 24)),
+        const SliverToBoxAdapter(child: SizedBox(height: 24)),
         SliverToBoxAdapter(
           child: Column(
             children: [InfoHeader(info: Info(label: appLocalizations.custom))],
           ),
         ),
-        SliverToBoxAdapter(child: SizedBox(height: 8)),
+        const SliverToBoxAdapter(child: SizedBox(height: 8)),
         SliverToBoxAdapter(
           child: MoreActionButton(
             label: appLocalizations.proxyGroup,
@@ -77,9 +77,9 @@ class CustomContent extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Container(
-                constraints: BoxConstraints(minWidth: 44),
+                constraints: const BoxConstraints(minWidth: 44),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: Text(
                     textAlign: TextAlign.center,
                     '$proxyGroupNum',
@@ -90,7 +90,7 @@ class CustomContent extends ConsumerWidget {
             ),
           ),
         ),
-        SliverToBoxAdapter(child: SizedBox(height: 4)),
+        const SliverToBoxAdapter(child: SizedBox(height: 4)),
         SliverToBoxAdapter(
           child: MoreActionButton(
             label: appLocalizations.rule,
@@ -102,8 +102,8 @@ class CustomContent extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Container(
-                constraints: BoxConstraints(minWidth: 44),
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                constraints: const BoxConstraints(minWidth: 44),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 child: Text(
                   '$ruleNum',
                   style: context.textTheme.bodySmall,
@@ -113,7 +113,7 @@ class CustomContent extends ConsumerWidget {
             ),
           ),
         ),
-        SliverToBoxAdapter(child: SizedBox(height: 32)),
+        const SliverToBoxAdapter(child: SizedBox(height: 32)),
         if ((proxyGroupNum == 0 && hasDefaultGroups) ||
             (ruleNum == 0 && hasDefaultRules) ||
             kDebugMode)

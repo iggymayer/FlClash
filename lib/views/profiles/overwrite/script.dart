@@ -29,7 +29,7 @@ class ScriptContent extends ConsumerWidget {
     final scripts = ref.watch(scriptsProvider).value ?? [];
     return SliverMainAxisGroup(
       slivers: [
-        SliverToBoxAdapter(child: SizedBox(height: 24)),
+        const SliverToBoxAdapter(child: SizedBox(height: 24)),
         SliverToBoxAdapter(
           child: Column(
             children: [
@@ -37,17 +37,17 @@ class ScriptContent extends ConsumerWidget {
             ],
           ),
         ),
-        SliverToBoxAdapter(child: SizedBox(height: 8)),
+        const SliverToBoxAdapter(child: SizedBox(height: 8)),
         Consumer(
           builder: (_, ref, _) {
             return SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverList.builder(
                 itemCount: scripts.length,
                 itemBuilder: (_, index) {
                   final script = scripts[index];
                   return Container(
-                    margin: EdgeInsets.symmetric(vertical: 4),
+                    margin: const EdgeInsets.symmetric(vertical: 4),
                     child: CommonCard(
                       type: CommonCardType.filled,
                       radius: 18,
@@ -75,7 +75,7 @@ class ScriptContent extends ConsumerWidget {
                                 },
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Flexible(child: Text(script.label)),
                           ],
                         ),
@@ -92,7 +92,7 @@ class ScriptContent extends ConsumerWidget {
         ),
         SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: CommonCard(
               radius: 18,
               child: ListTile(
@@ -113,7 +113,7 @@ class ScriptContent extends ConsumerWidget {
                         style: context.textTheme.bodyLarge,
                       ),
                     ),
-                    Icon(Icons.arrow_forward_ios, size: 18),
+                    const Icon(Icons.arrow_forward_ios, size: 18),
                   ],
                 ),
               ),

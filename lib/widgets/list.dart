@@ -304,7 +304,7 @@ class ListItem<T> extends StatelessWidget {
         // closedElevation: 0,
         // openElevation: 0,
         closedBuilder: (context, action) {
-          openAction() async {
+          Future<void> openAction() async {
             final isMobile = globalState.container.read(isMobileViewProvider);
             if (!isMobile || kDebugMode) {
               final res = await showExtend(
@@ -607,7 +607,7 @@ class CommonSelectedListItem extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
         color: Colors.transparent,
         child: CommonCard(
           radius: 18,
@@ -683,8 +683,8 @@ class DecorationListItem extends StatelessWidget {
       ItemPosition.startAndEnd,
     ].contains(position);
     final borderRadius = BorderRadius.vertical(
-      top: isStart ? Radius.circular(24) : Radius.zero,
-      bottom: isEnd ? Radius.circular(24) : Radius.zero,
+      top: isStart ? const Radius.circular(24) : Radius.zero,
+      bottom: isEnd ? const Radius.circular(24) : Radius.zero,
     );
     return CommonCard(
       shape: proxyDecorator == true
@@ -718,7 +718,7 @@ class DecorationListItem extends StatelessWidget {
                 child: tile,
               ),
               if (!invalid && proxyDecorator != true && !isEnd)
-                Divider(height: 0, indent: 14, endIndent: 14),
+                const Divider(height: 0, indent: 14, endIndent: 14),
             ],
           );
         },
@@ -758,7 +758,7 @@ class SelectedDecorationListItem extends StatelessWidget {
     return DecorationListItem(
       title: title,
       minVerticalPadding: minVerticalPadding,
-      contentPadding: EdgeInsets.only(left: 16, right: 0),
+      contentPadding: const EdgeInsets.only(left: 16, right: 0),
       isSelected: isSelected,
       invalid: invalid,
       leading: leading,

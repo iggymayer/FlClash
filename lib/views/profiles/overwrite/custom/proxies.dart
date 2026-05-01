@@ -24,7 +24,7 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
   void initState() {
     super.initState();
     ref.listenManual(itemsProvider(key), (prev, next) {
-      if (!SetEquality().equals(prev, next)) {
+      if (!const SetEquality().equals(prev, next)) {
         _handleRealRemove();
       }
     });
@@ -33,7 +33,7 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
   void _handleToAddProxiesView() {
     Navigator.of(
       context,
-    ).push(PagedSheetRoute(builder: (context) => _AddProxiesView()));
+    ).push(PagedSheetRoute(builder: (context) => const _AddProxiesView()));
   }
 
   void _handleRemove(String proxyName) {
@@ -59,7 +59,7 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
         });
         ref.read(itemsProvider(key).notifier).update((state) => <dynamic>{});
       },
-      duration: Duration(milliseconds: 450),
+      duration: const Duration(milliseconds: 450),
     );
   }
 
@@ -76,7 +76,7 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
       key: ValueKey(proxyName),
       onDismissed: _handleRealRemove,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ItemPositionProvider(
           position: position,
           child: Consumer(
@@ -100,13 +100,13 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
                     : (RuleTarget.baseTargets.contains(proxyName)
                           ? Text(proxyName.toLowerCase())
                           : null),
-                contentPadding: EdgeInsets.only(left: 16, right: 0),
+                contentPadding: const EdgeInsets.only(left: 16, right: 0),
                 leading: CommonMinIconButtonTheme(
                   child: IconButton.filledTonal(
                     onPressed: () {
                       _handleRemove(proxyName);
                     },
-                    icon: Icon(Icons.remove, size: 18),
+                    icon: const Icon(Icons.remove, size: 18),
                     padding: EdgeInsets.zero,
                   ),
                 ),
@@ -123,8 +123,8 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
                       index: index,
                       child: Container(
                         color: Colors.transparent,
-                        padding: EdgeInsets.all(12),
-                        child: Icon(Icons.drag_handle),
+                        padding: const EdgeInsets.all(12),
+                        child: const Icon(Icons.drag_handle),
                       ),
                     ),
                   ],
@@ -197,7 +197,7 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
               child: SizedBox(height: context.sheetTopPadding + 8),
             ),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: CommonCard(
                   radius: 20,
@@ -239,9 +239,9 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
                 ),
               ),
             ),
-            SliverToBoxAdapter(child: SizedBox(height: 8)),
+            const SliverToBoxAdapter(child: SizedBox(height: 8)),
             SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               sliver: SliverToBoxAdapter(
                 child: InfoHeader(
                   info: Info(label: appLocalizations.proxies),
@@ -303,7 +303,7 @@ class _EditProxiesViewState extends ConsumerState<EditProxiesView>
               SliverFillRemaining(
                 child: NullStatus(label: appLocalizations.proxiesEmpty),
               ),
-            SliverToBoxAdapter(child: SizedBox(height: 16)),
+            const SliverToBoxAdapter(child: SizedBox(height: 16)),
           ],
         ),
       ),
@@ -324,17 +324,17 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
   void initState() {
     super.initState();
     ref.listenManual(itemsProvider('${key}_groups'), (prev, next) {
-      if (!SetEquality().equals(prev, next)) {
+      if (!const SetEquality().equals(prev, next)) {
         _handleRealAdd('groups');
       }
     });
     ref.listenManual(itemsProvider('${key}_proxies'), (prev, next) {
-      if (!SetEquality().equals(prev, next)) {
+      if (!const SetEquality().equals(prev, next)) {
         _handleRealAdd('proxies');
       }
     });
     ref.listenManual(itemsProvider('${key}_targets'), (prev, next) {
-      if (!SetEquality().equals(prev, next)) {
+      if (!const SetEquality().equals(prev, next)) {
         _handleRealAdd('targets');
       }
     });
@@ -367,7 +367,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
             .read(itemsProvider(realKey).notifier)
             .update((state) => <dynamic>{});
       },
-      duration: Duration(milliseconds: 350),
+      duration: const Duration(milliseconds: 350),
     );
   }
 
@@ -383,7 +383,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
       key: ValueKey(title),
       dismiss: dismiss,
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: ItemPositionProvider(
           position: position,
           child: DecorationListItem(
@@ -395,7 +395,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
             trailing: CommonMinIconButtonTheme(
               child: IconButton.filledTonal(
                 onPressed: onAdd,
-                icon: Icon(Icons.add, size: 18),
+                icon: const Icon(Icons.add, size: 18),
               ),
             ),
           ),
@@ -458,7 +458,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
                   ),
                   if (targets.isNotEmpty) ...[
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverToBoxAdapter(
                         child: InfoHeader(
                           info: Info(label: appLocalizations.basicStrategy),
@@ -484,11 +484,11 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
                         );
                       }, childCount: targets.length),
                     ),
-                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    const SliverToBoxAdapter(child: SizedBox(height: 8)),
                   ],
                   if (proxyGroups.isNotEmpty) ...[
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverToBoxAdapter(
                         child: InfoHeader(
                           info: Info(label: appLocalizations.proxyGroup),
@@ -514,11 +514,11 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
                         );
                       }, childCount: proxyGroups.length),
                     ),
-                    SliverToBoxAdapter(child: SizedBox(height: 8)),
+                    const SliverToBoxAdapter(child: SizedBox(height: 8)),
                   ],
                   if (proxies.isNotEmpty) ...[
                     SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       sliver: SliverToBoxAdapter(
                         child: InfoHeader(
                           info: Info(label: appLocalizations.proxies),
@@ -545,7 +545,7 @@ class _AddProxiesViewState extends ConsumerState<_AddProxiesView>
                       }, childCount: proxies.length),
                     ),
                   ],
-                  SliverToBoxAdapter(child: SizedBox(height: 16)),
+                  const SliverToBoxAdapter(child: SizedBox(height: 16)),
                 ],
               ),
       ),

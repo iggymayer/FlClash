@@ -136,7 +136,7 @@ class _HomePageViewState extends ConsumerState<_HomePageView> {
   late PageController _pageController;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _pageController = PageController(initialPage: _pageIndex);
     ref.listenManual(currentPageLabelProvider, (prev, next) {

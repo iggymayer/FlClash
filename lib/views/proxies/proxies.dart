@@ -33,7 +33,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
           onPressed: () {
             _proxiesTabKey.currentState?.scrollToGroupSelected();
           },
-          icon: Icon(Icons.adjust, weight: 1),
+          icon: const Icon(Icons.adjust, weight: 1),
         ),
       CommonPopupBox(
         targetBuilder: (open) {
@@ -42,7 +42,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
               final isMobile = ref.read(isMobileViewProvider);
               open(offset: Offset(0, isMobile ? 0 : 20));
             },
-            icon: Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert),
           );
         },
         popup: CommonPopupMenu(
@@ -53,7 +53,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
               onPressed: () {
                 showSheet(
                   context: context,
-                  props: SheetProps(isScrollControlled: true),
+                  props: const SheetProps(isScrollControlled: true),
                   builder: (_) {
                     return AdaptiveSheetScaffold(
                       body: const ProxiesSetting(),
@@ -71,7 +71,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
                   showExtend(
                     context,
                     builder: (_) {
-                      return ProvidersView();
+                      return const ProvidersView();
                     },
                   );
                 },
