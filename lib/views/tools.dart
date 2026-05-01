@@ -269,18 +269,18 @@ class _SettingItem extends StatelessWidget {
   }
 }
 
-class _DisclaimerItem extends StatelessWidget {
+class _DisclaimerItem extends ConsumerWidget {
   const _DisclaimerItem();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     return ListItem(
       leading: const Icon(Icons.gavel),
       title: Text(context.appLocalizations.disclaimer),
       onTap: () async {
         final isDisclaimerAccepted = await appController.showDisclaimer();
         if (!isDisclaimerAccepted) {
-          appController.handleExit();
+          await ref.read(systemActionProvider.notifier).handleExit();
         }
       },
     );

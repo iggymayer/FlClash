@@ -15,6 +15,7 @@ import 'package:fl_clash/widgets/list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_js/flutter_js.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_color_utilities/palettes/core_palette.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,6 +23,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'common/common.dart';
 import 'database/database.dart';
+import 'enum/enum.dart';
 import 'l10n/l10n.dart';
 import 'models/models.dart';
 
@@ -38,6 +40,7 @@ class GlobalState {
   late Measure measure;
   late CommonTheme theme;
   late Color accentColor;
+  late ProviderContainer container;
   bool needInitStatus = true;
 
   // ignore: deprecated_member_use
@@ -72,6 +75,10 @@ class GlobalState {
     } catch (_) {}
   }
 
+  String get ua => container
+      .read(patchClashConfigProvider.select((state) => state.globalUa))
+      .takeFirstValid([packageInfo.ua]);
+
   Future<ProviderContainer> _initData(int version) async {
     final appState = AppState(
       brightness: WidgetsBinding.instance.platformDispatcher.platformBrightness,
@@ -105,7 +112,7 @@ class GlobalState {
       },
     );
     final configOverrides = buildConfigOverrides(config);
-    final container = ProviderContainer(
+    container = ProviderContainer(
       overrides: [...appStateOverrides, ...configOverrides],
     );
     final profiles = await database.profilesDao.query().get();
@@ -116,6 +123,32 @@ class GlobalState {
     );
     await window?.init(version, config.windowProps);
     return container;
+  }
+
+  Future<T?> safeRun<T>(
+    FutureOr<T> Function() futureFunction, {
+    String? title,
+    VoidCallback? onStart,
+    VoidCallback? onEnd,
+    bool silence = true,
+  }) async {
+    try {
+      onStart?.call();
+      return await futureFunction();
+    } catch (e, s) {
+      commonPrint.log('$title ===> $e, $s', logLevel: LogLevel.warning);
+      if (silence) {
+        showNotifier(e.toString());
+      } else {
+        showMessage(
+          title: title ?? currentAppLocalizations.tip,
+          message: TextSpan(text: e.toString()),
+        );
+      }
+      return null;
+    } finally {
+      onEnd?.call();
+    }
   }
 
   Future<void> startUpdateTasks([UpdateTasks? tasks]) async {

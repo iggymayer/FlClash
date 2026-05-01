@@ -1,5 +1,4 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -66,7 +65,9 @@ class _ProfilesViewState extends State<ProfilesView> {
     final updateProfiles = profiles.map<Future>((profile) async {
       if (profile.type == ProfileType.file) return;
       try {
-        await appController.updateProfile(profile, showLoading: true);
+        await globalState.container
+            .read(profilesActionProvider.notifier)
+            .updateProfile(profile, showLoading: true);
       } catch (e) {
         messages.add(
           UpdatingMessage(label: profile.realLabel, message: e.toString()),
@@ -192,7 +193,9 @@ class ProfileItem extends StatelessWidget {
     if (res != true) {
       return;
     }
-    await appController.deleteProfile(profile.id);
+    await globalState.container
+        .read(profilesActionProvider.notifier)
+        .deleteProfile(profile.id);
   }
 
   Future<void> _handlePreview(BuildContext context) async {
@@ -202,8 +205,11 @@ class ProfileItem extends StatelessWidget {
   Future updateProfile() async {
     if (profile.type == ProfileType.file) return;
     try {} finally {}
-    await appController.loadingRun(() async {
-      await appController.updateProfile(profile, showLoading: true);
+    final ref = globalState.container;
+    await ref.read(commonActionProvider.notifier).loadingRun(() async {
+      await ref
+          .read(profilesActionProvider.notifier)
+          .updateProfile(profile, showLoading: true);
     }, tag: LoadingTag.profiles);
   }
 
@@ -251,7 +257,7 @@ class ProfileItem extends StatelessWidget {
 
   Future<void> _handleExportFile(BuildContext context) async {
     final appLocalizations = context.appLocalizations;
-    final res = await appController.safeRun<bool>(() async {
+    final res = await globalState.safeRun<bool>(() async {
       final mFile = await profile.file;
       final value = await picker.saveFile(
         profile.realLabel,
@@ -460,7 +466,7 @@ class _ReorderableProfilesSheetState extends State<ReorderableProfilesSheet> {
 
   void _handleSave() {
     Navigator.of(context).pop();
-    appController.reorder(profiles);
+    globalState.container.read(profilesProvider.notifier).reorder(profiles);
   }
 
   @override

@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:defer_pointer/defer_pointer.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -55,7 +54,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
     if (res != true) {
       return;
     }
-    appController.restartCore();
+    globalState.container.read(coreActionProvider.notifier).restartCore();
   }
 
   List<Widget> _buildActions(bool isEdit) {

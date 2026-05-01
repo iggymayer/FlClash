@@ -687,7 +687,7 @@ final class ProxiesListStateProvider
   }
 }
 
-String _$proxiesListStateHash() => r'b16ad96516ece78f6cb22f558a0535000b784317';
+String _$proxiesListStateHash() => r'4d83ff3e3d337c9a6eadddfa747c11939676b8bd';
 
 @ProviderFor(proxiesTabState)
 final proxiesTabStateProvider = ProxiesTabStateProvider._();
@@ -729,7 +729,7 @@ final class ProxiesTabStateProvider
   }
 }
 
-String _$proxiesTabStateHash() => r'143b106d74da618327cbac48af15078efd8cabee';
+String _$proxiesTabStateHash() => r'b16734b2578c4e9a91880af8af41faa2e293b257';
 
 @ProviderFor(isStart)
 final isStartProvider = IsStartProvider._();
@@ -884,7 +884,7 @@ final class ProxyGroupSelectorStateProvider
 }
 
 String _$proxyGroupSelectorStateHash() =>
-    r'c2a059873a38907071a2664409bacfe21b7d6c3c';
+    r'd393702a1fea16f8ab0362c2888b70300795e829';
 
 final class ProxyGroupSelectorStateFamily extends $Family
     with $FunctionalFamilyOverride<ProxyGroupSelectorState, (String, String)> {
@@ -1463,24 +1463,24 @@ final class CurrentProfileProvider
 
 String _$currentProfileHash() => r'55f3cb9570a0aa6b9e0b83a36693b69d52e753ab';
 
-@ProviderFor(getProxiesColumns)
-final getProxiesColumnsProvider = GetProxiesColumnsProvider._();
+@ProviderFor(proxiesColumns)
+final proxiesColumnsProvider = ProxiesColumnsProvider._();
 
-final class GetProxiesColumnsProvider extends $FunctionalProvider<int, int, int>
+final class ProxiesColumnsProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  GetProxiesColumnsProvider._()
+  ProxiesColumnsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'getProxiesColumnsProvider',
+        name: r'proxiesColumnsProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$getProxiesColumnsHash();
+  String debugGetCreateSourceHash() => _$proxiesColumnsHash();
 
   @$internal
   @override
@@ -1489,7 +1489,7 @@ final class GetProxiesColumnsProvider extends $FunctionalProvider<int, int, int>
 
   @override
   int create(Ref ref) {
-    return getProxiesColumns(ref);
+    return proxiesColumns(ref);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1501,7 +1501,7 @@ final class GetProxiesColumnsProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$getProxiesColumnsHash() => r'd5340932d4812727caa670065bce30450f1c4da5';
+String _$proxiesColumnsHash() => r'e93f980da3d857bd38957635ef944a0db60aaef3';
 
 @ProviderFor(realSelectedProxyState)
 final realSelectedProxyStateProvider = RealSelectedProxyStateFamily._();
@@ -1588,29 +1588,29 @@ final class RealSelectedProxyStateFamily extends $Family
   String toString() => r'realSelectedProxyStateProvider';
 }
 
-@ProviderFor(getProxyName)
-final getProxyNameProvider = GetProxyNameFamily._();
+@ProviderFor(proxyName)
+final proxyNameProvider = ProxyNameFamily._();
 
-final class GetProxyNameProvider
+final class ProxyNameProvider
     extends $FunctionalProvider<String?, String?, String?>
     with $Provider<String?> {
-  GetProxyNameProvider._({
-    required GetProxyNameFamily super.from,
+  ProxyNameProvider._({
+    required ProxyNameFamily super.from,
     required String super.argument,
   }) : super(
          retry: null,
-         name: r'getProxyNameProvider',
+         name: r'proxyNameProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$getProxyNameHash();
+  String debugGetCreateSourceHash() => _$proxyNameHash();
 
   @override
   String toString() {
-    return r'getProxyNameProvider'
+    return r'proxyNameProvider'
         ''
         '($argument)';
   }
@@ -1623,7 +1623,7 @@ final class GetProxyNameProvider
   @override
   String? create(Ref ref) {
     final argument = this.argument as String;
-    return getProxyName(ref, argument);
+    return proxyName(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1636,7 +1636,7 @@ final class GetProxyNameProvider
 
   @override
   bool operator ==(Object other) {
-    return other is GetProxyNameProvider && other.argument == argument;
+    return other is ProxyNameProvider && other.argument == argument;
   }
 
   @override
@@ -1645,49 +1645,49 @@ final class GetProxyNameProvider
   }
 }
 
-String _$getProxyNameHash() => r'204a477ea18c8e1eeef55b3efd3d47e45b0d2350';
+String _$proxyNameHash() => r'a34d43762ff87d7ccd504a7e9ab66a25396b529f';
 
-final class GetProxyNameFamily extends $Family
+final class ProxyNameFamily extends $Family
     with $FunctionalFamilyOverride<String?, String> {
-  GetProxyNameFamily._()
+  ProxyNameFamily._()
     : super(
         retry: null,
-        name: r'getProxyNameProvider',
+        name: r'proxyNameProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  GetProxyNameProvider call(String groupName) =>
-      GetProxyNameProvider._(argument: groupName, from: this);
+  ProxyNameProvider call(String groupName) =>
+      ProxyNameProvider._(argument: groupName, from: this);
 
   @override
-  String toString() => r'getProxyNameProvider';
+  String toString() => r'proxyNameProvider';
 }
 
-@ProviderFor(getSelectedProxyName)
-final getSelectedProxyNameProvider = GetSelectedProxyNameFamily._();
+@ProviderFor(selectedProxyName)
+final selectedProxyNameProvider = SelectedProxyNameFamily._();
 
-final class GetSelectedProxyNameProvider
+final class SelectedProxyNameProvider
     extends $FunctionalProvider<String?, String?, String?>
     with $Provider<String?> {
-  GetSelectedProxyNameProvider._({
-    required GetSelectedProxyNameFamily super.from,
+  SelectedProxyNameProvider._({
+    required SelectedProxyNameFamily super.from,
     required String super.argument,
   }) : super(
          retry: null,
-         name: r'getSelectedProxyNameProvider',
+         name: r'selectedProxyNameProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$getSelectedProxyNameHash();
+  String debugGetCreateSourceHash() => _$selectedProxyNameHash();
 
   @override
   String toString() {
-    return r'getSelectedProxyNameProvider'
+    return r'selectedProxyNameProvider'
         ''
         '($argument)';
   }
@@ -1700,7 +1700,7 @@ final class GetSelectedProxyNameProvider
   @override
   String? create(Ref ref) {
     final argument = this.argument as String;
-    return getSelectedProxyName(ref, argument);
+    return selectedProxyName(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1713,7 +1713,7 @@ final class GetSelectedProxyNameProvider
 
   @override
   bool operator ==(Object other) {
-    return other is GetSelectedProxyNameProvider && other.argument == argument;
+    return other is SelectedProxyNameProvider && other.argument == argument;
   }
 
   @override
@@ -1722,50 +1722,49 @@ final class GetSelectedProxyNameProvider
   }
 }
 
-String _$getSelectedProxyNameHash() =>
-    r'13aeae1fede234983d262d824a85c7375f9e4e78';
+String _$selectedProxyNameHash() => r'417c99385108d630b7cc8aaa3e94abd7011cbc58';
 
-final class GetSelectedProxyNameFamily extends $Family
+final class SelectedProxyNameFamily extends $Family
     with $FunctionalFamilyOverride<String?, String> {
-  GetSelectedProxyNameFamily._()
+  SelectedProxyNameFamily._()
     : super(
         retry: null,
-        name: r'getSelectedProxyNameProvider',
+        name: r'selectedProxyNameProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  GetSelectedProxyNameProvider call(String groupName) =>
-      GetSelectedProxyNameProvider._(argument: groupName, from: this);
+  SelectedProxyNameProvider call(String groupName) =>
+      SelectedProxyNameProvider._(argument: groupName, from: this);
 
   @override
-  String toString() => r'getSelectedProxyNameProvider';
+  String toString() => r'selectedProxyNameProvider';
 }
 
-@ProviderFor(getProxyDesc)
-final getProxyDescProvider = GetProxyDescFamily._();
+@ProviderFor(proxyDesc)
+final proxyDescProvider = ProxyDescFamily._();
 
-final class GetProxyDescProvider
+final class ProxyDescProvider
     extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  GetProxyDescProvider._({
-    required GetProxyDescFamily super.from,
+  ProxyDescProvider._({
+    required ProxyDescFamily super.from,
     required Proxy super.argument,
   }) : super(
          retry: null,
-         name: r'getProxyDescProvider',
+         name: r'proxyDescProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$getProxyDescHash();
+  String debugGetCreateSourceHash() => _$proxyDescHash();
 
   @override
   String toString() {
-    return r'getProxyDescProvider'
+    return r'proxyDescProvider'
         ''
         '($argument)';
   }
@@ -1778,7 +1777,7 @@ final class GetProxyDescProvider
   @override
   String create(Ref ref) {
     final argument = this.argument as Proxy;
-    return getProxyDesc(ref, argument);
+    return proxyDesc(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1791,7 +1790,7 @@ final class GetProxyDescProvider
 
   @override
   bool operator ==(Object other) {
-    return other is GetProxyDescProvider && other.argument == argument;
+    return other is ProxyDescProvider && other.argument == argument;
   }
 
   @override
@@ -1800,24 +1799,24 @@ final class GetProxyDescProvider
   }
 }
 
-String _$getProxyDescHash() => r'4579b55bf7e9fbcfdf91b91619bd0320c585f23d';
+String _$proxyDescHash() => r'16dbf0d090ba4699b1a282d804d1e75a9910696f';
 
-final class GetProxyDescFamily extends $Family
+final class ProxyDescFamily extends $Family
     with $FunctionalFamilyOverride<String, Proxy> {
-  GetProxyDescFamily._()
+  ProxyDescFamily._()
     : super(
         retry: null,
-        name: r'getProxyDescProvider',
+        name: r'proxyDescProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
       );
 
-  GetProxyDescProvider call(Proxy proxy) =>
-      GetProxyDescProvider._(argument: proxy, from: this);
+  ProxyDescProvider call(Proxy proxy) =>
+      ProxyDescProvider._(argument: proxy, from: this);
 
   @override
-  String toString() => r'getProxyDescProvider';
+  String toString() => r'proxyDescProvider';
 }
 
 @ProviderFor(checkIp)
@@ -2173,7 +2172,7 @@ final class SharedStateProvider
   }
 }
 
-String _$sharedStateHash() => r'864fdf3f750fb6d1beadcb5f9226a614a9cb2caa';
+String _$sharedStateHash() => r'eeae9ab857cd6263f761290054774460f9e86069';
 
 @ProviderFor(overlayTopOffset)
 final overlayTopOffsetProvider = OverlayTopOffsetProvider._();
@@ -3110,7 +3109,7 @@ final class ProxyGroupProviderProvider
 }
 
 String _$proxyGroupProviderHash() =>
-    r'3d14cffb0b0316646fa78b85083e74d573e55fe9';
+    r'732cd77edc19e86918e4760c235e36d889b8ba18';
 
 abstract class _$ProxyGroupProvider extends $Notifier<ProxyGroup> {
   ProxyGroup build();

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/core/core.dart';
 import 'package:fl_clash/models/common.dart';
 import 'package:fl_clash/models/core.dart';
+import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
@@ -23,16 +23,19 @@ class ProvidersView extends ConsumerStatefulWidget {
 
 class _ProvidersViewState extends ConsumerState<ProvidersView> {
   Future<void> _updateProviders() async {
+    final ref = globalState.container;
     final providers = ref.read(providersProvider);
     final List<UpdatingMessage> messages = [];
     final updateProviders = providers.map<Future>((provider) async {
-      final message = await appController.updateProvider(provider);
+      final message = await ref
+          .read(proxiesActionProvider.notifier)
+          .updateProvider(provider);
       if (message.isNotEmpty) {
         messages.add(UpdatingMessage(label: provider.name, message: message));
       }
     });
     await Future.wait(updateProviders);
-    appController.updateGroupsDebounce();
+    ref.read(proxiesActionProvider.notifier).updateGroupsDebounce();
     if (messages.isNotEmpty) {
       globalState.showAllUpdatingMessagesDialog(messages);
     }
@@ -71,15 +74,19 @@ class ProviderItem extends StatelessWidget {
 
   Future<void> _handleUpdateProvider() async {
     if (provider.vehicleType != 'HTTP') return;
-    await appController.safeRun(() async {
-      final message = await appController.updateProvider(provider);
+    final ref = globalState.container;
+    await globalState.safeRun(() async {
+      final message = await ref
+          .read(proxiesActionProvider.notifier)
+          .updateProvider(provider);
       if (message.isNotEmpty) throw message;
     }, silence: false);
-    appController.updateGroupsDebounce();
+    ref.read(proxiesActionProvider.notifier).updateGroupsDebounce();
   }
 
   Future<void> _handleSideLoadProvider() async {
-    await appController.safeRun<void>(() async {
+    final ref = globalState.container;
+    await globalState.safeRun<void>(() async {
       final platformFile = await picker.pickerFile();
       final bytes = platformFile?.bytes;
       if (bytes == null || provider.path == null) return;
@@ -90,12 +97,12 @@ class ProviderItem extends StatelessWidget {
         data: utf8.decode(bytes),
       );
       if (message.isNotEmpty) throw message;
-      appController.setProvider(
-        await coreController.getExternalProvider(provider.name),
-      );
+      ref
+          .read(providersProvider.notifier)
+          .setProvider(await coreController.getExternalProvider(provider.name));
       if (message.isNotEmpty) throw message;
     });
-    appController.updateGroupsDebounce();
+    ref.read(proxiesActionProvider.notifier).updateGroupsDebounce();
   }
 
   String _buildProviderDesc(BuildContext context) {

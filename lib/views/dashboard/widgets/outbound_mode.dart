@@ -1,9 +1,8 @@
 import 'dart:math';
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/providers/config.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,10 @@ import 'package:intl/intl.dart';
 
 class OutboundMode extends StatelessWidget {
   const OutboundMode({super.key});
+
+  void _handleChangeMode(Mode mode) {
+    globalState.container.read(setupActionProvider.notifier).changeMode(mode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +47,7 @@ class OutboundMode extends StatelessWidget {
                     if (value == null) {
                       return;
                     }
-                    appController.changeMode(value);
+                    _handleChangeMode(value);
                   },
                   child: LayoutBuilder(
                     builder: (_, constraints) {
@@ -69,7 +72,7 @@ class OutboundMode extends StatelessWidget {
                               ),
                               delegate: RadioDelegate(
                                 onTab: () {
-                                  appController.changeMode(item);
+                                  _handleChangeMode(item);
                                 },
                                 value: item,
                               ),
@@ -96,6 +99,10 @@ class OutboundMode extends StatelessWidget {
 
 class OutboundModeV2 extends StatelessWidget {
   const OutboundModeV2({super.key});
+
+  void _handleChangeMode(Mode mode) {
+    globalState.container.read(setupActionProvider.notifier).changeMode(mode);
+  }
 
   Color _getTextColor(BuildContext context, Mode mode) {
     return switch (mode) {
@@ -163,7 +170,7 @@ class OutboundModeV2 extends StatelessWidget {
                             if (value == null) {
                               return;
                             }
-                            appController.changeMode(value);
+                            _handleChangeMode(value);
                           },
                           thumbColor: thumbColor,
                         ),

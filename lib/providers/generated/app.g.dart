@@ -92,7 +92,7 @@ final class LogsProvider extends $NotifierProvider<Logs, FixedList<Log>> {
   }
 }
 
-String _$logsHash() => r'f327fa8d05527172a647adf07771c797fb436bfd';
+String _$logsHash() => r'71b6bf17f8c7ab4ce4a8600f4f684ce0c6267c76';
 
 abstract class _$Logs extends $Notifier<FixedList<Log>> {
   FixedList<Log> build();
@@ -197,7 +197,7 @@ final class ProvidersProvider
   }
 }
 
-String _$providersHash() => r'8752fd5059f1ff767a7dabd0a4ab92effe2f2651';
+String _$providersHash() => r'21b9ada05ede3e9097621e2e5b10800e40ba7098';
 
 abstract class _$Providers extends $Notifier<List<ExternalProvider>> {
   List<ExternalProvider> build();
@@ -876,7 +876,7 @@ final class CurrentPageLabelProvider
   }
 }
 
-String _$currentPageLabelHash() => r'3a5fcd2d50e018ae379cdcd835cfa72ccf8720b8';
+String _$currentPageLabelHash() => r'3873d6e28dd5933bf765ecb1ec579f1d1fa3f319';
 
 abstract class _$CurrentPageLabel extends $Notifier<PageLabel> {
   PageLabel build();
@@ -1029,7 +1029,7 @@ final class BackBlockProvider extends $NotifierProvider<BackBlock, bool> {
   }
 }
 
-String _$backBlockHash() => r'76e821bab72717698f0a5f10e9d2a8909918ae0d';
+String _$backBlockHash() => r'c867df920425f9b063807ca758dff8d849ca069e';
 
 abstract class _$BackBlock extends $Notifier<bool> {
   bool build();

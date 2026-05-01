@@ -1,7 +1,8 @@
 import 'package:fl_clash/common/task.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/models/profile.dart';
 import 'package:fl_clash/pages/editor.dart';
+import 'package:fl_clash/providers/action.dart';
+import 'package:fl_clash/state.dart';
 import 'package:flutter/material.dart';
 
 class PreviewProfileView extends StatefulWidget {
@@ -20,7 +21,9 @@ class _PreviewProfileViewState extends State<PreviewProfileView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final configMap = await appController.getProfileWithId(widget.profile.id);
+      final configMap = await globalState.container
+          .read(setupActionProvider.notifier)
+          .getProfileWithId(widget.profile.id);
       final content = await encodeYamlTask(configMap);
       if (!mounted) {
         return;

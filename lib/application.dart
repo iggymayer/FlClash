@@ -62,7 +62,7 @@ class ApplicationState extends ConsumerState<Application> {
 
   void _autoUpdateProfilesTask() {
     _autoUpdateProfilesTaskTimer = Timer(const Duration(minutes: 20), () async {
-      await appController.autoUpdateProfiles();
+      await ref.read(profilesActionProvider.notifier).autoUpdateProfiles();
       _autoUpdateProfilesTask();
     });
   }
@@ -84,10 +84,10 @@ class ApplicationState extends ConsumerState<Application> {
         child: ConnectivityManager(
           onConnectivityChanged: (results) async {
             commonPrint.log('connectivityChanged ${results.toString()}');
-            appController.updateLocalIp();
+            ref.read(systemActionProvider.notifier).updateLocalIp();
             final hasVpn = results.contains(ConnectivityResult.vpn);
             if (_preHasVpn == hasVpn) {
-              appController.addCheckIp();
+              ref.read(setupActionProvider.notifier).addCheckIp();
             }
             _preHasVpn = hasVpn;
           },
@@ -98,9 +98,6 @@ class ApplicationState extends ConsumerState<Application> {
   }
 
   Widget _buildPlatformApp({required Widget child}) {
-    if (system.isDesktop) {
-      return WindowHeaderContainer(child: child);
-    }
     return VpnManager(child: child);
   }
 
@@ -167,7 +164,7 @@ class ApplicationState extends ConsumerState<Application> {
     linkManager.destroy();
     _autoUpdateProfilesTaskTimer?.cancel();
     await coreController.destroy();
-    await appController.handleExit();
+    await ref.read(systemActionProvider.notifier).handleExit();
     super.dispose();
   }
 }

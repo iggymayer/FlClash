@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/foundation.dart';
@@ -303,9 +303,9 @@ class ListItem<T> extends StatelessWidget {
         // openColor: context.colorScheme.surface,
         // closedElevation: 0,
         // openElevation: 0,
-        closedBuilder: (_, action) {
+        closedBuilder: (context, action) {
           openAction() async {
-            final isMobile = appController.isMobile;
+            final isMobile = globalState.container.read(isMobileViewProvider);
             if (!isMobile || kDebugMode) {
               final res = await showExtend(
                 context,

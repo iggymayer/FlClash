@@ -270,7 +270,7 @@ ProxiesListState proxiesListState(Ref ref) {
     proxiesStyleSettingProvider.select((state) => state.cardType),
   );
 
-  final columns = ref.watch(getProxiesColumnsProvider);
+  final columns = ref.watch(proxiesColumnsProvider);
   return ProxiesListState(
     groups: currentGroups.value,
     currentUnfoldSet: currentUnfoldSet,
@@ -289,7 +289,7 @@ ProxiesTabState proxiesTabState(Ref ref) {
   final cardType = ref.watch(
     proxiesStyleSettingProvider.select((state) => state.cardType),
   );
-  final columns = ref.watch(getProxiesColumnsProvider);
+  final columns = ref.watch(proxiesColumnsProvider);
   return ProxiesTabState(
     groups: currentGroups.value,
     currentGroupName: currentGroupName,
@@ -328,7 +328,7 @@ ProxyGroupSelectorState proxyGroupSelectorState(
     ),
   );
   final sortNum = ref.watch(sortNumProvider);
-  final columns = ref.watch(getProxiesColumnsProvider);
+  final columns = ref.watch(proxiesColumnsProvider);
   final lowQuery = query.toLowerCase();
   final proxies =
       group?.all.where((item) {
@@ -455,7 +455,7 @@ Profile? currentProfile(Ref ref) {
 }
 
 @riverpod
-int getProxiesColumns(Ref ref) {
+int proxiesColumns(Ref ref) {
   final contentWidth = ref.watch(contentWidthProvider);
   final proxiesLayout = ref.watch(
     proxiesStyleSettingProvider.select((state) => state.layout),
@@ -475,7 +475,7 @@ SelectedProxyState realSelectedProxyState(Ref ref, String proxyName) {
 }
 
 @riverpod
-String? getProxyName(Ref ref, String groupName) {
+String? proxyName(Ref ref, String groupName) {
   final proxyName = ref.watch(
     selectedMapProvider.select((state) => state[groupName]),
   );
@@ -483,8 +483,8 @@ String? getProxyName(Ref ref, String groupName) {
 }
 
 @riverpod
-String? getSelectedProxyName(Ref ref, String groupName) {
-  final proxyName = ref.watch(getProxyNameProvider(groupName));
+String? selectedProxyName(Ref ref, String groupName) {
+  final proxyName = ref.watch(proxyNameProvider(groupName));
   final group = ref.watch(
     groupsProvider.select((state) => state.getGroup(groupName)),
   );
@@ -492,7 +492,7 @@ String? getSelectedProxyName(Ref ref, String groupName) {
 }
 
 @riverpod
-String getProxyDesc(Ref ref, Proxy proxy) {
+String proxyDesc(Ref ref, Proxy proxy) {
   final groupTypeNamesList = GroupType.values.map((e) => e.name).toList();
   if (!groupTypeNamesList.contains(proxy.type)) {
     return proxy.type;
@@ -847,7 +847,7 @@ class ProxyGroupProvider extends _$ProxyGroupProvider
     with AutoDisposeNotifierMixin {
   @override
   ProxyGroup build() {
-    return throw 'Initialization proxyGroupProvider error';
+    throw 'Initialization proxyGroupProvider error';
   }
 }
 

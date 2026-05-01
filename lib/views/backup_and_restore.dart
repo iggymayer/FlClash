@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/dav_client.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
@@ -29,17 +29,20 @@ class BackupAndRestore extends ConsumerWidget {
 
   Future<void> _backupOnWebDAV(BuildContext context, DAVClient client) async {
     final appLocalizations = context.appLocalizations;
-    final res = await appController.loadingRun<bool>(
-      () async {
-        final path = await appController.backup();
-        if (path.isEmpty) {
-          return false;
-        }
-        return await client.backup(path);
-      },
-      tag: LoadingTag.backup_restore,
-      title: appLocalizations.backup,
-    );
+    final ref = globalState.container;
+    final res = await ref
+        .read(commonActionProvider.notifier)
+        .loadingRun<bool>(
+          () async {
+            final path = await ref.read(backupActionProvider.notifier).backup();
+            if (path.isEmpty) {
+              return false;
+            }
+            return await client.backup(path);
+          },
+          tag: LoadingTag.backup_restore,
+          title: appLocalizations.backup,
+        );
     if (res != true) return;
     globalState.showMessage(
       title: appLocalizations.backup,
@@ -52,16 +55,19 @@ class BackupAndRestore extends ConsumerWidget {
     DAVClient client,
     RestoreOption option,
   ) async {
+    final ref = globalState.container;
     final appLocalizations = context.appLocalizations;
-    final res = await appController.loadingRun<bool>(
-      () async {
-        await client.restore();
-        await appController.restore(option);
-        return true;
-      },
-      tag: LoadingTag.backup_restore,
-      title: appLocalizations.restore,
-    );
+    final res = await ref
+        .read(commonActionProvider.notifier)
+        .loadingRun<bool>(
+          () async {
+            await client.restore();
+            await ref.read(backupActionProvider.notifier).restore(option);
+            return true;
+          },
+          tag: LoadingTag.backup_restore,
+          title: appLocalizations.restore,
+        );
     if (res != true) return;
     globalState.showMessage(
       title: appLocalizations.restore,
@@ -82,22 +88,25 @@ class BackupAndRestore extends ConsumerWidget {
 
   Future<void> _backupOnLocal(BuildContext context) async {
     final appLocalizations = context.appLocalizations;
-    final res = await appController.loadingRun<bool>(
-      () async {
-        final path = await appController.backup();
-        if (path.isEmpty) {
-          return false;
-        }
-        final value = await picker.saveFileWithPath(
-          utils.getBackupFileName(),
-          path,
+    final ref = globalState.container;
+    final res = await ref
+        .read(commonActionProvider.notifier)
+        .loadingRun<bool>(
+          () async {
+            final path = await ref.read(backupActionProvider.notifier).backup();
+            if (path.isEmpty) {
+              return false;
+            }
+            final value = await picker.saveFileWithPath(
+              utils.getBackupFileName(),
+              path,
+            );
+            if (value == null) return false;
+            return true;
+          },
+          title: appLocalizations.backup,
+          tag: LoadingTag.backup_restore,
         );
-        if (value == null) return false;
-        return true;
-      },
-      title: appLocalizations.backup,
-      tag: LoadingTag.backup_restore,
-    );
     if (res != true) return;
     globalState.showMessage(
       title: appLocalizations.backup,
@@ -114,14 +123,17 @@ class BackupAndRestore extends ConsumerWidget {
     final path = file?.path;
     if (path == null) return;
     await File(path).safeCopy(await appPath.backupFilePath);
-    final res = await appController.loadingRun<bool>(
-      () async {
-        await appController.restore(option);
-        return true;
-      },
-      tag: LoadingTag.backup_restore,
-      title: appLocalizations.restore,
-    );
+    final ref = globalState.container;
+    final res = await ref
+        .read(commonActionProvider.notifier)
+        .loadingRun<bool>(
+          () async {
+            await ref.read(backupActionProvider.notifier).restore(option);
+            return true;
+          },
+          tag: LoadingTag.backup_restore,
+          title: appLocalizations.restore,
+        );
     if (res != true) return;
     globalState.showMessage(
       title: appLocalizations.restore,

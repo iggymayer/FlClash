@@ -1,6 +1,6 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/pages/scan.dart';
+import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +11,22 @@ class AddProfileView extends StatelessWidget {
   const AddProfileView({super.key, required this.context});
 
   Future<void> _handleAddProfileFormFile() async {
-    appController.addProfileFormFile();
+    globalState.container
+        .read(profilesActionProvider.notifier)
+        .addProfileFormFile();
   }
 
   Future<void> _handleAddProfileFormURL(String url) async {
-    appController.addProfileFormURL(url);
+    globalState.container
+        .read(profilesActionProvider.notifier)
+        .addProfileFormURL(url);
   }
 
   Future<void> _toScan() async {
     if (system.isDesktop) {
-      appController.addProfileFormQrCode();
+      globalState.container
+          .read(profilesActionProvider.notifier)
+          .addProfileFormQrCode();
       return;
     }
     final url = await BaseNavigator.push(context, const ScanPage());

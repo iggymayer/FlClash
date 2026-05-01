@@ -1,8 +1,9 @@
 import 'dart:ui';
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/models/common.dart';
+import 'package:fl_clash/providers/app.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/inherited.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ Future<T?> showSheet<T>({
   required WidgetBuilder builder,
   SheetProps props = const SheetProps(),
 }) {
-  final isMobile = appController.isMobile;
+  final isMobile = globalState.container.read(isMobileViewProvider);
   return switch (isMobile) {
     true => showModalBottomSheet<T>(
       context: context,
@@ -88,7 +89,7 @@ Future<T?> showExtend<T>(
   required WidgetBuilder builder,
   ExtendProps props = const ExtendProps(),
 }) {
-  final isMobile = appController.isMobile;
+  final isMobile = globalState.container.read(isMobileViewProvider);
   return switch (isMobile || props.forceFull) {
     true => BaseNavigator.push(
       context,

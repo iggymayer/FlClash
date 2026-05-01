@@ -574,8 +574,8 @@ extension DelayStateExt on DelayState {
     if (delay != other.delay) {
       return delay.compareTo(other.delay);
     }
-    if (group && !group) return -1;
-    if (!group && group) return 1;
+    if (group && !other.group) return -1;
+    if (!other.group && group) return 1;
     return 0;
   }
 }

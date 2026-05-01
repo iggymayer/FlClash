@@ -1,5 +1,4 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -72,8 +71,10 @@ class _LogsViewState extends ConsumerState<LogsView> {
 
   Future<void> _handleExport() async {
     final appLocalizations = context.appLocalizations;
-    final res = await appController.safeRun<bool>(() async {
-      return await appController.exportLogs();
+    final res = await globalState.safeRun<bool>(() async {
+      return await globalState.container
+          .read(logsProvider.notifier)
+          .exportLogs();
     }, title: appLocalizations.exportLogs);
     if (res != true) return;
     globalState.showMessage(

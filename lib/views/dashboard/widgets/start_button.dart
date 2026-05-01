@@ -1,5 +1,4 @@
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -51,7 +50,9 @@ class _StartButtonState extends ConsumerState<StartButton>
     isStart = !isStart;
     updateController();
     debouncer.call(FunctionTag.updateStatus, () {
-      appController.updateStatus(isStart, isInit: !ref.read(initProvider));
+      globalState.container
+          .read(setupActionProvider.notifier)
+          .updateStatus(isStart, isInit: !ref.read(initProvider));
     }, duration: commonDuration);
   }
 

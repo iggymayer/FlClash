@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/plugins/app.dart';
@@ -32,7 +31,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
   void initState() {
     super.initState();
     _controller = ScrollController();
-    _completer.complete(appController.getPackages());
+    _completer.complete(ref.read(systemActionProvider.notifier).getPackages());
     final accessControl = ref
         .read(vpnSettingProvider.select((state) => state.accessControlProps))
         .copyWith();
@@ -93,9 +92,12 @@ class _AccessViewState extends ConsumerState<AccessView> {
       return;
     }
     final selectedPackageNames =
-        (await appController.loadingRun<List<String>>(() async {
-          return await app?.getChinaPackageNames() ?? [];
-        }, tag: LoadingTag.access))?.toSet() ??
+        (await ref.read(commonActionProvider.notifier).loadingRun<List<String>>(
+          () async {
+            return await app?.getChinaPackageNames() ?? [];
+          },
+          tag: LoadingTag.access,
+        ))?.toSet() ??
         {};
     final acceptList = packageNames
         .where((item) => !selectedPackageNames.contains(item))
@@ -226,7 +228,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
   }
 
   Future<void> _exportToClipboard() async {
-    await appController.safeRun(() {
+    await globalState.safeRun(() {
       final currentList = ref.read(
         accessControlStateProvider.select((state) => state.currentList),
       );
@@ -235,7 +237,7 @@ class _AccessViewState extends ConsumerState<AccessView> {
   }
 
   Future<void> _importFormClipboard() async {
-    await appController.safeRun(() async {
+    await globalState.safeRun(() async {
       final data = await Clipboard.getData('text/plain');
       final text = data?.text;
       if (text == null) return;

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -25,8 +27,18 @@ class Logs extends _$Logs with AutoDisposeNotifierMixin {
     return FixedList(0);
   }
 
-  void addLog(Log value) {
+  void add(Log value) {
     this.value = state.copyWith()..add(value);
+  }
+
+  Future<bool> exportLogs() async {
+    final logString = await encodeLogsTask(value.list);
+    final tempFilePath = await appPath.tempFilePath;
+    final file = File(tempFilePath);
+    await file.safeWriteAsString(logString);
+    bool res = false;
+    res = await picker.saveFileWithPath(utils.logFile, tempFilePath) != null;
+    return res;
   }
 }
 
@@ -55,6 +67,10 @@ class Providers extends _$Providers with AutoDisposeNotifierMixin {
     if (index == -1) return;
     final newState = List<ExternalProvider>.from(value)..[index] = provider;
     value = newState;
+  }
+
+  Future<void> syncProviders() async {
+    value = await coreController.getExternalProviders();
   }
 }
 
@@ -166,6 +182,14 @@ class CurrentPageLabel extends _$CurrentPageLabel
   PageLabel build() {
     return PageLabel.dashboard;
   }
+
+  void toPage(PageLabel pageLabel) {
+    ref.read(currentPageLabelProvider.notifier).value = pageLabel;
+  }
+
+  void toProfiles() {
+    toPage(PageLabel.profiles);
+  }
 }
 
 @Riverpod(keepAlive: true)
@@ -193,6 +217,14 @@ class BackBlock extends _$BackBlock with AutoDisposeNotifierMixin {
   @override
   bool build() {
     return false;
+  }
+
+  void backBlock() {
+    value = true;
+  }
+
+  void unBackBlock() {
+    value = false;
   }
 }
 

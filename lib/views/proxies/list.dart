@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/controller.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/config.dart';
@@ -88,7 +87,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     } else {
       tempUnfoldSet.add(groupName);
     }
-    appController.updateCurrentUnfoldSet(tempUnfoldSet);
+    updateCurrentUnfoldSet(tempUnfoldSet);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _adjustHeader();
     });
@@ -197,7 +196,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     if (_controller.position.maxScrollExtent == 0) {
       return 0;
     }
-    final currentGroups = appController.getCurrentGroups();
+    final currentGroups = getCurrentGroups();
     final findIndex = currentGroups.indexWhere(
       (item) => item.name == groupName,
     );
@@ -257,7 +256,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
 
   void _scrollToGroupSelected(String groupName) {
     final currentInitOffset = _getGroupOffset(groupName);
-    final currentGroups = appController.getCurrentGroups();
+    final currentGroups = getCurrentGroups();
     final proxies = currentGroups.getGroup(groupName)?.all;
     _jumpTo(
       currentInitOffset +
@@ -512,9 +511,7 @@ class _ListHeaderState extends State<ListHeader> {
                                   builder: (_, ref, _) {
                                     final proxyName = ref
                                         .watch(
-                                          getSelectedProxyNameProvider(
-                                            groupName,
-                                          ),
+                                          selectedProxyNameProvider(groupName),
                                         )
                                         .takeFirstValid([]);
                                     return Row(
