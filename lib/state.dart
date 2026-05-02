@@ -293,6 +293,9 @@ class GlobalState {
   }
 
   Future<void> attach() async {
+    if (isAttach == true) {
+      return;
+    }
     await _initApp();
     isAttach = true;
   }
