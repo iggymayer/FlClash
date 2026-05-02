@@ -60,6 +60,8 @@ PODS:
     - FlutterMacOS
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
+  - wifi_ssid (0.0.1):
+    - FlutterMacOS
   - window_ext (0.0.1):
     - FlutterMacOS
   - window_manager (0.5.0):
@@ -83,6 +85,7 @@ DEPENDENCIES:
   - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin`)
   - tray_manager (from `Flutter/ephemeral/.symlinks/plugins/tray_manager/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - wifi_ssid (from `Flutter/ephemeral/.symlinks/plugins/wifi_ssid/macos`)
   - window_ext (from `Flutter/ephemeral/.symlinks/plugins/window_ext/macos`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
 
@@ -126,6 +129,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/tray_manager/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  wifi_ssid:
+    :path: Flutter/ephemeral/.symlinks/plugins/wifi_ssid/macos
   window_ext:
     :path: Flutter/ephemeral/.symlinks/plugins/window_ext/macos
   window_manager:
@@ -151,6 +156,7 @@ SPEC CHECKSUMS:
   sqlite3_flutter_libs: b3e120efe9a82017e5552a620f696589ed4f62ab
   tray_manager: a104b5c81b578d83f3c3d0f40a997c8b10810166
   url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
+  wifi_ssid: 969c39c4eb56ab38184725665bfddca66fb12d0d
   window_ext: 4afef727fe428b30c68ce800ba92e890fd329f63
   window_manager: b729e31d38fb04905235df9ea896128991cad99e
 
