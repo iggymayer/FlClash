@@ -13,6 +13,7 @@ import 'package:material_color_utilities/palettes/core_palette.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wifi_ssid/wifi_ssid.dart';
 
 import 'common/common.dart';
 import 'database/database.dart';
@@ -323,6 +324,25 @@ class GlobalState {
     await container.read(coreActionProvider.notifier).initCore();
     await container.read(setupActionProvider.notifier).initStatus();
     container.read(initProvider.notifier).value = true;
+    _handleCheckWifiSsidPermission();
+  }
+
+  Future<bool> _handleCheckWifiSsidPermission() async {
+    final res = await WifiSsidManager.instance.checkPermission();
+    if (res == WifiSsidPermission.denied) {
+      final res = await WifiSsidManager.instance.requestPermission();
+      if (res != WifiSsidPermission.granted) {
+        return false;
+      }
+      final ssid = await WifiSsidManager.instance.getSsid();
+      commonPrint.log('Wifi ssid $ssid', logLevel: LogLevel.info);
+    } else if (res == WifiSsidPermission.permanentlyDenied) {
+      commonPrint.log(
+        'Wifi ssid permission is denied',
+        logLevel: LogLevel.error,
+      );
+    }
+    return true;
   }
 
   Future<void> _handleFailedPreference() async {
