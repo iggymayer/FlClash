@@ -88,13 +88,42 @@ Support the following actions
 
         1. You need a windows client
 
-        2. Install  `Gcc`，`Inno Setup`
+        2. Install packages
+            - `Gcc`
+            - `Rustup`
+            - `Build Tools for Visual Studio`
+                1. Select Desktop development with C++
+                2. Select Windows 11 SDK & MSVC v143
+            - `Inno Setup`
+                1. Manually specify the installation directory during installation: %ProgramFiles(x86)%\
+                2. Or create a symbolic link in pswh7 administrator mode:
+                    ```
+                    PS > New-Item -ItemType SymbolicLink -Path "${env:ProgramFiles(x86)}\Inno Setup 6" -Target "$env:LOCALAPPDATA\Programs\Inno Setup 6"
+                    ```
+                3. Add environment variables
 
         3. Run build script
 
-           ```bash
-           dart .\setup.dart windows --arch <arm64 | amd64>
-           ```
+            ```bash
+            dart .\setup.dart windows --arch <arm64 | amd64>  --env <pre | stable>
+            ```
+
+        4. Build core
+
+            ```bash
+            dart .\setup.dart windows --arch <arm64 | amd64> --out core --env <pre | stable>
+            ```
+
+        5. Packaged
+
+            Activate flutter_distributor
+            ```bash
+            dart pub global activate -s path .\plugins\flutter_distributor\packages\flutter_distributor
+            ```
+
+            ```bash
+            flutter_distributor package --platform windows --description amd64 --targets exe,zip --flutter-build-args=verbose,dart-define-from-file=env.json
+            ```
 
     - linux
 
