@@ -96,7 +96,7 @@ Support the following actions
                 2. Select Windows 11 SDK & MSVC v143
             - `Inno Setup`
                 1. Manually specify the installation directory during installation: %ProgramFiles(x86)%\
-                2. Or create a symbolic link in pswh7 administrator mode:
+                2. Or create a symbolic link in pwsh7 administrator mode:
                     ```
                     PS > New-Item -ItemType SymbolicLink -Path "${env:ProgramFiles(x86)}\Inno Setup 6" -Target "$env:LOCALAPPDATA\Programs\Inno Setup 6"
                     ```
